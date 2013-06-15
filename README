@@ -1,0 +1,39 @@
+==========================
+ Mirror for open source mirror site to sync files
+==========================
+
+Homepage: http://mirror.bjtu.edu.cn
+
+Authors:
+    Shang Yuanchun
+
+For contributors and past developers see: 
+    AUTHORS
+
+==========================
+Installation Instructions:
+==========================
+
+Build and install by running:
+
+    $ python setup.py build
+    $ sudo python setup.py install
+
+==========================
+Contact/Support:
+==========================
+
+   Email: idealities@gmail.com
+
+==========================
+Features
+==========================
+
+ * 便捷的方式增加镜像
+ * 不同镜像可设置优先级(1-10，10为最高)
+ * 根据服务器负载和当前HTTP连接数来决定是否调度执行
+ * 可配置多个上游，根据上游的状态自动切换
+ * 失败时邮件通知
+ * 磁盘状况报警
+ * 可设置同步的超时时间
+ * 支持两阶段同步(for ubuntu, debian等)

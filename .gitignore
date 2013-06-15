@@ -1,0 +1,4 @@
+build/
+dist/
+mirror.egg-info/
+*.pyc
