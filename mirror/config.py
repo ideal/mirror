@@ -32,6 +32,12 @@ import logging
 import shutil
 import os
 
+import sys
+if sys.version_info.major == 3:
+    from configparser import ConfigParser
+else:
+    from ConfigParser import ConfigParser
+
 import mirror.common
 
 log = logging.getLogger(__name__)
@@ -244,7 +250,20 @@ class Config(object):
             log.warning("Unable to open config file %s: %s", filename, e)
             return
 
-        # TODO: load mirror ini config file
+        # load mirror ini config file
+        config = ConfigParser()
+        config.read(filename)
+        for section in config.sections():
+            value = {}
+            for item in config.items(section):
+                if item[0].endswith("[]") and item[0] not in value:
+                    value[item[0]] = [item[1]]
+                    continue
+                if item[0] in value and type(value[item[0]]) == list:
+                    value[item[0]].append(item[1])
+                else:
+                    value[item[0]] = item[1]
+            set_item(section, value)
 
     def save(self, filename=None):
         """
@@ -259,6 +278,15 @@ class Config(object):
             log.debug("Saving new config file %s", filename + ".new")
             f = open(filename + ".new", "w")
             # TODO: save ini config
+            for section, value in self.__config.items():
+                f.write("[" + section + "]\n")
+                for key, val in value.items():
+                    if key.endswith("[]"):
+                        for v in val:
+                            f.write(key + "\t=\t" + v + "\n")
+                    else:
+                        f.write(key + "\t=\t" + val + "\n")
+                f.write("\n")
             f.flush()
             os.fsync(f.fileno())
             f.close()
