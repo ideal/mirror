@@ -33,7 +33,7 @@ import shutil
 import os
 
 import sys
-if sys.version_info.major == 3:
+if sys.version_info.major >= 3:
     from configparser import ConfigParser
 else:
     from ConfigParser import ConfigParser

@@ -115,7 +115,7 @@ cmdclass = {
 # Data files to be installed to the system
 _data_files = [
     ('share/man/man1', ['docs/man/mirror.1']),
-	('etc', ['config/mirror.ini'])
+	('/etc', ['config/mirror.ini'])
 ]
 
 entry_points = {
