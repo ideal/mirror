@@ -143,6 +143,5 @@ setup(
                                "i18n/*/LC_MESSAGES/*.mo",
                                ]},
     packages = find_packages(exclude=["docs",]),
-    namespace_packages = ["mirror",],
     entry_points = entry_points
 )
