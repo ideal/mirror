@@ -19,6 +19,10 @@ Build and install by running:
     $ python setup.py build
     $ sudo python setup.py install
 
+    Or to a custom directory:
+
+    $ sudo python setup.py install --root=/tmp
+
 ==========================
 Contact/Support:
 ==========================
