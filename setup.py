@@ -115,12 +115,12 @@ cmdclass = {
 # Data files to be installed to the system
 _data_files = [
     ('share/man/man1', ['docs/man/mirror.1']),
-	('/etc', ['config/mirror.ini'])
+    ('/etc', ['config/mirror.ini'])
 ]
 
 entry_points = {
     "console_scripts": [
-		"mirror  = mirror.main:start",
+        "mirror  = mirror.main:start",
         "mirrord = mirror.main:start_daemon"
     ],
 }
