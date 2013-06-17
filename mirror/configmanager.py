@@ -32,7 +32,6 @@ import os
 import logging
 
 import mirror.common
-import mirror.log
 from   mirror.config import Config
 
 log = logging.getLogger(__name__)
@@ -79,11 +78,10 @@ class _ConfigManager:
         self.__config_directory = directory
 
         # Reset the config_files so we don't get config from old config folder
-        # XXX: Probably should have it go through the config_files dict and try
+        # TODO: Probably should have it go through the config_files dict and try
         # to reload based on the new config directory
         self.save()
         self.config_files = {}
-        mirror.log.tweak_logging_levels()
 
         return True
 
@@ -91,17 +89,17 @@ class _ConfigManager:
         return self.config_directory
 
     def close(self, config):
-        """Closes a config file."""
+        """Close a config file."""
         try:
             del self.config_files[config]
         except KeyError:
             pass
 
     def save(self):
-        """Saves all the configs to disk."""
+        """Save all the configs to disk."""
         for value in self.config_files.values():
             value.save()
-        # We need to return True to keep the timer active
+
         return True
 
     def get_config(self, config_file, defaults=None):
@@ -116,6 +114,7 @@ class _ConfigManager:
 # Singleton functions
 _configmanager = _ConfigManager()
 
+# The parameter "config" is the name of config file
 def ConfigManager(config, defaults=None):
     return _configmanager.get_config(config, defaults)
 
