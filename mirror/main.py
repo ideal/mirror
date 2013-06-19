@@ -135,6 +135,11 @@ def start_daemon():
     except:
         pass
 
+    # Close stdin, stdout, stderr ...
+    os.close(sys.stdin.fileno())
+    os.close(sys.stdout.fileno())
+    os.close(sys.stderr.fileno())
+
     import logging
     log = logging.getLogger(__name__)
 
