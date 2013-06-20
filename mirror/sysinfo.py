@@ -29,7 +29,5 @@
 #
 
 
-"""Trigger for Mirror :("""
-
 import os, sys
 

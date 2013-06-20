@@ -29,7 +29,9 @@
 #
 
 
-"""Trigger for Mirror :("""
+"""The mirrors queue, parse options from mirror.config. :("""
 
 import os, sys
+
+from mirror.configmanager import ConfigManager
 
