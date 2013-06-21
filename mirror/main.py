@@ -81,16 +81,30 @@ def start_daemon():
     if options.rotate_logs:
         logfile_mode = 'a'
 
-    # Setup the logger
-    mirror.log.setupLogger(level=options.loglevel,
-                           filename=options.logfile,
-                           filemode=logfile_mode)
-
     import mirror.configmanager
     if options.config:
         if not mirror.configmanager.set_config_dir(options.config):
             print("There was an error setting the config dir! Exiting..")
             sys.exit(1)
+
+    # Sets the options.logfile to point to the default location
+    def set_logfile():
+        if not options.logfile:
+            options.logfile = mirror.configmanager.get_config_dir("mirrord.log")
+
+    set_logfile()
+
+    # Setup the logger
+    try:
+        # Try to make the logfile's directory if it doesn't exist
+        os.makedirs(os.path.abspath(os.path.dirname(options.logfile)))
+    except:
+        pass
+
+    # Setup the logger
+    mirror.log.setupLogger(level=options.loglevel,
+                           filename=options.logfile,
+                           filemode=logfile_mode)
 
     # Writes out a pidfile if necessary
     def write_pidfile():
@@ -107,7 +121,7 @@ def start_daemon():
         if os.fork():
             os._exit(0)
 
-    # Write pid file before change uid
+    # Write pid file before change gid and uid
     write_pidfile()
 
     if options.group:
@@ -120,20 +134,6 @@ def start_daemon():
             import pwd
             options.user = pwd.getpwnam(options.user)[2]
         os.setuid(options.user)
-
-    # Sets the options.logfile to point to the default location
-    def set_logfile():
-        if not options.logfile:
-            options.logfile = mirror.configmanager.get_config_dir("mirrord.log")
-
-    set_logfile()
-
-    # Setup the logger
-    try:
-        # Try to make the logfile's directory if it doesn't exist
-        os.makedirs(os.path.abspath(os.path.dirname(options.logfile)))
-    except:
-        pass
 
     # Close stdin, stdout, stderr ...
     os.close(sys.stdin.fileno())
