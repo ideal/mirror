@@ -46,7 +46,7 @@ def get_version():
     """
     Returns the version of mirror from the python egg metadata
 
-    :returns: the version of Deluge
+    :returns: the version of mirror
 
     """
     return pkg_resources.require("mirror")[0].version
@@ -69,4 +69,25 @@ def get_default_config_dir(filename=None):
     except OSError, e:
         log.error("Unable to use default config directory, exiting... (%s)", e)
         sys.exit(1)
+
+def setup_translations():
+    translations_path = resource_filename("mirror", "i18n")
+    log.info("Setting up translations from %s", translations_path)
+
+    try:
+        if hasattr(locale, "bindtextdomain"):
+            locale.bindtextdomain("mirror", translations_path)
+        if hasattr(locale, "textdomain"):
+            locale.textdomain("mirror")
+        gettext.install("mirror", translations_path, unicode=True)
+    except Exception, e:
+        log.error("Unable to initialize gettext/locale")
+        log.exception(e)
+        import __builtin__
+        __builtin__.__dict__["_"] = lambda x: x
+
+def resource_filename(module, path):
+    return pkg_resources.require("mirror>=%s" % get_version())[0].get_resource_filename(
+        pkg_resources._manager, os.path.join(*(module.split('.')+[path]))
+    )
 
