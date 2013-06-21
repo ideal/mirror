@@ -49,27 +49,27 @@ def start_daemon():
     parser = OptionParser(usage="%prog [options] [actions]")
     parser.add_option("-v", "--version", action="callback",
                       callback=version_callback,
-                      help="Show program's version number and exit")
+                      help=_("Show program's version number and exit"))
     parser.add_option("-d", "--do-not-daemonize", dest="donot",
-                      help="Do not daemonize", action="store_true", default=False)
+                      help=_("Do not daemonize"), action="store_true", default=False)
     parser.add_option("-c", "--config", dest="config",
-                      help="Set the config location", action="store", type="str")
+                      help=_("Set the config location"), action="store", type="str")
     parser.add_option("-P", "--pidfile", dest="pidfile",
-                      help="Use pidfile to store process id", action="store", type="str")
+                      help=_("Use pidfile to store process id"), action="store", type="str")
     parser.add_option("-u", "--user", dest="user",
-                      help="User to switch to. Only use it when starting as root", action="store", type="str")
+                      help=_("User to switch to. Need to start as root"), action="store", type="str")
     parser.add_option("-g", "--group", dest="group",
-                      help="Group to switch to. Only use it when starting as root", action="store", type="str")
+                      help=_("Group to switch to. Need to start as root"), action="store", type="str")
     parser.add_option("-l", "--logfile", dest="logfile",
                       help="Set the logfile location", action="store", type="str")
     parser.add_option("-L", "--loglevel", dest="loglevel",
-                      help="Set the log level: none, info, warning, error, critical, debug", action="store", type="str")
+                      help=_("Set the log level: none, info, warning, error, critical, debug"), action="store", type="str")
     parser.add_option("-q", "--quiet", dest="quiet",
-                      help="Sets the log level to 'none', this is the same as `-L none`", action="store_true", default=False)
+                      help=_("Sets the log level to 'none', this is the same as `-L none`"), action="store_true", default=False)
     parser.add_option("-r", "--rotate-logs",
-                      help="Rotate logfiles.", action="store_true", default=False)
+                      help=_("Rotate logfiles."), action="store_true", default=False)
     parser.add_option("--profile", dest="profile", action="store_true", default=False,
-                      help="Profiles the daemon")
+                      help=_("Profiles the daemon"))
 
     # Get the options and args from the OptionParser
     (options, args) = parser.parse_args()
