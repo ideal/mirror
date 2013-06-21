@@ -1,0 +1,9 @@
+mirror/main.py
+mirror/mirrors.py
+mirror/log.py
+mirror/__init__.py
+mirror/trigger.py
+mirror/config.py
+mirror/common.py
+mirror/configmanager.py
+mirror/sysinfo.py

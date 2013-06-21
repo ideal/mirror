@@ -1,0 +1,58 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2013 Mirror at BJTU
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Mirror 0.6.0\n"
+"Report-Msgid-Bugs-To: http://mirror.bjtu.edu.cn\n"
+"POT-Creation-Date: 2013-06-21 11:15+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: mirror/main.py:52
+msgid "Show program's version number and exit"
+msgstr ""
+
+#: mirror/main.py:54
+msgid "Do not daemonize"
+msgstr ""
+
+#: mirror/main.py:56
+msgid "Set the config location"
+msgstr ""
+
+#: mirror/main.py:58
+msgid "Use pidfile to store process id"
+msgstr ""
+
+#: mirror/main.py:60
+msgid "User to switch to. Need to start as root"
+msgstr ""
+
+#: mirror/main.py:62
+msgid "Group to switch to. Need to start as root"
+msgstr ""
+
+#: mirror/main.py:66
+msgid "Set the log level: none, info, warning, error, critical, debug"
+msgstr ""
+
+#: mirror/main.py:68
+msgid "Sets the log level to 'none', this is the same as `-L none`"
+msgstr ""
+
+#: mirror/main.py:70
+msgid "Rotate logfiles."
+msgstr ""
+
+#: mirror/main.py:72
+msgid "Profiles the daemon"
+msgstr ""
