@@ -46,7 +46,7 @@ def start_daemon():
     mirror.common.setup_translations()
 
     # Setup the argument parser
-    parser = OptionParser(usage="%prog [options] [actions]")
+    parser = OptionParser(usage="%prog [options]")
     parser.add_option("-v", "--version", action="callback",
                       callback=version_callback,
                       help=_("Show program's version number and exit"))
