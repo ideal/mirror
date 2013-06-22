@@ -39,6 +39,7 @@ import mirror.error
 
 def version_callback(option, opt_str, value, parser):
     print(os.path.basename(sys.argv[0]) + ": " + mirror.common.get_version())
+    sys.exit(0)
 
 def start_daemon():
     """Entry point for daemon script"""
