@@ -150,7 +150,7 @@ def start_daemon():
     try:
         from mirror.trigger import MirrorTrigger
         trigger = MirrorTrigger(options, args)
-        trigger.run()
+        trigger.start()
     except mirror.error.MirrordRunningError, e:
         log.error(e)
         log.error("You cannot run multiple daemons with the same config directory set.")

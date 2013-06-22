@@ -65,7 +65,7 @@ def setupLogger(level="error", filename=None, filemode="w"):
     :param level: str, the level to log
     :param filename: str, the file to log to
     """
-
+    import logging
     logging.setLoggerClass(logging.Logger)
     logging.addLevelName(5, 'TRACE')
     logging.addLevelName(1, 'GARBAGE')

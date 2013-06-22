@@ -29,19 +29,26 @@
 #
 
 
-"""Trigger for Mirror :("""
+class MirrorError(Exception):
+    def __new__(cls, *args, **kwargs):
+        inst = super(MirrorError, cls).__new__(cls, *args, **kwargs)
+        inst._args = args
+        inst._kwargs = kwargs
+        return inst
 
-import os, sys
-import time
-import logging
+    def _set_message(self, message):
+        self._message = message
 
-log = logging.getLogger(__name__)
+    def _get_message(self):
+        return self._message
 
-class MirrorTrigger(object):
-    def __init__(self, options, args):
-        pass
+    message = property(_get_message, _set_message)
 
-    def start(self):
-        while (True):
-            time.sleep(5)
-            log.info("mirror is still alive...")
+    del _get_message, _set_message
+
+    def __str__(self):
+        return self.message
+
+class MirrordRunningError(MirrorError):
+    pass
+
