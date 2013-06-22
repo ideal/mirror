@@ -50,10 +50,10 @@ def start_daemon():
     parser.add_option("-v", "--version", action="callback",
                       callback=version_callback,
                       help=_("Show program's version number and exit"))
-    parser.add_option("-d", "--do-not-daemonize", dest="donot",
-                      help=_("Do not daemonize"), action="store_true", default=False)
+    parser.add_option("-D", "--do-not-daemonize", dest="donot",
+                      help=_("Do not daemonize (default is daemonize)"), action="store_true", default=False)
     parser.add_option("-c", "--config", dest="config",
-                      help=_("Set the config location"), action="store", type="str")
+                      help=_("Set the config location directory"), action="store", type="str")
     parser.add_option("-P", "--pidfile", dest="pidfile",
                       help=_("Use pidfile to store process id"), action="store", type="str")
     parser.add_option("-u", "--user", dest="user",
