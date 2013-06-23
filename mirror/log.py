@@ -30,7 +30,6 @@
 
 """Logging functions"""
 
-import os
 import logging
 
 from mirror import common
