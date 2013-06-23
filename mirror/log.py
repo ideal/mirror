@@ -113,5 +113,5 @@ def setLoggerLevel(level, logger_name=None):
                         tweak the root logger level.
 
     """
-    logging.getLogger(logger_name).setLevel(levels.get(level, logging.ERROR))
+    logging.getLogger(logger_name).setLevel(levels.get(level, "error"))
 
