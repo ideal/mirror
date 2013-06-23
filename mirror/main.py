@@ -77,6 +77,8 @@ def start_daemon():
 
     if options.quiet:
         options.loglevel = "none"
+    if not options.loglevel:
+        options.loglevel = "info"
 
     logfile_mode = 'w'
     if options.rotate_logs:
