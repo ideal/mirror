@@ -62,7 +62,7 @@ def start_daemon():
     parser.add_option("-g", "--group", dest="group",
                       help=_("Group to switch to. Need to start as root"), action="store", type="str")
     parser.add_option("-l", "--logfile", dest="logfile",
-                      help="Set the logfile location", action="store", type="str")
+                      help=_("Set the logfile location"), action="store", type="str")
     parser.add_option("-L", "--loglevel", dest="loglevel",
                       help=_("Set the log level: none, info, warning, error, critical, debug"), action="store", type="str")
     parser.add_option("-q", "--quiet", dest="quiet",

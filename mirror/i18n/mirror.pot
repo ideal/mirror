@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mirror 0.6.0\n"
 "Report-Msgid-Bugs-To: http://mirror.bjtu.edu.cn\n"
-"POT-Creation-Date: 2013-06-23 14:51+0800\n"
+"POT-Creation-Date: 2013-06-24 17:31+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -39,6 +39,10 @@ msgstr ""
 
 #: mirror/main.py:63
 msgid "Group to switch to. Need to start as root"
+msgstr ""
+
+#: mirror/main.py:65
+msgid "Set the logfile location"
 msgstr ""
 
 #: mirror/main.py:67

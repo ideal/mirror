@@ -23,7 +23,7 @@ msgstr "显示程序版本并退出"
 msgid "Do not daemonize (default is daemonize)"
 msgstr "不以守护进程方式运行 (若不设置则以守护进程方式运行)"
 
-#: mirror/main.py:56
+#: mirror/main.py:57
 msgid "Set the config location directory"
 msgstr "设置配置文件所在目录"
 
@@ -38,6 +38,10 @@ msgstr "切换为指定的用户运行，需要以root用户启动"
 #: mirror/main.py:62
 msgid "Group to switch to. Need to start as root"
 msgstr "切换为指定的组运行，需要以root用户启动"
+
+#: mirror/main.py:65
+msgid "Set the logfile location"
+msgstr "设置日志文件路径"
 
 #: mirror/main.py:66
 msgid "Set the log level: none, info, warning, error, critical, debug"
