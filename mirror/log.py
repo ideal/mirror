@@ -115,3 +115,17 @@ def setLoggerLevel(level, logger_name=None):
     """
     logging.getLogger(logger_name).setLevel(levels.get(level, logging.ERROR))
 
+def addStreamHandler(level="error"):
+    level = levels.get(level, logging.ERROR)
+
+    handler = logging.StreamHandler()
+    handler.setLevel(level)
+
+    formatter = logging.Formatter(
+        DEFAULT_LOGGING_FORMAT % MAX_LOGGER_NAME_LENGTH,
+        datefmt="%m-%d %H:%M:%S"
+    )
+
+    handler.setFormatter(formatter)
+
+    logging.getLogger().addHandler(handler)

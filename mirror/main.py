@@ -108,6 +108,8 @@ def start_daemon():
     mirror.log.setupLogger(level=options.loglevel,
                            filename=options.logfile,
                            filemode=logfile_mode)
+    if options.donot:
+        mirror.log.addStreamHandler(level=options.loglevel)
 
     # Writes out a pidfile if necessary
     def write_pidfile():
@@ -139,9 +141,10 @@ def start_daemon():
         os.setuid(options.user)
 
     # Close stdin, stdout, stderr ...
-    os.close(sys.stdin.fileno())
-    os.close(sys.stdout.fileno())
-    os.close(sys.stderr.fileno())
+    if not options.donot:
+        os.close(sys.stdin.fileno())
+        os.close(sys.stdout.fileno())
+        os.close(sys.stderr.fileno())
 
     import logging
     log = logging.getLogger(__name__)
