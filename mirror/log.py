@@ -115,7 +115,19 @@ def setLoggerLevel(level, logger_name=None):
     """
     logging.getLogger(logger_name).setLevel(levels.get(level, logging.ERROR))
 
-def addStreamHandler(level="error"):
+def addStreamHandler(level="error", force=False):
+    """
+    Add a stream handler to logger. If there is already one and force is not set, the addition is canceled.
+
+    :param level: str, a string representing the desired level
+    :param force: bool, whether to add when there is already one
+
+    """
+    if not force:
+        for handler in logging.getLogger().handlers:
+            if handler.__class__ == logging.StreamHandler:
+                return
+
     level = levels.get(level, logging.ERROR)
 
     handler = logging.StreamHandler()
