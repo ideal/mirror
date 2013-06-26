@@ -29,7 +29,7 @@
 #
 
 
-"""Trigger for Mirror :("""
+"""Scheduler for Mirror :("""
 
 import os, sys
 import time
@@ -37,7 +37,7 @@ import logging
 
 log = logging.getLogger(__name__)
 
-class MirrorTrigger(object):
+class Scheduler(object):
     def __init__(self, options, args):
         pass
 

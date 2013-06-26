@@ -154,9 +154,9 @@ def start_daemon():
         hsp = hotshot.Profile(mirror.configmanager.get_config_dir("mirrord.profile"))
         hsp.start()
     try:
-        from mirror.trigger import MirrorTrigger
-        trigger = MirrorTrigger(options, args)
-        trigger.start()
+        from mirror.scheduler import Scheduler
+        scheduler = Scheduler(options, args)
+        scheduler.start()
     except mirror.error.MirrordRunningError, e:
         log.error(e)
         log.error("You cannot run multiple daemons with the same config directory set.")
