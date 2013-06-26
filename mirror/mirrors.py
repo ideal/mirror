@@ -35,3 +35,9 @@ import os, sys
 
 from mirror.configmanager import ConfigManager
 
+class mirrors(object):
+    def __init__(self):
+        pass
+
+    def load():
+        pass
