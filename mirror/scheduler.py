@@ -69,10 +69,17 @@ class Scheduler(object):
         try:
             fcntl.flock(fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except:
-            raise mirror.error.MirrorError("Can't lock %s", pidfile)
+            try:
+                pid = int(fp.read().strip())
+                raise mirror.error.MirrorError("Can't lock %s, maybe another mirrord with pid %d is running",
+                                               pidfile, pid)
+            except:
+                raise mirror.error.MirrorError("Can't lock %s", pidfile)
 
         fcntl.fcntl(fp, fcntl.F_SETFD, 1)
+        fp.seek(0)
         fp.write("%d\n" % os.getpid())
+        fp.truncate()
         fp.flush()
 
     def start(self):
