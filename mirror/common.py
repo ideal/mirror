@@ -113,6 +113,8 @@ def check_mirrord_running(pidfile):
 
 def lock_file(pidfile):
     """Actually the code below is needless..."""
+
+    import fcntl
     try:
         fp = open(pidfile, "r+" if os.path.isfile(pidfile) else "w+")
     except IOError:
@@ -120,11 +122,11 @@ def lock_file(pidfile):
 
     try:
         fcntl.flock(fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    except:
+    except IOError:
         try:
             pid = int(fp.read().strip())
             raise MirrorError("Can't lock %s, maybe another mirrord with pid %d is running",
-                                           pidfile, pid)
+                              pidfile, pid)
         except:
             raise MirrorError("Can't lock %s", pidfile)
 
@@ -133,3 +135,4 @@ def lock_file(pidfile):
     fp.write("%d\n" % os.getpid())
     fp.truncate()
     fp.flush()
+

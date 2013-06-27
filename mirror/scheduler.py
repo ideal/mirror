@@ -34,7 +34,6 @@
 import os, sys
 import time
 import logging
-import fcntl
 import mirror.configmanager
 
 log = logging.getLogger(__name__)
