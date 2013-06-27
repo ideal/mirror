@@ -36,6 +36,14 @@ class MirrorError(Exception):
         inst._kwargs = kwargs
         return inst
 
+    def __init__(self, *args, **kwargs):
+        if len(args) == 0:
+            self._message = ""
+        elif len(args) == 1:
+            self._message = args[0]
+        else:
+            self._message = args[0] % args[1:]
+
     def _set_message(self, message):
         self._message = message
 

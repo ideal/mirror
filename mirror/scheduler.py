@@ -34,12 +34,46 @@
 import os, sys
 import time
 import logging
+import fcntl
+import mirror.configmanager
 
 log = logging.getLogger(__name__)
 
 class Scheduler(object):
-    def __init__(self, options, args):
-        pass
+    def __init__(self, options=None, args=None):
+        pid     = None
+        pidfile = mirror.configmanager.get_config_dir("mirrord.pid")
+        if os.path.isfile(pidfile):
+            try:
+                pid = int(open(pidfile).read().strip())
+            except:
+                pass
+
+        def is_process_running(pid):
+            try:
+                os.kill(pid, 0)
+            except OSError:
+                return False
+            else:
+                return True
+
+        if pid and is_process_running(pid):
+            raise mirror.error.MirrordRunningError("Another mirrord is running with pid: %d", pid)
+
+        """Actually the code below is needless..."""
+        try:
+            fp = open(pidfile, "r+" if os.path.isfile(pidfile) else "w+")
+        except IOError:
+            raise mirror.error.MirrorError("Can't open or create %s", pidfile)
+
+        try:
+            fcntl.flock(fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except:
+            raise mirror.error.MirrorError("Can't lock %s", pidfile)
+
+        fcntl.fcntl(fp, fcntl.F_SETFD, 1)
+        fp.write("%d\n" % os.getpid())
+        fp.flush()
 
     def start(self):
         while (True):

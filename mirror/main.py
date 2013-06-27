@@ -105,6 +105,8 @@ def start_daemon():
         pass
 
     # Setup the logger
+    if os.path.isfile(options.logfile):
+        logfile_mode = 'a'
     mirror.log.setupLogger(level=options.loglevel,
                            filename=options.logfile,
                            filemode=logfile_mode)
