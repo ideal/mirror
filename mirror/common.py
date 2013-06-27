@@ -91,3 +91,45 @@ def resource_filename(module, path):
         pkg_resources._manager, os.path.join(*(module.split('.')+[path]))
     )
 
+def check_mirrord_running(pidfile):
+    pid = None
+    if os.path.isfile(pidfile):
+        try:
+            pid = int(open(pidfile).read().strip())
+        except:
+            pass
+
+    def is_process_running(pid):
+        try:
+            os.kill(pid, 0)
+        except OSError:
+            return False
+        else:
+            return True
+
+    if pid and is_process_running(pid):
+        raise MirrordRunningError("Another mirrord is running with pid: %d", pid)
+
+
+def lock_file(pidfile):
+    """Actually the code below is needless..."""
+    try:
+        fp = open(pidfile, "r+" if os.path.isfile(pidfile) else "w+")
+    except IOError:
+        raise MirrorError("Can't open or create %s", pidfile)
+
+    try:
+        fcntl.flock(fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except:
+        try:
+            pid = int(fp.read().strip())
+            raise MirrorError("Can't lock %s, maybe another mirrord with pid %d is running",
+                                           pidfile, pid)
+        except:
+            raise MirrorError("Can't lock %s", pidfile)
+
+    fcntl.fcntl(fp, fcntl.F_SETFD, 1)
+    fp.seek(0)
+    fp.write("%d\n" % os.getpid())
+    fp.truncate()
+    fp.flush()

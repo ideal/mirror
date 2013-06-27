@@ -151,6 +151,17 @@ def start_daemon():
     import logging
     log = logging.getLogger(__name__)
 
+    try:
+        mirror.common.check_mirrord_running(mirror.configmanager.get_config_dir("mirrord.pid"))
+        mirror.common.lock_file(mirror.configmanager.get_config_dir("mirrord.pid"))
+    except mirror.error.MirrordRunningError, e:
+        log.error(e)
+        log.error("You cannot run multiple daemons with the same config directory set.")
+        sys.exit(1)
+    except Exception, e:
+        log.exception(e)
+        sys.exit(1)
+
     if options.profile:
         import hotshot
         hsp = hotshot.Profile(mirror.configmanager.get_config_dir("mirrord.profile"))
@@ -159,10 +170,6 @@ def start_daemon():
         from mirror.scheduler import Scheduler
         scheduler = Scheduler(options, args)
         scheduler.start()
-    except mirror.error.MirrordRunningError, e:
-        log.error(e)
-        log.error("You cannot run multiple daemons with the same config directory set.")
-        sys.exit(1)
     except Exception, e:
         log.exception(e)
         sys.exit(1)
