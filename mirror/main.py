@@ -153,7 +153,8 @@ def start_daemon():
 
     try:
         mirror.common.check_mirrord_running(mirror.configmanager.get_config_dir("mirrord.pid"))
-        mirror.common.lock_file(mirror.configmanager.get_config_dir("mirrord.pid"))
+        # return fp to keep file not closed (by __exit__()), so the lock will not get released
+        fp = mirror.common.lock_file(mirror.configmanager.get_config_dir("mirrord.pid"))
     except mirror.error.MirrordRunningError, e:
         log.error(e)
         log.error("You cannot run multiple daemons with the same config directory set.")

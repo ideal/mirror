@@ -110,7 +110,6 @@ def check_mirrord_running(pidfile):
     if pid and is_process_running(pid):
         raise MirrordRunningError("Another mirrord is running with pid: %d", pid)
 
-
 def lock_file(pidfile):
     """Actually the code below is needless..."""
 
@@ -125,14 +124,17 @@ def lock_file(pidfile):
     except IOError:
         try:
             pid = int(fp.read().strip())
-            raise MirrorError("Can't lock %s, maybe another mirrord with pid %d is running",
-                              pidfile, pid)
         except:
             raise MirrorError("Can't lock %s", pidfile)
+        raise MirrorError("Can't lock %s, maybe another mirrord with pid %d is running",
+                              pidfile, pid)
 
     fcntl.fcntl(fp, fcntl.F_SETFD, 1)
     fp.seek(0)
     fp.write("%d\n" % os.getpid())
     fp.truncate()
     fp.flush()
+
+    # We need to return fp to keep a reference on it
+    return fp
 
