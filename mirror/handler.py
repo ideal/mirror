@@ -36,4 +36,8 @@ def shutdown_handler(signo, frame):
     pidfile = mirror.configmanager.get_config_dir("mirrord.pid")
     if os.path.isfile(pidfile):
         os.remove(pidfile)
-    signal.default_int_handler()
+    if signo == signal.SIGINT:
+        signal.default_int_handler()
+    elif signo == signal.SIGTERM:
+        import sys
+        sys.exit(0)

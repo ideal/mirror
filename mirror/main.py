@@ -164,9 +164,9 @@ def start_daemon():
         log.exception(e)
         sys.exit(1)
 
-    import mirror.signal
-    signal.signal(signal.SIGTERM, mirror.signal.shutdown_handler)
-    signal.signal(signal.SIGINT,  mirror.signal.shutdown_handler)
+    import mirror.handler
+    signal.signal(signal.SIGTERM, mirror.handler.shutdown_handler)
+    signal.signal(signal.SIGINT,  mirror.handler.shutdown_handler)
 
     if options.profile:
         import hotshot
