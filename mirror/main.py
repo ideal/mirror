@@ -32,6 +32,7 @@
 """Main starting point for Mirror.  Contains the main() entry point."""
 
 import os, sys
+import signal
 from   optparse import OptionParser
 
 import mirror.log
@@ -162,6 +163,10 @@ def start_daemon():
     except Exception, e:
         log.exception(e)
         sys.exit(1)
+
+    import mirror.signal
+    signal.signal(signal.SIGTERM, mirror.signal.shutdown_handler)
+    signal.signal(signal.SIGINT,  mirror.signal.shutdown_handler)
 
     if options.profile:
         import hotshot
