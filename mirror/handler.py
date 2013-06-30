@@ -29,6 +29,9 @@
 #
 
 import signal
+import logging
+
+log = logging.getLogger(__name__)
 
 def shutdown_handler(signo, frame):
     import mirror.configmanager
@@ -36,8 +39,6 @@ def shutdown_handler(signo, frame):
     pidfile = mirror.configmanager.get_config_dir("mirrord.pid")
     if os.path.isfile(pidfile):
         os.remove(pidfile)
-    if signo == signal.SIGINT:
-        signal.default_int_handler()
-    elif signo == signal.SIGTERM:
-        import sys
-        sys.exit(0)
+    log.info("Got signal %d, exiting... Bye bye", signo)
+    import sys
+    sys.exit(0)

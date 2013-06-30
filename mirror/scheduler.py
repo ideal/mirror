@@ -36,11 +36,14 @@ import time
 import logging
 import mirror.configmanager
 
+from collections import OrderedDict as odict
+
 log = logging.getLogger(__name__)
 
 class Scheduler(object):
     def __init__(self, options=None, args=None):
-        pass
+        self.queue   = odict()
+        self.running = {}
 
     def start(self):
         while (True):
