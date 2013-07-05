@@ -33,6 +33,7 @@
 
 import os, sys
 import time
+import signal
 import logging
 import mirror.configmanager
 
@@ -49,3 +50,13 @@ class Scheduler(object):
         while (True):
             time.sleep(5)
             log.info("mirror is still alive...")
+
+    def run_task(self, mirror):
+        pass
+
+    def stop_task(self, mirror):
+        if mirror not in self.running:
+            return
+        pid = self.running.get(mirror)['pid']
+        os.kill(pid, signal.SIGTERM)
+        log.info("Killed mirror: %s with pid %d", mirror, pid)
