@@ -138,3 +138,15 @@ def lock_file(pidfile):
     # We need to return fp to keep a reference on it
     return fp
 
+def find_rsync():
+    """Find the path of rsync.
+
+    :returns: the path of rsync or None if not found
+
+    """
+    paths = os.getenv("PATH").split(":")
+    for path in paths:
+        rsync = (path if path.endswith('/') else path + '/') + "rsync"
+        if os.path.isfile(rsync):
+            return rsync
+    return None

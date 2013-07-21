@@ -35,6 +35,8 @@ import os, sys
 import time
 import signal
 import logging
+import mirror.common
+import mirror.error
 import mirror.configmanager
 
 from collections import OrderedDict as odict
@@ -43,6 +45,11 @@ log = logging.getLogger(__name__)
 
 class Scheduler(object):
     def __init__(self, options=None, args=None):
+        self.rsync   = mirror.common.find_rsync()
+        if not self.rsync:
+            raise mirror.error.MirrorError(
+                "rsync nor found in PATH, please install rsync :)"
+            )
         self.queue   = odict()
         self.running = {}
 
