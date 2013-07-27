@@ -29,12 +29,35 @@
 #
 
 import os
+import logging
+
+log = logging.getLogger(__name__)
 
 class Task(object):
     def __init__(self, name, command, **taskinfo):
         self.name    = name
         self.command = command
         self.enabled = True
+        self.args    = "--links --hard-links --times --verbose --delete --recursive"
+        try:
+            self.upstream = taskinfo['upstream']
+            self.rsyncdir = taskinfo['rsyncdir']
+            self.localdir = taskinfo['localdir']
+            self.twostage = taskinfo['twostage'] != "0" 
+            self.timeout  = self.parse_timeout(taskinfo['timeout'])
+        except KeyError, e:
+            log.error("Error in config for mirror: %s, key: %s not found.", self.name, e)
+            self.enabled = False
+        try:
+            self.priority = int(taskinfo['priority'])
+        except:
+            log.error("Error in config for mirror: %s, priority not valid.", self.name)
+            self.priority = 0
+        self.exclude  = taskinfo['exclude'] if taskinfo.has_key("exclude") else None
+        self.args     = taskinfo['args']    if taskinfo.has_key("args")    else self.args
+        if self.twostage and not taskinfo.has_key("firststage"):
+            log.error("Error in config for mirror: %s, `twostage` is set but no `firststage`.", self.name)
+            self.twostage = False
 
     def run(self):
         pass

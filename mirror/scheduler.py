@@ -51,8 +51,12 @@ class Scheduler(object):
                 "rsync nor found in PATH, please install rsync :)"
             )
         # tasks contains all mirrors needed to rsync
+        self.config  = ConfigManager("mirror.ini")
         self.tasks   = odict()
-        self.init_tasks()
+
+        self.init_general(self.config)
+        self.init_tasks(self.config)
+
         self.running = {}
 
     def start(self):
@@ -60,8 +64,11 @@ class Scheduler(object):
             time.sleep(5)
             log.info("mirror is still alive...")
 
-    def init_tasks(self):
-        ConfigManager config = ConfigManager("mirror.ini")
+    def init_general(self, config):
+        pass
+
+    def init_tasks(self, config):
+        pass
 
     def run_task(self, mirror):
         os.execv(self.rsync, ["rsync"])
