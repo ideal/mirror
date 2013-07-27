@@ -28,16 +28,19 @@
 #
 #
 
+import os
 
-"""The mirrors queue, parse options from mirror.config. :("""
+class Task(object):
+    def __init__(self, name, command, **taskinfo):
+        self.name    = name
+        self.command = command
+        self.enabled = True
 
-import os, sys
-
-from mirror.configmanager import ConfigManager
-
-class mirrors(object):
-    def __init__(self):
+    def run(self):
         pass
 
-    def load():
+    def execute(self):
+        pass
+
+    def get_schedule_time(self):
         pass

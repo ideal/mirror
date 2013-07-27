@@ -37,7 +37,7 @@ import signal
 import logging
 import mirror.common
 import mirror.error
-import mirror.configmanager
+from mirror.configmanager import ConfigManager
 
 from collections import OrderedDict as odict
 
@@ -50,7 +50,9 @@ class Scheduler(object):
             raise mirror.error.MirrorError(
                 "rsync nor found in PATH, please install rsync :)"
             )
-        self.queue   = odict()
+        # tasks contains all mirrors needed to rsync
+        self.tasks   = odict()
+        self.init_tasks()
         self.running = {}
 
     def start(self):
@@ -58,8 +60,11 @@ class Scheduler(object):
             time.sleep(5)
             log.info("mirror is still alive...")
 
+    def init_tasks(self):
+        ConfigManager config = ConfigManager("mirror.ini")
+
     def run_task(self, mirror):
-        pass
+        os.execv(self.rsync, ["rsync"])
 
     def stop_task(self, mirror):
         if mirror not in self.running:
