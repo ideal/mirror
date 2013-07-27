@@ -150,3 +150,24 @@ def find_rsync():
         if os.path.isfile(rsync):
             return rsync
     return None
+
+def parse_timeout(timeout):
+    """Parse timeout expression, e.g. 12h17m, 12h, 17m
+
+    :returns: the seconds represented by timeout, or 0 if timeout is not valid
+
+    """
+    try:
+        return int(timeout)
+    except:
+        pass
+    h = timeout.find('h')
+    m = timeout.find('m')
+    if h > 0 or m > 0:
+        try:
+            return ((int(timeout[:h]) * 3600 if h > 0 else 0) 
+                   + (int(timeout[h+1:m]) * 60 if m > 0 else 0))
+        except:
+            return 0
+    else:
+        return 0
