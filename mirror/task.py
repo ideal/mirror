@@ -47,6 +47,7 @@ class Task(object):
             self.localdir = taskinfo['localdir']
             self.twostage = taskinfo['twostage'] != "0" 
             self.timeout  = mirror.common.parse_timeout(taskinfo['timeout'])
+            self.time     = taskinfo['time']
         except KeyError, e:
             log.error("Error in config for mirror: %s, key: %s not found.", self.name, e)
             self.enabled  = False
@@ -64,7 +65,10 @@ class Task(object):
             self.firststage = taskinfo['firststage']
 
     def run(self):
-        pass
+        try:
+            self.execute()
+        except Exception, e:
+            log.error("Error occured when run `%s`: %s.", self.name, e)
 
     def execute(self):
         pass
