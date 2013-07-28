@@ -37,10 +37,12 @@ log = logging.getLogger(__name__)
 DEFAULT_ARGS = "--links --hard-links --times --verbose --delete --recursive"
 
 class Task(object):
-    def __init__(self, name, command, **taskinfo):
-        self.name    = name
-        self.command = command
-        self.enabled = True
+    def __init__(self, name, command, scheduler_ref=None, **taskinfo):
+        self.scheduler = scheduler_ref()
+        self.name      = name
+        self.command   = command
+        self.enabled   = True
+        self.running   = False
         try:
             self.upstream = taskinfo['upstream[]']
             self.rsyncdir = taskinfo['rsyncdir']
@@ -66,14 +68,21 @@ class Task(object):
         if self.twostage:
             self.firststage = taskinfo['firststage']
 
-    def run(self):
+    def run(self, stage = 1):
         try:
-            self.execute()
+            self.execute(stage)
         except Exception, e:
             log.error("Error occured when run `%s`: %s.", self.name, e)
+            self.running = False
+            self.pid     = 0
 
-    def execute(self):
-        pass
+    def execute(self, stage):
+        pid = os.fork()
+        if pid > 0:
+            self.running = True
+            self.pid     = pid
+        elif pid == 0:
+            os.execv(self.command, self.get_args(stage))
 
     def get_schedule_time(self):
         pass

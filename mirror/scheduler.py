@@ -38,6 +38,7 @@ import logging
 import mirror.common
 import mirror.error
 from mirror.configmanager import ConfigManager
+from mirror.task          import Task
 
 from collections import OrderedDict as odict
 
@@ -65,10 +66,28 @@ class Scheduler(object):
             log.info("mirror is still alive...")
 
     def init_general(self, config):
-        pass
+        self.emails    = []
+        self.loadlimit = 4.0
+        self.httpconn  = 1200
+        self.logdir    = "/var/log/rsync"
+
+        if "general" not in config:
+            log.error("Error in config file, no `general` section, will use default setting.")
+            return
+        import re
+        emails = re.compile("([^@\s]+@[^@\s,]+)")
+        emails = emails.findall(config['general']['emails'])
+        for email in emails:
+            self.emails.append(email)
+        self.loadlimit = float(config['general']['loadlimit'])
+        self.httpconn  = int(config['general']['httpconn'])
+        self.logdir    = config['general']['logdir']
 
     def init_tasks(self, config):
-        pass
+        for mirror in config:
+            if mirror == 'general':
+                continue
+            self.tasks[mirror] = Task(mirror, self.rsync, weakref.ref(self), **config[mirror])
 
     def run_task(self, mirror):
         os.execv(self.rsync, ["rsync"])
