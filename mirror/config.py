@@ -74,6 +74,10 @@ class Config(object):
 
         self.load()
 
+    def __iter__(self):
+        for key in self.__config:
+            yield key
+
     def __contains__(self, item):
         return item in self.__config
 
@@ -263,7 +267,7 @@ class Config(object):
                     value[item[0]].append(item[1])
                 else:
                     value[item[0]] = item[1]
-            set_item(section, value)
+            self.set_item(section, value)
 
     def save(self, filename=None):
         """

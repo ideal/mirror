@@ -42,8 +42,10 @@ class Task(object):
         self.command = command
         self.enabled = True
         try:
-            self.upstream = taskinfo['upstream']
+            self.upstream = taskinfo['upstream[]']
             self.rsyncdir = taskinfo['rsyncdir']
+            if self.rsyncdir[-1] != '/':
+                self.rsyncdir += '/'
             self.localdir = taskinfo['localdir']
             self.twostage = taskinfo['twostage'] != "0" 
             self.timeout  = mirror.common.parse_timeout(taskinfo['timeout'])
@@ -75,3 +77,17 @@ class Task(object):
 
     def get_schedule_time(self):
         pass
+
+    def get_args(self, stage = 1):
+        args  = self.args.split(" ")
+        args += self.exclude.split(" ")
+        if self.twostage and stage == 1:
+            args += [self.upstream[0] + '::/' + self.rsyncdir + self.firststage + '/',\
+                     self.localdir + '/' + self.firststage]
+            return args
+        if self.twostage and stage == 2:
+            args += ['--exclude', '/' + self.firststage + '/']
+        args += [self.upstream[0] + '::/' + self.rsyncdir,\
+                 self.localdir]
+        return args
+
