@@ -129,6 +129,8 @@ def start_daemon():
         if os.fork():
             os._exit(0)
 
+    # Change to root directory
+    os.chdir("/")
     # Write pid file before change gid and uid
     write_pidfile()
 

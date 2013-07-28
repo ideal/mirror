@@ -83,6 +83,8 @@ class Scheduler(object):
         self.loadlimit = float(config['general']['loadlimit'])
         self.httpconn  = int(config['general']['httpconn'])
         self.logdir    = config['general']['logdir']
+        if self.logdir[-1] != os.path.sep:
+            self.logdir += os.path.sep
 
     def init_tasks(self, config):
         for mirror in config:

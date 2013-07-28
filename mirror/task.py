@@ -29,6 +29,7 @@
 #
 
 import os
+import time
 import logging
 import mirror.common
 
@@ -82,6 +83,11 @@ class Task(object):
             self.running = True
             self.pid     = pid
         elif pid == 0:
+            if self.scheduler:
+                fp = open(scheduler.logdir + self.name + '.log.' + time.strftime('%Y-%m-%d'), 'a')
+                os.dup2(fp.fileno(), 1)
+                os.dup2(fp.fileno(), 2)
+                fp.close()
             os.execv(self.command, self.get_args(stage))
 
     def get_schedule_time(self):
