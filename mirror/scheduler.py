@@ -35,6 +35,7 @@ import os, sys
 import time
 import signal
 import logging
+import weakref
 import mirror.common
 import mirror.error
 from mirror.configmanager import ConfigManager
