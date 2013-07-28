@@ -29,5 +29,21 @@
 #
 
 
-import os, sys
+import os
+import socket
 
+d = { 1: 0, 5: 1, 15: 2}
+
+def loadavg(duration = 5):
+    if duration not in d:
+        duration = 5
+    return os.getloadavg()[d[duration]]
+
+def tcpconn(port = 80):
+    try:
+        fd = socket.socket(socket.AF_NETLINK, socket.SOCK_RAW)
+    except Exception, e:
+        return 0
+
+if __name__ == "__main__":
+    print(tcpconn())
