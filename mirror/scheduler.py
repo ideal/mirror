@@ -76,7 +76,7 @@ class Scheduler(object):
             log.error("Error in config file, no `general` section, will use default setting.")
             return
         import re
-        emails = re.compile("([^@\s]+@[^@\s,]+)")
+        emails = re.compile(r"([^@\s]+@[^@\s,]+)")
         emails = emails.findall(config['general']['emails'])
         for email in emails:
             self.emails.append(email)

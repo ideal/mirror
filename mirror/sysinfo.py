@@ -30,6 +30,7 @@
 
 
 import os
+import re
 import socket
 
 d = { 1: 0, 5: 1, 15: 2}
@@ -55,15 +56,33 @@ TCP_STATUS = enum(TCP_ESTABLISHED =1,\
                   TCP_LISTEN      =10,\
                   TCP_CLOSING     =11)
 
+pattern = (r"\d+:\s+" + 
+           r"(?P<local_addr>[\da-fA-F]+):(?P<local_port>[\da-fA-F]+)\s+" +
+           r"(?P<remote_addr>[\da-fA-F]+):(?P<remote_port>[\da-fA-F]+)\s+" +
+           r"(?P<status>[\da-fA-F]+)\s+[\da-fA-F]+:[\da-fA-F]+\s+[\da-fA-F]+:[\da-fA-F]+\s+[\da-fA-F]+\s+\d+\s+\d+\s+" +
+           r"(?P<inode>\d+)")
+
 def tcpconn(port = 80):
     try:
         fd = socket.socket(socket.AF_NETLINK, socket.SOCK_RAW)
     except Exception, e:
         pass
+    connections = 0
+    tcp   = re.compile(pattern)
     files = ("/proc/net/tcp", "/proc/net/tcp6")
-    for f in files:
-        if os.path.exists(f):
-            pass
+    for path in files:
+        if os.access(path, os.R_OK):
+            fp = open(path)
+            fp.readline() # skip title
+            for line in fp:
+                conn = tcp.search(line).groupdict()
+                local_port = int(conn['local_port'], 16)
+                if local_port != port:
+                    continue
+                status = int(conn['status'], 16)
+                if status == TCP_STATUS.TCP_ESTABLISHED:
+                    connections += 1
+    return connections
 
 if __name__ == "__main__":
-    print(tcpconn())
+    print("Current connections: %d" % tcpconn(port = 44971))
