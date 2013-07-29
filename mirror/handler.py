@@ -28,6 +28,7 @@
 #
 #
 
+import os
 import signal
 import logging
 
@@ -35,10 +36,19 @@ log = logging.getLogger(__name__)
 
 def shutdown_handler(signo, frame):
     import mirror.configmanager
-    import os
     pidfile = mirror.configmanager.get_config_dir("mirrord.pid")
     if os.path.isfile(pidfile):
         os.remove(pidfile)
     log.info("Got signal %d, exiting... Bye bye", signo)
     import sys
     sys.exit(0)
+
+def sigchld_handler(signo, frame):
+    try:
+        pid, status = os.waitpid(-1, os.WNOHANG)
+    except OSError,e:
+        log.error("Error occured when waitpid(), %s.", e)
+        return
+    scheduler = frame.f_globals.get('scheduler', None)
+    if scheduler is None:
+        return
