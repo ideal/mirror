@@ -39,11 +39,31 @@ def loadavg(duration = 5):
         duration = 5
     return os.getloadavg()[d[duration]]
 
+def enum(**enums):
+    return type('Enum', (), enums)
+
+# st in enum in /usr/include/netinet/tcp.h
+TCP_STATUS = enum(TCP_ESTABLISHED =1,\
+                  TCP_SYN_SENT    =2,\
+                  TCP_SYN_RECV    =3,\
+                  TCP_FIN_WAIT1   =4,\
+                  TCP_FIN_WAIT2   =5,\
+                  TCP_TIME_WAIT   =6,\
+                  TCP_CLOSE       =7,\
+                  TCP_CLOSE_WAIT  =8,\
+                  TCP_LAST_ACK    =9,\
+                  TCP_LISTEN      =10,\
+                  TCP_CLOSING     =11)
+
 def tcpconn(port = 80):
     try:
         fd = socket.socket(socket.AF_NETLINK, socket.SOCK_RAW)
     except Exception, e:
-        return 0
+        pass
+    files = ("/proc/net/tcp", "/proc/net/tcp6")
+    for f in files:
+        if os.path.exists(f):
+            pass
 
 if __name__ == "__main__":
     print(tcpconn())
