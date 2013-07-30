@@ -72,6 +72,7 @@ def tcpconn(port = 80):
                 status = int(conn['status'], 16)
                 if status == TCP_STATUS.TCP_ESTABLISHED:
                     connections += 1
+            fp.close()
     return connections
 
 if __name__ == "__main__":
