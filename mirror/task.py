@@ -29,7 +29,7 @@ DEFAULT_ARGS = "--links --hard-links --times --verbose --delete --recursive"
 
 class Task(object):
     def __init__(self, name, command, scheduler_ref=None, **taskinfo):
-        self.scheduler = scheduler_ref()
+        self.scheduler = (scheduler_ref() if scheduler_ref is not None else None)
         self.name      = name
         self.command   = command
         self.enabled   = True
