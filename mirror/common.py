@@ -22,6 +22,7 @@
 """Common functions for Mirror :("""
 
 import os, sys
+import re
 import time
 import logging
 import pkg_resources
@@ -161,3 +162,21 @@ def parse_timeout(timeout):
             return 0
     else:
         return 0
+
+CRON_TIME = re.compile(r'^\s*([^@#\s]+)\s+([^@#\s]+)\s+([^@#\s]+)' +
+                       r'\s+([^@#\s]+)\s+([^@#\s]+)\s*(#\s*([^\n]*)|$)')
+
+def parse_cron_time(time):
+    """Parse the cron time formar, e.g. */20 * * * *
+
+    :returns: a tuple with 7 elements,
+              (minute, hour, day of month, month, day of week, comment with #,
+               comment).
+              Or None if `time` is not valid
+    """
+    result = CRON_TIME.findall(time)
+    if result:
+        return result
+    else:
+        return None
+
