@@ -79,6 +79,7 @@ class Task(object):
         if pid > 0:
             self.running = True
             self.pid     = pid
+            self.start_time = time.time()
         elif pid == 0:
             if self.scheduler:
                 fp = open(scheduler.logdir + self.name + '.log.' + time.strftime('%Y-%m-%d'), 'a')
@@ -88,7 +89,8 @@ class Task(object):
             os.execv(self.command, self.get_args(stage))
 
     def get_schedule_time(self):
-        pass
+        if not hasattr(self, "time_miniute"):
+            return None
 
     def get_args(self, stage = 1):
         args  = self.args.split(" ")
