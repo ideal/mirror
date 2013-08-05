@@ -58,6 +58,13 @@ class Task(object):
             self.twostage = False
         if self.twostage:
             self.firststage = taskinfo['firststage']
+        crontime = mirror.common.parse_cron_time(self.time)
+        if crontime:
+            self.time_miniute = crontime[0]
+            self.time_hour    = crontime[1]
+            self.time_dom     = crontime[2]
+            self.time_month   = crontime[3]
+            self.time_dow     = crontime[4]
 
     def run(self, stage = 1):
         try:
