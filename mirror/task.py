@@ -88,12 +88,14 @@ class Task(object):
                 fp.close()
             os.execv(self.command, self.get_args(stage))
 
-    def get_schedule_time(self):
+    def get_schedule_time(self, since):
         if not hasattr(self, "time_miniute"):
             return None
+        since_struct = time.localtime(since)
 
     def get_args(self, stage = 1):
-        args  = self.args.split(" ")
+        args  = [os.path.basename(self.command)]
+        args += self.args.split(" ")
         args += self.exclude.split(" ")
         if self.twostage and stage == 1:
             args += [self.upstream[0] + '::/' + self.rsyncdir + self.firststage + '/',\
