@@ -195,7 +195,7 @@ def parse_cron_time(time):
                 every = int(item[2])
                 result.append([d for d in xrange(start, end, every)])
             elif value.find(',') != -1:
-                result.append([int(d) for d in value.split(',')])
+                result.append(sorted([int(d) for d in value.split(',')]))
             else:
                 result.append([int(value)])
         result += result_text[-2:]

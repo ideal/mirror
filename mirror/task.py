@@ -20,6 +20,7 @@
 
 import os
 import time
+import bisect
 import logging
 import mirror.common
 
@@ -88,10 +89,38 @@ class Task(object):
                 fp.close()
             os.execv(self.command, self.get_args(stage))
 
-    def get_schedule_time(self, since):
+    TIME_STRUCT  = 1
+    TIME_SECONDS = 2
+
+    def get_schedule_time(self, since, style=TIME_SECONDS):
         if not hasattr(self, "time_miniute"):
             return None
-        since_struct = time.localtime(since)
+        since_struct  = time.localtime(since)
+
+        hour_increase = False
+        if since_struct.tm_mon in self.time_month and since_struct.tm_mday in self.time_dom:
+            if since_struct.tm_hour in self.time_hour:
+                miniute_idx = bisect.bisect(self.time_minute, since_struct.tm_min)
+                if minute_idx < len(self.time_minute):
+                    miniute = self.time_miniute[minute_idx]
+                else:
+                    hour_increase = True
+                    miniute = self.time_minite[0]
+                if hour_increase:
+                    hour_idx = bisect.bisect(self.time_hour, since_struct.tm_hour)
+                    if hour_idx < len(self.time_hour):
+                        hour = self.time_hour[hour_idx]
+                    else:
+                        day_increase = True
+                        hour = self.time_day[0]
+            else:
+                 pass
+
+        next_time = time.mktime((year, month, day, hour, miniute, 0, wday, yday, 0))
+        if style == self.TIME_SECONDS:
+            return next_time
+        else:
+            return time.localtime(next_time)
 
     def get_args(self, stage = 1):
         args  = [os.path.basename(self.command)]
