@@ -110,7 +110,7 @@ class Task(object):
 
         day_increase   = False
         month_increase = False
-        year_increase  = True
+        year_increase  = False
         if since_struct.tm_mon in self.time_month and since_struct.tm_mday in self.time_dom:
             miniute_idx = bisect.bisect(self.time_minute, since_struct.tm_min)
             if since_struct.tm_hour in self.time_hour and minute_idx < len(self.time_minute):
