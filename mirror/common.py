@@ -183,10 +183,10 @@ def parse_cron_time(time):
             value = result_text[i]
             items = CRON_ITEM.findall(value)
             if value == '*':
-                result.append([d for d in (xrange(extent[i]) if i < 2 else xrange(1, extent[i]))])
+                result.append([d for d in xrange(i >= 2, extent[i])])
             elif value.startswith('*/'):
                 every = int(value.split('/')[1])
-                result.append([d for d in (xrange((0 if i < 2 else 1), extent[i], every))])
+                result.append([d for d in (xrange(i >= 2, extent[i], every))])
             elif value:
                 item  = items[0]
                 start = int(item[0])
