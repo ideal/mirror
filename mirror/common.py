@@ -178,6 +178,7 @@ def parse_cron_time(time):
     extent      = (60, 24, 32, 13, 8)
     result_text = CRON_TIME.findall(time)
     if result_text:
+        result_text = result_text[0]
         result  = []
         for i in xrange(5):
             value = result_text[i]
@@ -186,8 +187,8 @@ def parse_cron_time(time):
                 result.append([d for d in xrange(i >= 2, extent[i])])
             elif value.startswith('*/'):
                 every = int(value.split('/')[1])
-                result.append([d for d in (xrange(i >= 2, extent[i], every))])
-            elif value:
+                result.append([d for d in xrange(i >= 2, extent[i], every)])
+            elif items:
                 item  = items[0]
                 start = int(item[0])
                 end   = int(item[1])
@@ -198,6 +199,7 @@ def parse_cron_time(time):
             else:
                 result.append([int(value)])
         result += result_text[-2:]
+        return result
     else:
         return None
 
