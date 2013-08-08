@@ -165,6 +165,7 @@ def parse_timeout(timeout):
 
 CRON_TIME = re.compile(r'^\s*([^@#\s]+)\s+([^@#\s]+)\s+([^@#\s]+)' +
                        r'\s+([^@#\s]+)\s+([^@#\s]+)\s*(#\s*([^\n]*)|$)')
+CRON_ITEM = re.compile(r'^(\d+)-(\d+)/(\d+)$')
 
 def parse_cron_time(time):
     """Parse the cron time formar, e.g. */20 * * * *
@@ -174,9 +175,29 @@ def parse_cron_time(time):
                comment).
               Or None if `time` is not valid
     """
-    result = CRON_TIME.findall(time)
-    if result:
-        return result
+    extent      = (60, 24, 32, 13, 8)
+    result_text = CRON_TIME.findall(time)
+    if result_text:
+        result  = []
+        for i in xrange(5):
+            value = result_text[i]
+            items = CRON_ITEM.findall(value)
+            if value == '*':
+                result.append([d for d in (xrange(extent[i]) if i < 2 else xrange(1, extent[i]))])
+            elif value.startswith('*/'):
+                every = int(value.split('/')[1])
+                result.append([d for d in (xrange((0 if i < 2 else 1), extent[i], every))])
+            elif value:
+                item  = items[0]
+                start = int(item[0])
+                end   = int(item[1])
+                every = int(item[2])
+                result.append([d for d in xrange(start, end, every)])
+            elif value.find(',') != -1:
+                result.append([int(d) for d in value.split(',')])
+            else:
+                result.append([int(value)])
+        result += result_text[-2:]
     else:
         return None
 
