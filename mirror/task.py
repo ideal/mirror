@@ -97,24 +97,19 @@ class Task(object):
             return None
         since_struct  = time.localtime(since)
 
-        hour_increase = False
+        day_increase = False
         if since_struct.tm_mon in self.time_month and since_struct.tm_mday in self.time_dom:
-            if since_struct.tm_hour in self.time_hour:
-                miniute_idx = bisect.bisect(self.time_minute, since_struct.tm_min)
-                if minute_idx < len(self.time_minute):
-                    miniute = self.time_miniute[minute_idx]
-                else:
-                    hour_increase = True
-                    miniute = self.time_minite[0]
-                if hour_increase:
-                    hour_idx = bisect.bisect(self.time_hour, since_struct.tm_hour)
-                    if hour_idx < len(self.time_hour):
-                        hour = self.time_hour[hour_idx]
-                    else:
-                        day_increase = True
-                        hour = self.time_day[0]
+            miniute_idx = bisect.bisect(self.time_minute, since_struct.tm_min)
+            if since_struct.tm_hour in self.time_hour and minute_idx < len(self.time_minute):
+                miniute = self.time_miniute[minute_idx]
             else:
-                 pass
+                miniute = self.time_minite[0]
+                hour_idx = bisect.bisect(self.time_hour, since_struct.tm_hour)
+                if hour_idx < len(self.time_hour):
+                    hour = self.time_hour[hour_idx]
+                else:
+                    day_increase = True
+                    hour = self.time_hour[0]
 
         next_time = time.mktime((year, month, day, hour, miniute, 0, wday, yday, 0))
         if style == self.TIME_SECONDS:
