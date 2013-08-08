@@ -93,11 +93,24 @@ class Task(object):
     TIME_SECONDS = 2
 
     def get_schedule_time(self, since, style=TIME_SECONDS):
+        """
+        This method is too long.
+
+        """
+
         if not hasattr(self, "time_miniute"):
             return None
         since_struct  = time.localtime(since)
 
-        day_increase = False
+        miniute = self.time_miniute[0]
+        hour    = self.time_hour[0]
+        day     = self.time_day[0]
+        month   = self.time_day[0]
+        year    = since_struct.tm_year
+
+        day_increase   = False
+        month_increase = False
+        year_increase  = True
         if since_struct.tm_mon in self.time_month and since_struct.tm_mday in self.time_dom:
             miniute_idx = bisect.bisect(self.time_minute, since_struct.tm_min)
             if since_struct.tm_hour in self.time_hour and minute_idx < len(self.time_minute):
@@ -108,10 +121,37 @@ class Task(object):
                 if hour_idx < len(self.time_hour):
                     hour = self.time_hour[hour_idx]
                 else:
-                    day_increase = True
                     hour = self.time_hour[0]
+                    day_increase = True
+        if since_struct.tm_mday not in self.time_day or day_increase:
+            day_idx = bisect.bisect(self.time_day, since_struct.tm_mday)
+            if day_idx < len(self.time_day):
+                day = self.time_day(day_idx)
+            else:
+                day = self.time_day[0]
+                month_increase = True
+        if since_struct.tm_mon not in self.time_month or month_increase:
+            month_idx = bisect.bisect(self.time_month, since_struct.tm_mon)
+            if month_idx < len(self.time_month):
+                month = self.time_month(month_idx)
+            else:
+                month = self.time_month[0]
+                year_increase = True
+        if year_increase:
+            year += 1
 
-        next_time = time.mktime((year, month, day, hour, miniute, 0, wday, yday, 0))
+        next_time   = time.mktime((year, month, day, hour, miniute, 0, 0, 0, 0))
+        next_struct = time.localtime(next_time)
+        if (next_struct.tm_wday + 1) not in self.time_dow:
+            from datetime import datetime, timedelta
+            wday_idx = bisect.bisect(self.time_dow, next_struct.tm_wday)
+            if wday_idx < len(self.time_dow):
+                wdays = self.time_dow[wday_idx] - next_struct.tm_wday
+            else:
+                wdays = (7 - self.time_dow[-1]) + self.time_dow[0]
+            delta = timedelta(days = wdays)
+            next_time = time.mktime((datetime.fromtimestamp(next_time) + delta).timetuple())
+
         if style == self.TIME_SECONDS:
             return next_time
         else:
