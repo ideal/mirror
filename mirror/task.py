@@ -203,6 +203,7 @@ if __name__ == "__main__":
     config = ConfigManager("mirror.ini")
     task   = Task('archlinux', '/usr/bin/rsync', None, **config['archlinux'])
 
-    since  = time.mktime((2013, 7, 31, 23, 0, 0, 0, 0, 0))
+    # The date to Shanghai
+    since  = time.mktime((2013, 7, 20, 8, 0, 0, 0, 0, 0))
     print(time.ctime(task.get_schedule_time(since)))
     print(task.get_args())
