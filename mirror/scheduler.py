@@ -45,14 +45,28 @@ class Scheduler(object):
         # tasks contains all mirrors needed to rsync
         self.config  = ConfigManager("mirror.ini")
         self.tasks   = odict()
+        self.queue   = {}
 
         self.init_general(self.config)
         self.init_tasks  (self.config)
 
     def start(self):
         while (True):
-            time.sleep(5)
+            self.append_tasks()
+            items  = sorted(self.queue, key = self.queue.get)
+            mirror = items[0]
+            time.sleep(self.queue[mirror] - time.time())
             log.info("mirror is still alive...")
+
+    def append_tasks(self):
+        now = time.time()
+        for mirror in self.tasks:
+            if mirror in self.queue:
+                continue
+            task = self.tasks[mirror]
+            if task.running:
+                continue
+            self.queue[mirror] = task.get_schedule_time(now)
 
     def init_general(self, config):
         self.emails    = []
@@ -85,7 +99,7 @@ class Scheduler(object):
     def run_task(self, mirror):
         if mirror not in self.tasks:
             return
-        task = self.tasks[task]
+        task = self.tasks[mirror]
         if task.running:
             return
         task.run()
@@ -94,7 +108,7 @@ class Scheduler(object):
     def stop_task(self, mirror):
         if mirror not in self.tasks:
             return
-        task = self.tasks[task]
+        task = self.tasks[mirror]
         if not task.running:
             return
         task.stop()
