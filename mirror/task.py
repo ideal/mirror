@@ -110,10 +110,10 @@ class Task(object):
             return None
         since_struct  = time.localtime(since)
 
-        miniute = self.time_miniute[0]
-        hour    = self.time_hour[0]
-        day     = self.time_dom[0]
-        month   = self.time_month[0]
+        miniute = since_struct.tm_min
+        hour    = since_struct.tm_hour
+        day     = since_struct.tm_mday
+        month   = since_struct.tm_mon
         year    = since_struct.tm_year
 
         day_increase   = False
@@ -136,13 +136,20 @@ class Task(object):
                 day   = since_struct.tm_mday
                 month = since_struct.tm_mon
         if since_struct.tm_mday not in self.time_dom or day_increase:
+            miniute = self.time_miniute[0]
+            hour    = self.time_hour[0]
             day_idx = bisect.bisect(self.time_dom, since_struct.tm_mday)
             if day_idx < len(self.time_dom):
                 day = self.time_dom(day_idx)
             else:
                 day = self.time_dom[0]
                 month_increase = True
+            if not month_increase:
+                month = since_struct.tm_mon
         if since_struct.tm_mon not in self.time_month or month_increase:
+            miniute = self.time_miniute[0]
+            hour    = self.time_hour[0]
+            day     = self.time_day[0]
             month_idx = bisect.bisect(self.time_month, since_struct.tm_mon)
             if month_idx < len(self.time_month):
                 month = self.time_month(month_idx)
