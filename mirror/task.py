@@ -19,6 +19,7 @@
 #
 
 import os
+import sys
 import time
 import bisect
 import logging
@@ -80,8 +81,8 @@ class Task(object):
             log.error("Error occured when run `%s`: %s.", self.name, e)
             # If fork succeed but error occured before execv, we need to exit child process
             if os.getpid() == self.pid:
-                os._exit(0)
-            # If we are in parent process
+                sys.exit(0)
+            # If we are in parent process, e.g. scheduler
             self.pid     = 0
             self.running = False
 
@@ -97,7 +98,7 @@ class Task(object):
                 logdir = scheduler.logdir
             else:
                 logdir = "/var/log/rsync/"
-            fp = open(sch.logdir + self.name + '.log.' + time.strftime('%Y-%m-%d'), 'a')
+            fp = open(logdir + self.name + '.log.' + time.strftime('%Y-%m-%d'), 'a')
             os.dup2(fp.fileno(), 1)
             os.dup2(fp.fileno(), 2)
             fp.close()
@@ -219,7 +220,8 @@ if __name__ == "__main__":
     since  = time.mktime((2013, 7, 20, 8, 0, 0, 0, 0, 0))
     print(time.ctime(task.get_schedule_time(since)))
     print(task.get_args())
-    task.run()
+    #task.run()
+    #time.sleep(100)
 
     task   = Task('ubuntu', '/usr/bin/rsync', None, **config['ubuntu'])
     print(time.ctime(task.get_schedule_time(time.time())))
