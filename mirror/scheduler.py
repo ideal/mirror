@@ -83,11 +83,19 @@ class Scheduler(object):
             self.tasks[mirror] = Task(mirror, self.rsync, weakref.ref(self), **config[mirror])
 
     def run_task(self, mirror):
-        os.execv(self.rsync, ["rsync"])
+        if mirror not in self.tasks:
+            return
+        task = self.tasks[task]
+        if task.running:
+            return
+        task.run()
+        log.info("Task: %s begin to run with pid %d", mirror, pid)
 
     def stop_task(self, mirror):
-        if mirror not in self.running:
+        if mirror not in self.tasks:
             return
-        pid = self.running.get(mirror)['pid']
-        os.kill(pid, signal.SIGTERM)
-        log.info("Killed mirror: %s with pid %d", mirror, pid)
+        task = self.tasks[task]
+        if not task.running:
+            return
+        task.stop()
+        log.info("Killed task: %s with pid %d", mirror, pid)
