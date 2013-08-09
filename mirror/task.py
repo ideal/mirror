@@ -83,7 +83,7 @@ class Task(object):
             log.error("Error occured when run `%s`: %s.", self.name, e)
             # If fork succeed but error occured before execv, we need to exit child process
             if os.getpid() == self.pid:
-                sys.exit(0)
+                sys.exit(1)
             # If we are in parent process, e.g. scheduler
             self.pid     = 0
             self.running = False
@@ -97,7 +97,7 @@ class Task(object):
         elif pid == 0:
             self.pid   = os.getpid()
             if self.scheduler:
-                logdir = scheduler.logdir
+                logdir = self.scheduler.logdir
             else:
                 logdir = "/var/log/rsync/"
             fp = open(logdir + self.name + '.log.' + time.strftime('%Y-%m-%d'), 'a')

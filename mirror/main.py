@@ -168,6 +168,7 @@ def start_daemon():
     try:
         from mirror.scheduler import Scheduler
         scheduler = Scheduler(options, args)
+        log.info("Starting mirror scheduler...")
         scheduler.start()
     except Exception, e:
         log.exception(e)

@@ -36,6 +36,9 @@ from collections import OrderedDict as odict
 log = logging.getLogger(__name__)
 
 class Scheduler(object):
+    CHECK_TIMEOUT = 0x01
+    SCHEDULE_TASK = 0x02
+
     def __init__(self, options=None, args=None):
         self.rsync   = mirror.common.find_rsync()
         if not self.rsync:
@@ -46,6 +49,7 @@ class Scheduler(object):
         self.config  = ConfigManager("mirror.ini")
         self.tasks   = odict()
         self.queue   = {}
+        self.todo    = self.SCHEDULE_TASK
 
         self.init_general(self.config)
         self.init_tasks  (self.config)
@@ -53,10 +57,30 @@ class Scheduler(object):
     def start(self):
         while (True):
             self.append_tasks()
-            items  = sorted(self.queue, key = self.queue.get)
-            mirror = items[0]
-            time.sleep(self.queue[mirror] - time.time())
-            log.info("mirror is still alive...")
+            mirrors = sorted(self.queue, key = self.queue.get)
+            # without timeout checking, self.queue[mirror] - time.time() is
+            # the duration we can sleep...
+            if len(mirrors) > 0:
+                mirror    = mirrors[0]
+                sleeptime = self.queue[mirror] - time.time()
+            else:
+                sleeptime = 5
+            log.info("Bye bye, i am going to sleep, next wake up: %s",
+                     time.ctime(time.time() + sleeptime))
+            time.sleep(sleeptime)
+            log.info("Hello, i am waking up...")
+            if ( self.todo | self.SCHEDULE_TASK):
+                if not len(mirrors) > 0:
+                    log.info("Waking up but no task need to run...")
+                    continue
+                timestamp  = self.queue[mirrors[0]]
+                for m in mirrors:
+                    if self.queue[m] > timestamp:
+                        continue
+                    task   = self.tasks[m]
+                    log.info("Starting task: %s, pid: %d", m, task.pid)
+                    task.run()
+                    del self.queue[m]
 
     def append_tasks(self):
         now = time.time()
