@@ -74,13 +74,11 @@ class Scheduler(object):
                     log.info("Waking up but no task need to run...")
                     continue
                 timestamp  = self.queue[mirrors[0]]
-                for m in mirrors:
-                    if self.queue[m] > timestamp:
+                for mirror in mirrors:
+                    if self.queue[mirror] > timestamp:
                         continue
-                    task   = self.tasks[m]
-                    log.info("Starting task: %s, pid: %d", m, task.pid)
-                    task.run()
-                    del self.queue[m]
+                    log.info("Starting task: %s ...", m)
+                    self.run_task(mirror)
 
     def append_tasks(self):
         now = time.time()
@@ -127,6 +125,8 @@ class Scheduler(object):
         if task.running:
             return
         task.run()
+        if mirror in self.queue:
+            del self.queue[mirror]
         log.info("Task: %s begin to run with pid %d", mirror, pid)
 
     def stop_task(self, mirror):
