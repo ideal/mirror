@@ -36,6 +36,7 @@ class Task(object):
         self.command   = command
         self.enabled   = True
         self.running   = False
+        self.pid       = 0
         try:
             self.upstream = taskinfo['upstream[]']
             self.rsyncdir = taskinfo['rsyncdir']
@@ -89,16 +90,17 @@ class Task(object):
     def execute(self, stage):
         pid = os.fork()
         if pid > 0:
-            self.pid     = pid
-            self.running = True
+            self.pid        = pid
+            self.running    = True
             self.start_time = time.time()
         elif pid == 0:
-            self.pid     = os.getpid()
+            self.pid   = os.getpid()
             if self.scheduler:
                 logdir = scheduler.logdir
             else:
                 logdir = "/var/log/rsync/"
             fp = open(logdir + self.name + '.log.' + time.strftime('%Y-%m-%d'), 'a')
+            # Redirect child process's stdout and stderr
             os.dup2(fp.fileno(), 1)
             os.dup2(fp.fileno(), 2)
             fp.close()
@@ -209,7 +211,7 @@ class Task(object):
 
 if __name__ == "__main__":
     import mirror.log
-    mirror.log.setupLogger(level="INFO",
+    mirror.log.setupLogger(level="info",
                            filename="/home/ideal/.config/mirror/mirrord.log",
                            filemode="a")
     from mirror.configmanager import ConfigManager
