@@ -112,31 +112,35 @@ class Task(object):
 
         miniute = self.time_miniute[0]
         hour    = self.time_hour[0]
-        day     = self.time_day[0]
-        month   = self.time_day[0]
+        day     = self.time_dom[0]
+        month   = self.time_month[0]
         year    = since_struct.tm_year
 
         day_increase   = False
         month_increase = False
         year_increase  = False
         if since_struct.tm_mon in self.time_month and since_struct.tm_mday in self.time_dom:
-            miniute_idx = bisect.bisect(self.time_minute, since_struct.tm_min)
-            if since_struct.tm_hour in self.time_hour and minute_idx < len(self.time_minute):
-                miniute = self.time_miniute[minute_idx]
+            miniute_idx = bisect.bisect(self.time_miniute, since_struct.tm_min)
+            if since_struct.tm_hour in self.time_hour and miniute_idx < len(self.time_miniute):
+                miniute = self.time_miniute[miniute_idx]
+                hour    = since_struct.tm_hour
             else:
-                miniute = self.time_minite[0]
+                miniute = self.time_miniute[0]
                 hour_idx = bisect.bisect(self.time_hour, since_struct.tm_hour)
                 if hour_idx < len(self.time_hour):
                     hour = self.time_hour[hour_idx]
                 else:
                     hour = self.time_hour[0]
                     day_increase = True
-        if since_struct.tm_mday not in self.time_day or day_increase:
-            day_idx = bisect.bisect(self.time_day, since_struct.tm_mday)
-            if day_idx < len(self.time_day):
-                day = self.time_day(day_idx)
+            if not day_increase:
+                day   = since_struct.tm_mday
+                month = since_struct.tm_mon
+        if since_struct.tm_mday not in self.time_dom or day_increase:
+            day_idx = bisect.bisect(self.time_dom, since_struct.tm_mday)
+            if day_idx < len(self.time_dom):
+                day = self.time_dom(day_idx)
             else:
-                day = self.time_day[0]
+                day = self.time_dom[0]
                 month_increase = True
         if since_struct.tm_mon not in self.time_month or month_increase:
             month_idx = bisect.bisect(self.time_month, since_struct.tm_mon)
@@ -179,3 +183,9 @@ class Task(object):
                  self.localdir]
         return args
 
+if __name__ == "__main__":
+    from mirror.configmanager import ConfigManager
+    config = ConfigManager("mirror.ini")
+    task   = Task('archlinux', '/usr/bin/rsync', None, **config['archlinux'])
+
+    print(time.ctime(task.get_schedule_time(time.time())))
