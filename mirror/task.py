@@ -73,7 +73,8 @@ class Task(object):
                     log.error("Error in config for mirror: %s, time: %s not valid.", self.name, attr)
                     self.enabled = False
         else:
-             self.enabled = False
+            log.error("Error in config for mirror: %s, time not valid.")
+            self.enabled = False
 
     def run(self, stage = 1):
         try:
