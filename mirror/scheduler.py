@@ -40,7 +40,7 @@ class Scheduler(object):
         self.rsync   = mirror.common.find_rsync()
         if not self.rsync:
             raise mirror.error.MirrorError(
-                "rsync nor found in PATH, please install rsync :)"
+                "rsync not found in PATH, please install rsync :)"
             )
         # tasks contains all mirrors needed to rsync
         self.config  = ConfigManager("mirror.ini")
