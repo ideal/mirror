@@ -78,21 +78,29 @@ class Task(object):
             self.execute(stage)
         except Exception, e:
             log.error("Error occured when run `%s`: %s.", self.name, e)
-            self.running = False
+            # If fork succeed but error occured before execv, we need to exit child process
+            if os.getpid() == self.pid:
+                os._exit(0)
+            # If we are in parent process
             self.pid     = 0
+            self.running = False
 
     def execute(self, stage):
         pid = os.fork()
         if pid > 0:
-            self.running = True
             self.pid     = pid
+            self.running = True
             self.start_time = time.time()
         elif pid == 0:
+            self.pid     = os.getpid()
             if self.scheduler:
-                fp = open(scheduler.logdir + self.name + '.log.' + time.strftime('%Y-%m-%d'), 'a')
-                os.dup2(fp.fileno(), 1)
-                os.dup2(fp.fileno(), 2)
-                fp.close()
+                logdir = scheduler.logdir
+            else:
+                logdir = "/var/log/rsync/"
+            fp = open(sch.logdir + self.name + '.log.' + time.strftime('%Y-%m-%d'), 'a')
+            os.dup2(fp.fileno(), 1)
+            os.dup2(fp.fileno(), 2)
+            fp.close()
             os.execv(self.command, self.get_args(stage))
 
     TIME_STRUCT  = 1
@@ -189,16 +197,20 @@ class Task(object):
         args += self.args.split(" ")
         args += self.exclude.split(" ")
         if self.twostage and stage == 1:
-            args += [self.upstream[0] + '::/' + self.rsyncdir + self.firststage + '/',\
+            args += [self.upstream[0] + '::' + self.rsyncdir + self.firststage + '/',\
                      self.localdir + '/' + self.firststage]
             return args
         if self.twostage and stage == 2:
             args += ['--exclude', '/' + self.firststage + '/']
-        args += [self.upstream[0] + '::/' + self.rsyncdir,\
+        args += [self.upstream[0] + '::' + self.rsyncdir,\
                  self.localdir]
         return args
 
 if __name__ == "__main__":
+    import mirror.log
+    mirror.log.setupLogger(level="INFO",
+                           filename="/home/ideal/.config/mirror/mirrord.log",
+                           filemode="a")
     from mirror.configmanager import ConfigManager
     config = ConfigManager("mirror.ini")
     task   = Task('archlinux', '/usr/bin/rsync', None, **config['archlinux'])
@@ -207,3 +219,9 @@ if __name__ == "__main__":
     since  = time.mktime((2013, 7, 20, 8, 0, 0, 0, 0, 0))
     print(time.ctime(task.get_schedule_time(since)))
     print(task.get_args())
+    task.run()
+
+    task   = Task('ubuntu', '/usr/bin/rsync', None, **config['ubuntu'])
+    print(time.ctime(task.get_schedule_time(time.time())))
+    print(task.get_args())
+    print(task.get_args(stage=2))
