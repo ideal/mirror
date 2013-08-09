@@ -47,9 +47,7 @@ class Scheduler(object):
         self.tasks   = odict()
 
         self.init_general(self.config)
-        self.init_tasks(self.config)
-
-        self.running = {}
+        self.init_tasks  (self.config)
 
     def start(self):
         while (True):
@@ -61,6 +59,7 @@ class Scheduler(object):
         self.loadlimit = 4.0
         self.httpconn  = 1200
         self.logdir    = "/var/log/rsync"
+        self.maxtasks  = 10
 
         if "general" not in config:
             log.error("Error in config file, no `general` section, will use default setting.")
@@ -71,7 +70,8 @@ class Scheduler(object):
         for email in emails:
             self.emails.append(email)
         self.loadlimit = float(config['general']['loadlimit'])
-        self.httpconn  = int(config['general']['httpconn'])
+        self.httpconn  = int  (config['general']['httpconn'] )
+        self.maxtasks  = int  (config['general']['maxtasks'] )
         self.logdir    = config['general']['logdir']
         if self.logdir[-1] != os.path.sep:
             self.logdir += os.path.sep
