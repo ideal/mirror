@@ -193,11 +193,25 @@ def parse_cron_time(time):
                 start = int(item[0])
                 end   = int(item[1])
                 every = int(item[2])
+                if start > extent[i]:
+                    start = extent[i]
+                if start < (i >= 2):
+                    start = (i >= 2)
+                if end   > extent[i]:
+                    end   = extent[i]
                 result.append([d for d in xrange(start, end, every)])
             elif value.find(',') != -1:
-                result.append(sorted([int(d) for d in value.split(',')]))
+                result.append(
+                        sorted([int(d) for d in value.split(',') if (int(d) < extent[i] and int(d) >= (i >= 2))]))
             else:
-                result.append([int(value)])
+                try:
+                    d = int(value)
+                    if (int(value) < extent[i] and int(value) >= (i >= 2)):
+                        result.append([d])
+                    else:
+                        result.append([])
+                except:
+                    result.append([])
         result += result_text[-2:]
         return result
     else:

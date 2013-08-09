@@ -66,6 +66,12 @@ class Task(object):
             self.time_dom     = crontime[2]
             self.time_month   = crontime[3]
             self.time_dow     = crontime[4]
+            for attr in ('time_miniute', 'time_hour', 'time_dom', 'time_month', 'time_dow'):
+                if len(getattr(self, attr)) == 0:
+                    log.error("Error in config for mirror: %s, time: %s not valid.", self.name, attr)
+                    self.enabled = False
+        else:
+             self.enabled = False
 
     def run(self, stage = 1):
         try:
@@ -99,6 +105,8 @@ class Task(object):
         """
 
         if not hasattr(self, "time_miniute"):
+            return None
+        if not self.enabled:
             return None
         since_struct  = time.localtime(since)
 
