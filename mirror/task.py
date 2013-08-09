@@ -125,7 +125,15 @@ class Task(object):
                 miniute = self.time_miniute[miniute_idx]
                 hour    = since_struct.tm_hour
             else:
-                miniute = self.time_miniute[0]
+                miniute  = self.time_miniute[0]
+                hour_idx = bisect.bisect(self.time_hour, since_struct.tm_hour)
+                if hour_idx < len(self.time_hour):
+                    hour = self.time_hour[hour_idx]
+                else:
+                    hour = self.time_hour[0]
+                    day_increase = True
+            if len(self.time_miniute) == 60 and len(self.time_hour) != 24:
+                miniute  = self.time_miniute[0]
                 hour_idx = bisect.bisect(self.time_hour, since_struct.tm_hour)
                 if hour_idx < len(self.time_hour):
                     hour = self.time_hour[hour_idx]
@@ -140,7 +148,7 @@ class Task(object):
             hour    = self.time_hour[0]
             day_idx = bisect.bisect(self.time_dom, since_struct.tm_mday)
             if day_idx < len(self.time_dom):
-                day = self.time_dom(day_idx)
+                day = self.time_dom[day_idx]
             else:
                 day = self.time_dom[0]
                 month_increase = True
@@ -149,10 +157,10 @@ class Task(object):
         if since_struct.tm_mon not in self.time_month or month_increase:
             miniute = self.time_miniute[0]
             hour    = self.time_hour[0]
-            day     = self.time_day[0]
+            day     = self.time_dom[0]
             month_idx = bisect.bisect(self.time_month, since_struct.tm_mon)
             if month_idx < len(self.time_month):
-                month = self.time_month(month_idx)
+                month = self.time_month[month_idx]
             else:
                 month = self.time_month[0]
                 year_increase = True
@@ -195,4 +203,6 @@ if __name__ == "__main__":
     config = ConfigManager("mirror.ini")
     task   = Task('archlinux', '/usr/bin/rsync', None, **config['archlinux'])
 
-    print(time.ctime(task.get_schedule_time(time.time())))
+    since  = time.mktime((2013, 7, 31, 23, 0, 0, 0, 0, 0))
+    print(time.ctime(task.get_schedule_time(since)))
+    print(task.get_args())
