@@ -54,6 +54,8 @@ class Scheduler(object):
         self.init_general(self.config)
         self.init_tasks  (self.config)
 
+        schedulers[os.getpid()] = weakref.ref(self)
+
     def start(self):
         while (True):
             self.append_tasks()
@@ -89,7 +91,11 @@ class Scheduler(object):
             if mirror in self.queue:
                 continue
             task = self.tasks[mirror]
+            # So in some cases a mirror task may be ignored if there is a running one,
+            # but this is a feature, not a bug...
             if task.running:
+                continue
+            if not task.enabled:
                 continue
             self.queue[mirror] = task.get_schedule_time(now)
 
@@ -141,3 +147,6 @@ class Scheduler(object):
         pid  = task.pid
         task.stop()
         log.info("Killed task: %s with pid %d", mirror, pid)
+
+# Store Scheduler instance
+schedulers = {}

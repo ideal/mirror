@@ -21,6 +21,7 @@
 import os
 import signal
 import logging
+from mirror.scheduler import schedulers
 
 log = logging.getLogger(__name__)
 
@@ -39,6 +40,7 @@ def sigchld_handler(signo, frame):
     except OSError,e:
         log.error("Error occured when waitpid(), %s.", e)
         return
-    scheduler = frame.f_globals.get('scheduler', None)
-    if scheduler is None:
+    scheduler_ref = schedulers.get(os.getpid(), None)
+    if scheduler_ref is None:
         return
+    scheduler     = scheduler_ref()
