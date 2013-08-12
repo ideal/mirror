@@ -95,6 +95,12 @@ class Scheduler(object):
             # next miniute
             end        = timestamp + 60
             for mirror in self.mirrors:
+                if self.queue[mirror] < timestamp:
+                    log.info("Strange problem happened,"
+                             "task: %s schedule time is in past,"
+                             "maybe I sleeped too long...", mirror)
+                    del self.queue[mirror]
+                    self.append_task(mirror, self.tasks[mirror], since = end)
                 if self.queue[mirror] >= end:
                     return
                 if self.queue[mirror] >= timestamp and self.queue[mirror] < end:
@@ -174,13 +180,19 @@ class Scheduler(object):
             if mirror in self.queue:
                 continue
             task = self.tasks[mirror]
-            # So in some cases a mirror task may be ignored if there is a running one,
-            # but this is a feature, not a bug...
-            if task.running:
-                continue
-            if not task.enabled:
-                continue
-            self.queue[mirror] = task.get_schedule_time(now)
+            self.append_task(mirror, task, since = now)
+
+    def append_task(self, mirror, task, since):
+        """
+        In some cases a mirror task may be ignored if there is a running one,
+        but this is a feature, not a bug...
+
+        """
+        if task.running:
+            return
+        if not task.enabled:
+            return
+        self.queue[mirror] = task.get_schedule_time(since)
 
     def init_general(self, config):
         self.emails    = []
