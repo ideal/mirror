@@ -43,7 +43,7 @@ class Scheduler(object):
     CHECK_TIMEOUT = 0x01
     SCHEDULE_TASK = 0x02
 
-    def __init__(self, options=None, args=None):
+    def __init__(self, options = None, args = None):
         self.rsync   = mirror.common.find_rsync()
         if not self.rsync:
             raise mirror.error.MirrorError(
@@ -146,7 +146,7 @@ class Scheduler(object):
         self.current_load = loadavg()
         self.current_conn = tcpconn()
 
-    def delay_task(self, mirror, delay_seconds=1800):
+    def delay_task(self, mirror, delay_seconds = 1800):
         """
         If a task is not scheduled due to some reason, it will be
         delayed for `delay_seconds` seconds (wich is default half
