@@ -30,6 +30,7 @@ import mirror.common
 import mirror.error
 from mirror.configmanager import ConfigManager
 from mirror.task          import Task
+from mirror.sysinfo       import loadavg, tcpconn
 
 from collections import OrderedDict as odict
 
@@ -77,6 +78,8 @@ class Scheduler(object):
         time.sleep(sleeptime)
 
     def schedule(self):
+        self.init_sysinfo()
+
         if ( self.todo & self.SCHEDULE_TASK):
             if not len(self.mirrors) > 0:
                 log.info("But no task needed to start...")
@@ -91,10 +94,72 @@ class Scheduler(object):
                 if self.queue[mirror] >= end:
                     return
                 if self.queue[mirror] >= timestamp and self.queue[mirror] < end:
-                    log.info("Starting task: %s ...", mirror)
-                    self.run_task(mirror)
+                    self.schedule_task(mirror)
+
+    def schedule_task(self, mirror):
+        """
+        Schedule a task, but it is not guaranteed that it will really be run, it is 
+        decided by some conditions, e.g. system load, current http connections.
+
+        NOTE:
+        However if a task's `priority` is high (lower or equal than 4), these limit
+        conditions are simply ignored...
+
+        """
+        task = self.tasks[mirror]
+        if self.current_load > self.loadlimit and task.priority > 4:
+            log.info("Task: %s not scheduled because system load is higher than %.2f",
+                     mirror, self.loadlimit)
+            self.delay_task(mirror)
+            return
+        if self.current_conn > self.httpconn  and task.priority > 4:
+            log.info("Task: %s not scheduled because http connections is larger than %d",
+                     mirror, self.loadlimit)
+            self.delay_task(mirror)
+            return
+        if self.count_running_tasks() >= self.maxtasks:
+            log.info("Task: %s not scheduled because running tasks is larger than %d",
+                     mirror, self.maxtasks)
+            self.delay_task(mirror)
+            return
+        log.info("Starting task: %s ...", mirror)
+        self.run_task(mirror)
+
+    def init_sysinfo(self):
+        """
+        Get system info for this turn of schedule().
+
+        """
+        self.current_load = loadavg()
+        self.current_conn = tcpconn()
+
+    def delay_task(self, mirror, delay_seconds=1800):
+        """
+        If a task if not scheduled due to some reason, it will be 
+        delayed for `delay_seconds` seconds, which is default half
+        an hour.
+
+        """
+        if mirror not in self.queue:
+            return
+        self.queue[mirror] += delay_seconds
+
+    def count_running_tasks(self):
+        """
+        Calculate the number of current running tasks.
+
+        """
+        return len(self.tasks) - len(self.queue)
 
     def append_tasks(self):
+        """
+        Append the tasks that are need to run into self.queue.
+
+        NOTE:
+        If a task is currently running or it is not enabled, it will
+        not be added to the queue.
+
+        """
         now = time.time()
         for mirror in self.tasks:
             if mirror in self.queue:
@@ -165,6 +230,13 @@ class Scheduler(object):
                 return
 
     def stop_all_tasks(self, signo = signal.SIGTERM):
+        """
+        This method can only be called when mirrord is shut down by SIGTERM or SIGINT.
+
+        NOTE:
+        Currently when mirrord is shut down, all running tasks will also be killed.
+
+        """
         for mirror, task in self.tasks.iteritems():
             if not task.running:
                 continue

@@ -46,7 +46,7 @@ def shutdown_handler(signo, frame):
     signal.signal(signal.SIGCHLD, signal.SIG_DFL)
     scheduler.stop_all_tasks()
 
-    log.info("Bye bye...")
+    log.info("Bye bye... :)")
     sys.exit(0)
 
 def sigchld_handler(signo, frame):
