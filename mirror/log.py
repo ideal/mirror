@@ -32,7 +32,7 @@ if 'dev' in common.get_version():
 else:
     DEFAULT_LOGGING_FORMAT = "%%(asctime)s [%%(levelname)-8s][%%(name)-%ds] %%(message)s"
 
-MAX_LOGGER_NAME_LENGTH = 10
+MAX_LOGGER_NAME_LENGTH = 16
 
 levels = {
     "none":     logging.NOTSET,

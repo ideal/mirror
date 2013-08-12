@@ -33,7 +33,7 @@ def shutdown_handler(signo, frame):
     pidfile = mirror.configmanager.get_config_dir("mirrord.pid")
     if os.path.isfile(pidfile):
         os.remove(pidfile)
-    log.info("Got signal %s, exiting... Bye bye", signals[signo])
+    log.info("Got signal %s, exiting...", signals[signo])
 
     import sys
     scheduler_ref = schedulers.get(os.getpid(), None)
@@ -42,6 +42,7 @@ def shutdown_handler(signo, frame):
     scheduler     = scheduler_ref()
     scheduler.stop_all_tasks()
 
+    log.info("Bye bye...")
     sys.exit(0)
 
 def sigchld_handler(signo, frame):
