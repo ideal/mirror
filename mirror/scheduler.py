@@ -1,4 +1,6 @@
 #
+# Copyright (C) 2013 Shang Yuanchun <idealities@gmail.com>
+#
 #
 # You may redistribute it and/or modify it under the terms of the
 # GNU General Public License, as published by the Free Software
@@ -51,6 +53,8 @@ class Scheduler(object):
         self.tasks   = odict()
         self.queue   = {}
         self.todo    = self.SCHEDULE_TASK
+        # the number of tasks that enabled
+        self.active_tasks = -1
 
         self.init_general(self.config)
         self.init_tasks  (self.config)
@@ -108,8 +112,8 @@ class Scheduler(object):
         """
         task = self.tasks[mirror]
         if self.current_load > self.loadlimit and task.priority > 4:
-            log.info("Task: %s not scheduled because system load is higher than %.2f",
-                     mirror, self.loadlimit)
+            log.info("Task: %s not scheduled because system load %.2f is higher than %.2f",
+                     mirror, self.current_load, self.loadlimit)
             self.delay_task(mirror)
             return
         if self.current_conn > self.httpconn  and task.priority > 4:
@@ -117,7 +121,7 @@ class Scheduler(object):
                      mirror, self.loadlimit)
             self.delay_task(mirror)
             return
-        if self.count_running_tasks() >= self.maxtasks:
+        if self.count_running_tasks() >= self.maxtasks and task.priority > 4:
             log.info("Task: %s not scheduled because running tasks is larger than %d",
                      mirror, self.maxtasks)
             self.delay_task(mirror)
@@ -149,7 +153,12 @@ class Scheduler(object):
         Calculate the number of current running tasks.
 
         """
-        return len(self.tasks) - len(self.queue)
+        if self.active_tasks >= 0:
+            return self.active_tasks - len(self.queue)
+        running = 0
+        for mirror, task in self.tasks.iteritems():
+            running += task.running
+        return running
 
     def append_tasks(self):
         """
@@ -200,6 +209,8 @@ class Scheduler(object):
             if mirror == 'general':
                 continue
             self.tasks[mirror] = Task(mirror, self.rsync, weakref.ref(self), **config[mirror])
+        self.active_tasks = len(
+                            [mirror for mirror, task in self.tasks.iteritems() if task.enabled])
 
     def run_task(self, mirror):
         if mirror not in self.tasks:
