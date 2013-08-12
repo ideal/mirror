@@ -32,6 +32,7 @@ import mirror.common
 import mirror.error
 from mirror.configmanager import ConfigManager
 from mirror.task          import Task
+from mirror.task          import PRIORITY_MIN, PRIORITY_MAX
 from mirror.sysinfo       import loadavg, tcpconn
 
 from collections import OrderedDict as odict
@@ -112,22 +113,24 @@ class Scheduler(object):
         decided by some conditions, e.g. system load, current http connections.
 
         NOTE:
-        However if a task's `priority` is high (lower or equal than 4), these limit
-        conditions are simply ignored...
+        The priority that a task can run is a function of ( current value / limit ).
+        See get_runnable_priority(). However an exception is `maxtasks`, if current
+        running tasks is reaching `maxtasks`, only specific priority (lower then or
+        equal with 2) tasks can still be running.
 
         """
         task = self.tasks[mirror]
-        if self.current_load > self.loadlimit and task.priority > 4:
-            log.info("Task: %s not scheduled because system load %.2f is higher than %.2f",
-                     mirror, self.current_load, self.loadlimit)
+        if task.priority > self.get_runnable_priority(self.current_load, self.loadlimit):
+            log.info("Task: %s not scheduled because system load %.2f is too high",
+                     mirror, self.current_load)
             self.delay_task(mirror)
             return
-        if self.current_conn > self.httpconn  and task.priority > 4:
-            log.info("Task: %s not scheduled because http connections is larger than %d",
-                     mirror, self.loadlimit)
+        if task.priority > self.get_runnable_priority(self.current_conn,  self.httpconn):
+            log.info("Task: %s not scheduled because http connections is too many",
+                     mirror)
             self.delay_task(mirror)
             return
-        if self.count_running_tasks() >= self.maxtasks and task.priority > 4:
+        if self.maxtasks > 0 and self.count_running_tasks() >= self.maxtasks and task.pririty > 2:
             log.info("Task: %s not scheduled because running tasks is larger than %d",
                      mirror, self.maxtasks)
             self.delay_task(mirror)
@@ -274,6 +277,19 @@ class Scheduler(object):
             # Not sure it is ok...
             pid, status = os.waitpid(pid, 0)
             log.info("Killed task: %s with pid %d", mirror, pid)
+
+    def get_runnable_priority(self, current, limit):
+        """
+        If limit is zero, all priority tasks can be run.
+        Else if current value is lower than limit, all priority tasks can be run.
+        Else it is a function between target priority and (current / limit).
+
+        """
+        if limit <= 0:
+            return PRIORITY_MAX
+        if current < limit:
+            return PRIORITY_MAX
+        return (-4.55 * (current * 1.0 / limit)) + 14.55
 
 # Store Scheduler instance
 schedulers = {}

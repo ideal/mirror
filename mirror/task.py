@@ -30,6 +30,9 @@ log = logging.getLogger(__name__)
 
 DEFAULT_ARGS = "--links --hard-links --times --verbose --delete --recursive"
 
+PRIORITY_MIN = 1  # high priority
+PRIORITY_MAX = 10 # low  priority
+
 class Task(object):
     def __init__(self, name, command, scheduler_ref=None, **taskinfo):
         self.scheduler = (scheduler_ref() if scheduler_ref is not None else None)
@@ -52,9 +55,13 @@ class Task(object):
             self.enabled  = False
         try:
             self.priority = int(taskinfo['priority'])
+            if self.priority < PRIORITY_MIN:
+                self.priority = PRIORITY_MIN
+            if self.priority > PRIORITY_MAX:
+                self.priority = PRIORITY_MAX
         except:
             log.error("Error in config for mirror: %s, priority not valid.", self.name)
-            self.priority = 10
+            self.priority = PRIORITY_MAX
         self.exclude  = taskinfo['exclude'] if taskinfo.has_key("exclude") else None
         self.args     = taskinfo['args']    if taskinfo.has_key("args")    else DEFAULT_ARGS
         if self.twostage and not taskinfo.has_key("firststage"):
