@@ -31,6 +31,12 @@ def shutdown_handler(signo, frame):
     if os.path.isfile(pidfile):
         os.remove(pidfile)
     log.info("Got signal %d, exiting... Bye bye", signo)
+    scheduler_ref = schedulers.get(os.getpid(), None)
+    if scheduler_ref is None:
+        return
+    scheduler     = scheduler_ref()
+    scheduler.stop_all_tasks()
+
     import sys
     sys.exit(0)
 

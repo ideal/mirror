@@ -164,5 +164,13 @@ class Scheduler(object):
                 log.info("Task: %s ended with status %d", mirror, status)
                 return
 
+   def stop_all_tasks(self, signo = signal.SIGTERM):
+        for mirror, task in self.tasks.iteritems():
+            if not task.running:
+                continue
+            pid = task.pid
+            task.stop(signo)
+            log.info("Killed task: %s with pid %d", mirror, pid)
+
 # Store Scheduler instance
 schedulers = {}

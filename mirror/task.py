@@ -107,9 +107,9 @@ class Task(object):
             fp.close()
             os.execv(self.command, self.get_args(stage))
 
-    def stop(self):
+    def stop(self, signo = signal.SIGTERM):
         if self.pid > 0:
-            os.kill(pid, signal.SIGTERM)
+            os.kill(pid, signo)
         self.set_stop_flag()
 
     def set_stop_flag(self):
