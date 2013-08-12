@@ -146,13 +146,19 @@ class Scheduler(object):
     def delay_task(self, mirror, delay_seconds=1800):
         """
         If a task if not scheduled due to some reason, it will be 
-        delayed for `delay_seconds` seconds, which is default half
-        an hour.
+        delayed for `delay_seconds` seconds (wich is default half
+        an hour, if task's next schedule time is later than that, 
+        else it's set to task's next schedule time.
 
         """
         if mirror not in self.queue:
             return
-        self.queue[mirror] += delay_seconds
+        task      = self.tasks[mirror]
+        next_time = task.get_schedule_time(since = time.time())
+        if self.queue[mirror] + delay_seconds > next_time:
+            self.queue[mirror]  = next_time
+        else:
+            self.queue[mirror] += delay_seconds
 
     def count_running_tasks(self):
         """
