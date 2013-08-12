@@ -25,19 +25,23 @@ from mirror.scheduler import schedulers
 
 log = logging.getLogger(__name__)
 
+signals = { getattr(signal, sigtxt) : sigtxt
+            for sigtxt in dir(signal) if sigtxt.startswith("SIG") }
+
 def shutdown_handler(signo, frame):
     import mirror.configmanager
     pidfile = mirror.configmanager.get_config_dir("mirrord.pid")
     if os.path.isfile(pidfile):
         os.remove(pidfile)
-    log.info("Got signal %d, exiting... Bye bye", signo)
+    log.info("Got signal %s, exiting... Bye bye", signals[signo])
+
+    import sys
     scheduler_ref = schedulers.get(os.getpid(), None)
     if scheduler_ref is None:
-        return
+        sys.exit(0)
     scheduler     = scheduler_ref()
     scheduler.stop_all_tasks()
 
-    import sys
     sys.exit(0)
 
 def sigchld_handler(signo, frame):

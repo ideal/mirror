@@ -22,6 +22,7 @@ import os
 import sys
 import time
 import bisect
+import signal
 import logging
 import mirror.common
 
