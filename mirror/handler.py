@@ -40,6 +40,10 @@ def shutdown_handler(signo, frame):
     if scheduler_ref is None:
         sys.exit(0)
     scheduler     = scheduler_ref()
+
+    # We will waitpid() in stop_all_tasks(),
+    # so unregister sigchld_handler here.
+    signal.signal(signal.SIGCHLD, signal.SIG_DFL)
     scheduler.stop_all_tasks()
 
     log.info("Bye bye...")

@@ -170,6 +170,8 @@ class Scheduler(object):
                 continue
             pid = task.pid
             task.stop(signo)
+            # Not sure it is ok...
+            pid, status = os.waitpid(pid, 0)
             log.info("Killed task: %s with pid %d", mirror, pid)
 
 # Store Scheduler instance
