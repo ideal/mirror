@@ -148,9 +148,9 @@ class Scheduler(object):
 
     def delay_task(self, mirror, delay_seconds=1800):
         """
-        If a task if not scheduled due to some reason, it will be 
+        If a task is not scheduled due to some reason, it will be
         delayed for `delay_seconds` seconds (wich is default half
-        an hour, if task's next schedule time is later than that, 
+        an hour), when task's next schedule time is later than that,
         else it's set to task's next schedule time.
 
         """
@@ -177,7 +177,7 @@ class Scheduler(object):
 
     def append_tasks(self):
         """
-        Append the tasks that are need to run into self.queue.
+        Append the tasks that are needed to run into self.queue.
 
         NOTE:
         If a task is currently running or it is not enabled, it will
@@ -218,6 +218,7 @@ class Scheduler(object):
         emails = emails.findall(config['general']['emails'])
         for email in emails:
             self.emails.append(email)
+
         self.loadlimit = float(config['general']['loadlimit'])
         self.httpconn  = int  (config['general']['httpconn'] )
         self.maxtasks  = int  (config['general']['maxtasks'] )
@@ -245,6 +246,10 @@ class Scheduler(object):
         log.info("Task: %s begin to run with pid %d", mirror, task.pid)
 
     def stop_task(self, mirror):
+        """
+        Stop a task, it should only be called when that task timeouts.
+
+        """
         if mirror not in self.tasks:
             return
         task = self.tasks[mirror]
@@ -255,6 +260,10 @@ class Scheduler(object):
         log.info("Killed task: %s with pid %d", mirror, pid)
 
     def stop_task_with_pid(self, pid, status):
+        """
+        Change task's running and pid attr as it's stopped.
+
+        """
         for mirror, task in self.tasks.iteritems():
             if task.pid == pid:
                 task.set_stop_flag()
