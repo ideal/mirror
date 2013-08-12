@@ -58,32 +58,41 @@ class Scheduler(object):
 
     def start(self):
         while (True):
-            self.append_tasks()
-            self.mirrors = sorted(self.queue, key = self.queue.get)
-            # without timeout checking, self.queue[mirror] - time.time() is
-            # the duration we can sleep...
-            if len(self.mirrors) > 0:
-                mirror    = self.mirrors[0]
-                sleeptime = self.queue[mirror] - time.time()
-            else:
-                sleeptime = 5
-            log.info("I am going to sleep, next waking up: %s",
-                     time.ctime(time.time() + sleeptime))
-            time.sleep(sleeptime)
+            self.sleep()
             log.info("I am waking up...")
             self.schedule()
+
+    def sleep(self):
+        self.append_tasks()
+        self.mirrors = sorted(self.queue, key = self.queue.get)
+        # without timeout checking, self.queue[mirror] - time.time() is
+        # the duration we can sleep...
+        if len(self.mirrors) > 0:
+            mirror    = self.mirrors[0]
+            sleeptime = self.queue[mirror] - time.time()
+        else:
+            sleeptime = 5
+        log.info("I am going to sleep, next waking up: %s",
+                 time.ctime(time.time() + sleeptime))
+        time.sleep(sleeptime)
 
     def schedule(self):
         if ( self.todo & self.SCHEDULE_TASK):
             if not len(self.mirrors) > 0:
                 log.info("But no task needed to start...")
                 return
-            timestamp  = self.queue[self.mirrors[0]]
+            # we do not need microseconds
+            timestamp  = int(time.time())
+            # to move to zero second
+            timestamp -= timestamp % 60
+            # next miniute
+            end        = timestamp + 60
             for mirror in self.mirrors:
-                if self.queue[mirror] > timestamp:
-                    continue
-                log.info("Starting task: %s ...", mirror)
-                self.run_task(mirror)
+                if self.queue[mirror] >= end:
+                    return
+                if self.queue[mirror] >= timestamp and self.queue[mirror] < end:
+                    log.info("Starting task: %s ...", mirror)
+                    self.run_task(mirror)
 
     def append_tasks(self):
         now = time.time()
@@ -147,6 +156,13 @@ class Scheduler(object):
         pid  = task.pid
         task.stop()
         log.info("Killed task: %s with pid %d", mirror, pid)
+
+    def stop_task_with_pid(self, pid, status):
+        for mirror, task in self.tasks.iteritems():
+            if task.pid == pid:
+                task.set_stop_flag()
+                log.info("Task: %s ended with status %d", mirror, status)
+                return
 
 # Store Scheduler instance
 schedulers = {}

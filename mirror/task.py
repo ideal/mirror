@@ -110,6 +110,9 @@ class Task(object):
     def stop(self):
         if self.pid > 0:
             os.kill(pid, signal.SIGTERM)
+        self.set_stop_flag()
+
+    def set_stop_flag(self):
         self.pid     = 0
         self.running = False
 

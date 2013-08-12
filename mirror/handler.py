@@ -44,3 +44,4 @@ def sigchld_handler(signo, frame):
     if scheduler_ref is None:
         return
     scheduler     = scheduler_ref()
+    scheduler.stop_task_with_pid(pid, status)
