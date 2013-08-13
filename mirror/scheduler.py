@@ -115,8 +115,8 @@ class Scheduler(object):
         NOTE:
         The priority that a task can run is a function of ( current value / limit ).
         See get_runnable_priority(). However an exception is `maxtasks`, if current
-        running tasks is reaching `maxtasks`, only specific priority (lower then or
-        equal with 2) tasks can still be running.
+        running tasks is reaching `maxtasks`, only specific priority (lower than or
+        equal to 2) tasks can still be running.
 
         """
         task = self.tasks[mirror]
@@ -287,7 +287,8 @@ class Scheduler(object):
             pid, status = os.waitpid(pid, 0)
             log.info("Killed task: %s with pid %d", mirror, pid)
 
-    def get_runnable_priority(self, current, limit):
+    @classmethod
+    def get_runnable_priority(cls, current, limit):
         """
         If limit is zero, all priority tasks can be run.
         Else if current value is lower than limit, all priority tasks can be run.
