@@ -234,13 +234,13 @@ class Scheduler(object):
         self.active_tasks = len(
                             [mirror for mirror, task in self.tasks.iteritems() if task.enabled])
 
-    def run_task(self, mirror):
+    def run_task(self, mirror, stage = 1):
         if mirror not in self.tasks:
             return
         task = self.tasks[mirror]
         if task.running:
             return
-        task.run()
+        task.run(stage)
         if mirror in self.queue:
             del self.queue[mirror]
         log.info("Task: %s begin to run with pid %d", mirror, task.pid)
@@ -268,7 +268,21 @@ class Scheduler(object):
             if task.pid == pid:
                 task.set_stop_flag()
                 log.info("Task: %s ended with status %d", mirror, status)
+                self.task_post_process(mirror, task)
                 return
+
+    def task_post_process(self, mirror, task):
+        """
+        Check whether a task needs post process, e.g. two stage tasks.
+
+        """
+        if not task.twostage:
+            return
+        if task.stage == 1:
+            log.info("Task: %s scheduled to second stage", mirror)
+            self.run_task(mirror, stage = 2)
+        else:
+            task.stage = 1
 
     def stop_all_tasks(self, signo = signal.SIGTERM):
         """

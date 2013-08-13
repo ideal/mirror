@@ -41,6 +41,7 @@ class Task(object):
         self.enabled   = True
         self.running   = False
         self.pid       = 0
+        self.stage     = 1
         try:
             self.upstream = taskinfo['upstream[]']
             self.rsyncdir = taskinfo['rsyncdir']
@@ -86,6 +87,7 @@ class Task(object):
 
     def run(self, stage = 1):
         try:
+            self.stage = stage
             self.execute(stage)
         except Exception, e:
             log.error("Error occured when run `%s`: %s.", self.name, e)
