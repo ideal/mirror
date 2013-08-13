@@ -44,12 +44,8 @@ class Scheduler(object):
     SCHEDULE_TASK = 0x02
 
     def __init__(self, options = None, args = None):
-        self.rsync   = mirror.common.find_rsync()
-        if not self.rsync:
-            raise mirror.error.MirrorError(
-                "rsync not found in PATH, please install rsync :)"
-            )
-        # tasks contains all mirrors needed to rsync
+        # self.tasks contains all tasks needed to run in theory,
+        # including the tasks that are not enabled
         self.config  = ConfigManager("mirror.ini")
         self.tasks   = odict()
         self.queue   = {}
@@ -230,7 +226,13 @@ class Scheduler(object):
         for mirror in config:
             if mirror == 'general':
                 continue
-            self.tasks[mirror] = Task(mirror, self.rsync, weakref.ref(self), **config[mirror])
+            if config[mirror].get("command", None) == None:
+                log.warn("In config for mirror: %s, key: command not found, using rsync as default",
+                         mirror)
+                command = "rsync"
+            else:
+                command = config[mirror].get("command")
+            self.tasks[mirror] = Task(mirror, command, weakref.ref(self), **config[mirror])
         self.active_tasks = len(
                             [mirror for mirror, task in self.tasks.iteritems() if task.enabled])
 

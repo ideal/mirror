@@ -37,8 +37,15 @@ class Task(object):
     def __init__(self, name, command, scheduler_ref=None, **taskinfo):
         self.scheduler = (scheduler_ref() if scheduler_ref is not None else None)
         self.name      = name
-        self.command   = command
         self.enabled   = True
+
+        # NOTE: `command` passed in is just a command name, but
+        # self.command is the complete path...
+        self.command   = mirror.common.find_command(command)
+        if not self.command:
+            log.error("command `%s` not found in PATH, please install that first :)",
+                      command)
+            self.enabled = False
         self.running   = False
         self.pid       = 0
         self.stage     = 1
