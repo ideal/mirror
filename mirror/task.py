@@ -225,7 +225,7 @@ class AbstractTask(object):
             return time.localtime(next_time)
 
     def get_args(self, stage = 1):
-        pass
+        raise MirrorError("AbstractTask's get_args() is not implemented.")
 
 class Task(AbstractTask):
     def __init__(self, name, scheduler_ref=None, **taskinfo):
@@ -262,8 +262,20 @@ class SimpleTask(AbstractTask):
     def __init__(self, name, scheduler_ref=None, **taskinfo):
         super(Task, self).__init__(name, scheduler_ref, **taskinfo)
 
+        """
+        If a SimpleTask is twostage, args is interpreted as args for second
+        stage, firststage is interpreted as args for first stage.
+
+        """
+        self.args = taskinfo['args']    if taskinfo.has_key("args") else None
+
     def get_args(self, stage = 1):
-        return None
+        args  = [os.path.basename(self.command)]
+        if self.twostage and stage == 1:
+            args += self.firststage.split(" ")
+            return args
+        args += self.args.split(" ")
+        return args
 
 if __name__ == "__main__":
     import mirror.log
