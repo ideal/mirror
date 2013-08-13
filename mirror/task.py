@@ -33,14 +33,14 @@ DEFAULT_ARGS = "--links --hard-links --times --verbose --delete --recursive"
 PRIORITY_MIN = 1  # high priority
 PRIORITY_MAX = 10 # low  priority
 
-class Task(object):
+class AbstractTask(object):
     def __init__(self, name, scheduler_ref=None, **taskinfo):
         self.scheduler = (scheduler_ref() if scheduler_ref is not None else None)
         self.name      = name
         self.enabled   = True
 
         if taskinfo.get("command", None) == None:
-            log.warn("In config for mirror: %s, key: command not found, "
+            log.warn("In config for task: %s, key: command not found, "
                      "using rsync as default",
                      name)
             command = "rsync"
@@ -57,17 +57,13 @@ class Task(object):
         self.pid       = 0
         self.stage     = 1
         try:
-            self.upstream = taskinfo['upstream[]']
-            self.rsyncdir = taskinfo['rsyncdir']
-            if self.rsyncdir[-1] != '/':
-                self.rsyncdir += '/'
-            self.localdir = taskinfo['localdir']
             self.twostage = taskinfo['twostage'] != "0" 
             self.timeout  = mirror.common.parse_timeout(taskinfo['timeout'])
             self.time     = taskinfo['time']
         except KeyError, e:
-            log.error("Error in config for mirror: %s, key: %s not found.", self.name, e)
+            log.error("Error in config for task: %s, key: %s not found.", self.name, e)
             self.enabled  = False
+
         try:
             self.priority = int(taskinfo['priority'])
             if self.priority < PRIORITY_MIN:
@@ -75,12 +71,11 @@ class Task(object):
             if self.priority > PRIORITY_MAX:
                 self.priority = PRIORITY_MAX
         except:
-            log.error("Error in config for mirror: %s, priority not valid.", self.name)
+            log.error("Error in config for task: %s, priority not valid.", self.name)
             self.priority = PRIORITY_MAX
-        self.exclude  = taskinfo['exclude'] if taskinfo.has_key("exclude") else None
-        self.args     = taskinfo['args']    if taskinfo.has_key("args")    else DEFAULT_ARGS
+
         if self.twostage and not taskinfo.has_key("firststage"):
-            log.error("Error in config for mirror: %s, `twostage` is set but no `firststage`.", self.name)
+            log.error("Error in config for task: %s, `twostage` is set but no `firststage`.", self.name)
             self.twostage = False
         if self.twostage:
             self.firststage = taskinfo['firststage']
@@ -93,10 +88,10 @@ class Task(object):
             self.time_dow     = crontime[4]
             for attr in ('time_miniute', 'time_hour', 'time_dom', 'time_month', 'time_dow'):
                 if len(getattr(self, attr)) == 0:
-                    log.error("Error in config for mirror: %s, time: %s not valid.", self.name, attr)
+                    log.error("Error in config for task: %s, time: %s not valid.", self.name, attr)
                     self.enabled = False
         else:
-            log.error("Error in config for mirror: %s, time not valid.")
+            log.error("Error in config for task: %s, time not valid.")
             self.enabled = False
 
     def run(self, stage = 1):
@@ -230,6 +225,26 @@ class Task(object):
             return time.localtime(next_time)
 
     def get_args(self, stage = 1):
+        pass
+
+class Task(AbstractTask):
+    def __init__(self, name, scheduler_ref=None, **taskinfo):
+        super(Task, self).__init__(name, scheduler_ref, **taskinfo)
+
+        try:
+            self.upstream = taskinfo['upstream[]']
+            self.rsyncdir = taskinfo['rsyncdir']
+            if self.rsyncdir[-1] != '/':
+                self.rsyncdir += '/'
+            self.localdir = taskinfo['localdir']
+        except KeyError, e:
+            log.error("Error in config for mirror: %s, key: %s not found.", self.name, e)
+            self.enabled  = False
+
+        self.exclude  = taskinfo['exclude'] if taskinfo.has_key("exclude") else None
+        self.args     = taskinfo['args']    if taskinfo.has_key("args")    else DEFAULT_ARGS
+
+    def get_args(self, stage = 1):
         args  = [os.path.basename(self.command)]
         args += self.args.split(" ")
         args += self.exclude.split(" ")
@@ -242,6 +257,13 @@ class Task(object):
         args += [self.upstream[0] + '::' + self.rsyncdir,\
                  self.localdir]
         return args
+
+class SimpleTask(AbstractTask):
+    def __init__(self, name, scheduler_ref=None, **taskinfo):
+        super(Task, self).__init__(name, scheduler_ref, **taskinfo)
+
+    def get_args(self, stage = 1):
+        return None
 
 if __name__ == "__main__":
     import mirror.log
