@@ -260,22 +260,26 @@ class Task(AbstractTask):
 
 class SimpleTask(AbstractTask):
     def __init__(self, name, scheduler_ref=None, **taskinfo):
-        super(Task, self).__init__(name, scheduler_ref, **taskinfo)
+        super(SimpleTask, self).__init__(name, scheduler_ref, **taskinfo)
 
         """
         If a SimpleTask is twostage, args is interpreted as args for second
         stage, firststage is interpreted as args for first stage.
 
         """
-        self.args = taskinfo['args']    if taskinfo.has_key("args") else None
+        self.args = taskinfo['args'] if taskinfo.has_key("args") else None
 
     def get_args(self, stage = 1):
         args  = [os.path.basename(self.command)]
         if self.twostage and stage == 1:
             args += self.firststage.split(" ")
             return args
-        args += self.args.split(" ")
+        if self.args is not None:
+            args += self.args.split(" ")
         return args
+
+# from name to Task
+TASK_TYPES = { "simple" : SimpleTask }
 
 if __name__ == "__main__":
     import mirror.log

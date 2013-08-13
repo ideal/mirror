@@ -31,7 +31,7 @@ import weakref
 import mirror.common
 import mirror.error
 from mirror.configmanager import ConfigManager
-from mirror.task          import Task
+from mirror.task          import Task, SimpleTask, TASK_TYPES
 from mirror.task          import PRIORITY_MIN, PRIORITY_MAX
 from mirror.sysinfo       import loadavg, tcpconn
 
@@ -226,7 +226,9 @@ class Scheduler(object):
         for mirror in config:
             if mirror == 'general':
                 continue
-            self.tasks[mirror] = Task(mirror, weakref.ref(self), **config[mirror])
+            # We think it's default mirror.task.Task
+            task_class = TASK_TYPES.get(config[mirror].get("type", None), Task)
+            self.tasks[mirror] = task_class(mirror, weakref.ref(self), **config[mirror])
         self.active_tasks = len(
                             [mirror for mirror, task in self.tasks.iteritems() if task.enabled])
 
