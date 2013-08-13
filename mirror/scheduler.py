@@ -203,7 +203,7 @@ class Scheduler(object):
         self.emails    = []
         self.loadlimit = 4.0
         self.httpconn  = 1200
-        self.logdir    = "/var/log/rsync"
+        self.logdir    = mirror.common.DEFAULT_TASK_LOG_DIR
         self.maxtasks  = 10
 
         if "general" not in config:

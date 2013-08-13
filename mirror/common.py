@@ -33,6 +33,9 @@ from mirror.error import *
 
 log = logging.getLogger(__name__)
 
+DEFAULT_MIRRORD_LOG_DIR = '/var/log/mirrord'
+DEFAULT_TASK_LOG_DIR    = '/var/log/rsync'
+
 def get_version():
     """
     Returns the version of mirror from the python egg metadata

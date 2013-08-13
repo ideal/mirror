@@ -118,7 +118,7 @@ class AbstractTask(object):
             if self.scheduler:
                 logdir = self.scheduler.logdir
             else:
-                logdir = "/var/log/rsync/"
+                logdir = mirror.common.DEFAULT_TASK_LOG_DIR
             fp = open(logdir + self.name + '.log.' + time.strftime('%Y-%m-%d'), 'a')
             # Redirect child process's stdout and stderr
             os.dup2(fp.fileno(), 1)
