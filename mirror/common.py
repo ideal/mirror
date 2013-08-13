@@ -130,7 +130,7 @@ def lock_file(pidfile):
     return fp
 
 def find_command(command):
-    """Find the path of `command.
+    """Find the path of `command`.
 
     :returns: the path of command or None if not found
 

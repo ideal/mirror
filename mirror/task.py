@@ -34,12 +34,19 @@ PRIORITY_MIN = 1  # high priority
 PRIORITY_MAX = 10 # low  priority
 
 class Task(object):
-    def __init__(self, name, command, scheduler_ref=None, **taskinfo):
+    def __init__(self, name, scheduler_ref=None, **taskinfo):
         self.scheduler = (scheduler_ref() if scheduler_ref is not None else None)
         self.name      = name
         self.enabled   = True
 
-        # NOTE: `command` passed in is just a command name, but
+        if taskinfo.get("command", None) == None:
+            log.warn("In config for mirror: %s, key: command not found, "
+                     "using rsync as default",
+                     name)
+            command = "rsync"
+        else:
+            command = taskinfo.get("command")
+        # NOTE: `command` is just a command name, but
         # self.command is the complete path...
         self.command   = mirror.common.find_command(command)
         if not self.command:
@@ -243,7 +250,7 @@ if __name__ == "__main__":
                            filemode="a")
     from mirror.configmanager import ConfigManager
     config = ConfigManager("mirror.ini")
-    task   = Task('archlinux', '/usr/bin/rsync', None, **config['archlinux'])
+    task   = Task('archlinux', None, **config['archlinux'])
 
     # The date to Shanghai
     since  = time.mktime((2013, 7, 20, 8, 0, 0, 0, 0, 0))
@@ -252,7 +259,7 @@ if __name__ == "__main__":
     #task.run()
     #time.sleep(100)
 
-    task   = Task('ubuntu', '/usr/bin/rsync', None, **config['ubuntu'])
+    task   = Task('ubuntu', None, **config['ubuntu'])
     print(time.ctime(task.get_schedule_time(time.time())))
     print(task.get_args())
     print(task.get_args(stage=2))

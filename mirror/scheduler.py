@@ -226,13 +226,7 @@ class Scheduler(object):
         for mirror in config:
             if mirror == 'general':
                 continue
-            if config[mirror].get("command", None) == None:
-                log.warn("In config for mirror: %s, key: command not found, using rsync as default",
-                         mirror)
-                command = "rsync"
-            else:
-                command = config[mirror].get("command")
-            self.tasks[mirror] = Task(mirror, command, weakref.ref(self), **config[mirror])
+            self.tasks[mirror] = Task(mirror, weakref.ref(self), **config[mirror])
         self.active_tasks = len(
                             [mirror for mirror, task in self.tasks.iteritems() if task.enabled])
 
