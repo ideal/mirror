@@ -84,7 +84,8 @@ def start_daemon():
     # Sets the options.logfile to point to the default location
     def set_logfile():
         if not options.logfile:
-            options.logfile = os.path.join(mirror.common.DEFAULT_MIRRORD_LOG_DIR, "mirrord.log")
+            options.logfile = os.path.join(mirror.common.DEFAULT_MIRRORD_LOG_DIR,
+                                           "mirrord.log")
 
     set_logfile()
 
