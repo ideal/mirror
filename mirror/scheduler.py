@@ -289,7 +289,7 @@ class Scheduler(object):
         if taskinfo.name not in self.tasks:
             return
         task = self.tasks[taskinfo.name]
-        if task.running and ( task.twostage ):
+        if task.running and ( not task.twostage ):
             return
         task.run(stage)
         if taskinfo in self.queue:
