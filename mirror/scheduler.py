@@ -172,7 +172,7 @@ class Scheduler(object):
 
         """
         if self.active_tasks >= 0:
-            return self.active_tasks - self.queue.size()
+            return self.active_tasks - self.queue.size("type", REGULAR_TASK)
         running = 0
         for taskname, task in self.tasks.iteritems():
             running += task.running
@@ -203,6 +203,8 @@ class Scheduler(object):
         if not task.enabled:
             return
         taskinfo = TaskInfo(taskname, REGULAR_TASK, task.get_schedule_time(since))
+        if taskinfo in self.queue:
+            return
         self.queue.put(taskinfo)
 
     def init_general(self, config):

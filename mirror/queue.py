@@ -26,6 +26,9 @@ class TaskInfo():
         self.type = type
         self.time = time
 
+    def __eq__(self, other):
+        return self.name == other.name
+
     def __cmp__(self, other):
         return self.time - other.time
 
