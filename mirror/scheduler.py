@@ -75,7 +75,7 @@ class Scheduler(object):
         if taskinfo:
             sleeptime = taskinfo.time - time.time()
         else:
-            sleeptime = 5
+            sleeptime = 1800 # half an hour
         log.info("I am going to sleep, next waking up: %s",
                  time.ctime(time.time() + sleeptime))
         time.sleep(sleeptime)
