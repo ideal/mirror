@@ -55,8 +55,16 @@ class Queue(object):
     def empty(self):
         return ( len(self.queue) == 0 )
 
-    def size(self):
-        return len(self.queue)
+    def size(self, key = None, value = None):
+        if key is None or value is None:
+            return len(self.queue)
+        else:
+            if not hasattr(TaskInfo, key):
+                return 0
+            count = 0
+            for item in self.queue:
+                count += ( getattr(item, key) == value )
+            return count
 
     def __getitem__(self, key):
         try:
@@ -90,4 +98,6 @@ if __name__ == "__main__":
     print task in queue
     task4 = TaskInfo("Send letter",  0, 1376704800)
     print task4 in queue
+
+    print queue.size("type", 0)
 
