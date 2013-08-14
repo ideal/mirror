@@ -215,6 +215,31 @@ class Scheduler(object):
             return
         self.queue.put(taskinfo)
 
+    def append_timeout_task(self, taskname, task, time):
+        """
+        A timeout checking task is added after a task begins to run.
+
+        """
+        if not task.running:
+            return
+        if not task.enabled:
+            return
+        taskinfo = TaskInfo(taskname, TIMEOUT_TASK, time)
+        if taskinfo in self.queue:
+            return
+        self.queue.put(taskinfo)
+
+    def remove_timeout_task(self, taskname):
+        """
+        It's slow...
+
+        """
+        taskqueue  = [ taskinfo for taskinfo in self.queue ]
+        for taskinfo in taskqueue:
+            if taskinfo.name == taskname and taskinfo.tasktype == TIMEOUT_TASK:
+                self.queue.remove(taskinfo)
+                return
+
     def init_general(self, config):
         self.emails    = []
         self.loadlimit = 4.0
@@ -260,6 +285,7 @@ class Scheduler(object):
         log.info("Task: %s begin to run with pid %d", taskinfo.name, task.pid)
         if task.timeout <= 0:
             return
+        self.append_timeout_task(taskinfo.name, task, task.start_time + task.timeout)
 
     def stop_task(self, taskinfo):
         """
@@ -274,6 +300,8 @@ class Scheduler(object):
         pid  = task.pid
         task.stop()
         log.info("Killed task: %s with pid %d", taskinfo.name, pid)
+        if task.timeout > 0:
+            self.remove_timeout_task(taskinfo.name)
 
     def stop_task_with_pid(self, pid, status):
         """
@@ -282,8 +310,11 @@ class Scheduler(object):
         """
         for taskname, task in self.tasks.iteritems():
             if task.pid == pid:
+                if not task.running:
+                    return
                 task.set_stop_flag()
                 log.info("Task: %s ended with status %d", taskname, status)
+                self.remove_timeout_task(taskname)
                 self.task_post_process(task)
                 return
 
