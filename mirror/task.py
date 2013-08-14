@@ -33,6 +33,9 @@ DEFAULT_ARGS = "--links --hard-links --times --verbose --delete --recursive"
 PRIORITY_MIN = 1  # high priority
 PRIORITY_MAX = 10 # low  priority
 
+REGULAR_TASK = 1  # regular task
+TIMEOUT_TASK = 2  # timeout checking task
+
 class AbstractTask(object):
     def __init__(self, name, scheduler_ref=None, **taskinfo):
         self.scheduler = (scheduler_ref() if scheduler_ref is not None else None)

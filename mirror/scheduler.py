@@ -33,7 +33,9 @@ import mirror.error
 from mirror.configmanager import ConfigManager
 from mirror.task          import Task, SimpleTask, TASK_TYPES
 from mirror.task          import PRIORITY_MIN, PRIORITY_MAX
+from mirror.task          import REGULAR_TASK, TIMEOUT_TASK
 from mirror.sysinfo       import loadavg, tcpconn
+from mirror.queue         import TaskInfo, Queue
 
 from collections import OrderedDict as odict
 
@@ -48,7 +50,7 @@ class Scheduler(object):
         # including the tasks that are not enabled
         self.config  = ConfigManager("mirror.ini")
         self.tasks   = odict()
-        self.queue   = {}
+        self.queue   = Queue()
         self.todo    = self.SCHEDULE_TASK
         # the number of tasks that enabled
         self.active_tasks = -1
@@ -66,12 +68,12 @@ class Scheduler(object):
 
     def sleep(self):
         self.append_tasks()
-        self.mirrors = sorted(self.queue, key = self.queue.get)
-        # without timeout checking, self.queue[mirror] - time.time() is
+
+        taskinfo = self.queue[0]
+        # taskinfo.time - time.time() is
         # the duration we can sleep...
-        if len(self.mirrors) > 0:
-            mirror    = self.mirrors[0]
-            sleeptime = self.queue[mirror] - time.time()
+        if taskinfo:
+            sleeptime = taskinfo.time - time.time()
         else:
             sleeptime = 5
         log.info("I am going to sleep, next waking up: %s",
@@ -79,31 +81,35 @@ class Scheduler(object):
         time.sleep(sleeptime)
 
     def schedule(self):
+        if self.queue.empty():
+            log.info("But no task needed to start...")
+            return
+
         self.init_sysinfo()
 
+        taskqueue  = [ taskinfo for taskinfo in self.queue ]
         if ( self.todo & self.SCHEDULE_TASK):
-            if not len(self.mirrors) > 0:
-                log.info("But no task needed to start...")
-                return
             # we do not need microseconds
             timestamp  = int(time.time())
             # to move to zero second
             timestamp -= timestamp % 60
             # next miniute
             end        = timestamp + 60
-            for mirror in self.mirrors:
-                if self.queue[mirror] < timestamp:
+            for taskinfo in taskqueue:
+                if taskinfo.type != REGULAR_TASK:
+                    continue
+                if taskinfo.time < timestamp:
                     log.info("Strange problem happened,"
                              "task: %s schedule time is in past,"
-                             "maybe I sleeped too long...", mirror)
-                    del self.queue[mirror]
-                    self.append_task(mirror, self.tasks[mirror], since = end)
-                if self.queue[mirror] >= end:
-                    return
-                if self.queue[mirror] >= timestamp and self.queue[mirror] < end:
-                    self.schedule_task(mirror)
+                             "maybe I sleeped too long...", taskinfo.name)
+                    self.queue.remove(taskinfo)
+                    self.append_task(taskinfo.name, self.tasks[taskinfo.name], since = end)
+                if taskinfo.time >= end:
+                    break
+                if taskinfo.time >= timestamp and taskinfo.time < end:
+                    self.schedule_task(taskinfo)
 
-    def schedule_task(self, mirror):
+    def schedule_task(self, taskinfo):
         """
         Schedule a task, but it is not guaranteed that it will really be run, it is 
         decided by some conditions, e.g. system load, current http connections.
@@ -115,24 +121,24 @@ class Scheduler(object):
         equal to 2) tasks can still be running.
 
         """
-        task = self.tasks[mirror]
+        task = self.tasks[taskinfo.name]
         if task.priority > self.get_runnable_priority(self.current_load, self.loadlimit):
             log.info("Task: %s not scheduled because system load %.2f is too high",
-                     mirror, self.current_load)
-            self.delay_task(mirror)
+                     taskinfo.name, self.current_load)
+            self.delay_task(taskinfo)
             return
         if task.priority > self.get_runnable_priority(self.current_conn,  self.httpconn):
             log.info("Task: %s not scheduled because http connections is too many",
-                     mirror)
-            self.delay_task(mirror)
+                     taskinfo.name)
+            self.delay_task(taskinfo)
             return
         if self.maxtasks > 0 and self.count_running_tasks() >= self.maxtasks and task.pririty > 2:
             log.info("Task: %s not scheduled because running tasks is larger than %d",
-                     mirror, self.maxtasks)
-            self.delay_task(mirror)
+                     taskinfo, self.maxtasks)
+            self.delay_task(taskinfo)
             return
-        log.info("Starting task: %s ...", mirror)
-        self.run_task(mirror)
+        log.info("Starting task: %s ...", taskinfo.name)
+        self.run_task(taskinfo)
 
     def init_sysinfo(self):
         """
@@ -142,7 +148,7 @@ class Scheduler(object):
         self.current_load = loadavg()
         self.current_conn = tcpconn()
 
-    def delay_task(self, mirror, delay_seconds = 1800):
+    def delay_task(self, taskinfo, delay_seconds = 1800):
         """
         If a task is not scheduled due to some reason, it will be
         delayed for `delay_seconds` seconds (wich is default half
@@ -150,14 +156,15 @@ class Scheduler(object):
         else it's set to task's next schedule time.
 
         """
-        if mirror not in self.queue:
+        if taskinfo not in self.queue:
             return
-        task      = self.tasks[mirror]
+        task      = self.tasks[taskinfo.name]
         next_time = task.get_schedule_time(since = time.time())
-        if self.queue[mirror] + delay_seconds > next_time:
-            self.queue[mirror]  = next_time
+        if taskinfo.time + delay_seconds > next_time:
+            taskinfo.time  = next_time
         else:
-            self.queue[mirror] += delay_seconds
+            # In python objects are passed by reference
+            taskinfo.time += delay_seconds
 
     def count_running_tasks(self):
         """
@@ -165,9 +172,9 @@ class Scheduler(object):
 
         """
         if self.active_tasks >= 0:
-            return self.active_tasks - len(self.queue)
+            return self.active_tasks - self.queue.size()
         running = 0
-        for mirror, task in self.tasks.iteritems():
+        for taskname, task in self.tasks.iteritems():
             running += task.running
         return running
 
@@ -181,23 +188,22 @@ class Scheduler(object):
 
         """
         now = time.time()
-        for mirror in self.tasks:
-            if mirror in self.queue:
-                continue
-            task = self.tasks[mirror]
-            self.append_task(mirror, task, since = now)
+        for taskname in self.tasks:
+            task = self.tasks[taskname]
+            self.append_task(taskname, task, since = now)
 
-    def append_task(self, mirror, task, since):
+    def append_task(self, taskname, task, since):
         """
-        In some cases a mirror task may be ignored if there is a running one,
-        but this is a feature, not a bug...
+        In some cases a task with same name may be ignored if there
+        is a running one, but this is a feature, not a bug...
 
         """
         if task.running:
             return
         if not task.enabled:
             return
-        self.queue[mirror] = task.get_schedule_time(since)
+        taskinfo = TaskInfo(taskname, REGULAR_TASK, task.get_schedule_time(since))
+        self.queue.put(taskinfo)
 
     def init_general(self, config):
         self.emails    = []
@@ -232,44 +238,46 @@ class Scheduler(object):
         self.active_tasks = len(
                             [mirror for mirror, task in self.tasks.iteritems() if task.enabled])
 
-    def run_task(self, mirror, stage = 1):
-        if mirror not in self.tasks:
+    def run_task(self, taskinfo, stage = 1):
+        if taskinfo.name not in self.tasks:
             return
-        task = self.tasks[mirror]
+        task = self.tasks[taskinfo.name]
         if task.running:
             return
         task.run(stage)
-        if mirror in self.queue:
-            del self.queue[mirror]
-        log.info("Task: %s begin to run with pid %d", mirror, task.pid)
+        if taskinfo in self.queue:
+            self.queue.remove(taskinfo)
+        log.info("Task: %s begin to run with pid %d", taskinfo.name, task.pid)
+        if task.timeout <= 0:
+            return
 
-    def stop_task(self, mirror):
+    def stop_task(self, taskinfo):
         """
         Stop a task, it should only be called when that task timeouts.
 
         """
-        if mirror not in self.tasks:
+        if taskinfo.name not in self.tasks:
             return
-        task = self.tasks[mirror]
+        task = self.tasks[taskinfo.name]
         if not task.running:
             return
         pid  = task.pid
         task.stop()
-        log.info("Killed task: %s with pid %d", mirror, pid)
+        log.info("Killed task: %s with pid %d", taskinfo.name, pid)
 
     def stop_task_with_pid(self, pid, status):
         """
         Change task's running and pid attr as it's stopped.
 
         """
-        for mirror, task in self.tasks.iteritems():
+        for taskname, task in self.tasks.iteritems():
             if task.pid == pid:
                 task.set_stop_flag()
-                log.info("Task: %s ended with status %d", mirror, status)
-                self.task_post_process(mirror, task)
+                log.info("Task: %s ended with status %d", taskname, status)
+                self.task_post_process(task)
                 return
 
-    def task_post_process(self, mirror, task):
+    def task_post_process(self, task):
         """
         Check whether a task needs post process, e.g. two stage tasks.
 
@@ -277,8 +285,8 @@ class Scheduler(object):
         if not task.twostage:
             return
         if task.stage == 1:
-            log.info("Task: %s scheduled to second stage", mirror)
-            self.run_task(mirror, stage = 2)
+            log.info("Task: %s scheduled to second stage", task.name)
+            self.run_task(TaskInfo(task.name, REGULAR_TASK, 0), stage = 2)
         else:
             task.stage = 1
 
@@ -290,14 +298,14 @@ class Scheduler(object):
         Currently when mirrord is shut down, all running tasks will also be killed.
 
         """
-        for mirror, task in self.tasks.iteritems():
+        for taskname, task in self.tasks.iteritems():
             if not task.running:
                 continue
             pid = task.pid
             task.stop(signo)
             # Not sure it is ok...
             pid, status = os.waitpid(pid, 0)
-            log.info("Killed task: %s with pid %d", mirror, pid)
+            log.info("Killed task: %s with pid %d", taskname, pid)
 
     @classmethod
     def get_runnable_priority(cls, current, limit):
