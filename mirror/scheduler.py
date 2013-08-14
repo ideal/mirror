@@ -100,6 +100,7 @@ class Scheduler(object):
         taskqueue  = [ taskinfo for taskinfo in self.queue ]
         if ( self.todo & self.SCHEDULE_TASK ):
             # to move to zero second
+            timestamp  = curtime
             timestamp -= curtime   % 60
             # next miniute
             end        = timestamp + 60
