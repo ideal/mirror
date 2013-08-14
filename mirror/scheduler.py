@@ -122,6 +122,8 @@ class Scheduler(object):
                 if taskinfo.tasktype != TIMEOUT_TASK:
                     continue
                 if taskinfo.time <= curtime:
+                    log.info("Task: %s timeouts",
+                             taskinfo.name)
                     self.stop_task(taskinfo)
                 if taskinfo.time > curtime:
                     break
