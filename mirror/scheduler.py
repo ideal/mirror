@@ -66,14 +66,22 @@ class Scheduler(object):
             log.info("I am waking up...")
             self.schedule()
 
+    TODO = { REGULAR_TASK : SCHEDULE_TASK, TIMEOUT_TASK : CHECK_TIMEOUT }
+
     def sleep(self):
         self.append_tasks()
 
-        taskinfo = self.queue[0]
-        # taskinfo.time - time.time() is
+        nexttask  = self.queue[0]
+        self.todo = 0
+        if nexttask:
+            for taskinfo in self.queue:
+                if taskinfo.time > nexttask.time:
+                    break
+                self.todo |= self.TODO.get(taskinfo.tasktype, 0)
+        # nexttask.time - time.time() is
         # the duration we can sleep...
-        if taskinfo:
-            sleeptime = taskinfo.time - time.time()
+        if nexttask:
+            sleeptime = nexttask.time - time.time()
         else:
             sleeptime = 1800 # half an hour
         log.info("I am going to sleep, next waking up: %s",
