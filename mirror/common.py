@@ -105,7 +105,10 @@ def check_mirrord_running(pidfile):
         raise MirrordRunningError("Another mirrord is running with pid: %d", pid)
 
 def lock_file(pidfile):
-    """Actually the code below is needless..."""
+    """
+    Actually the code below is needless...
+
+    """
 
     import fcntl
     try:
@@ -123,6 +126,7 @@ def lock_file(pidfile):
         raise MirrorError("Can't lock %s, maybe another mirrord with pid %d is running",
                               pidfile, pid)
 
+    # See document at http://man7.org/linux/man-pages/man2/fcntl.2.html
     fcntl.fcntl(fp, fcntl.F_SETFD, 1)
     fp.seek(0)
     fp.write("%d\n" % os.getpid())
@@ -133,7 +137,8 @@ def lock_file(pidfile):
     return fp
 
 def find_command(command):
-    """Find the path of `command`.
+    """
+    Find the path of `command`.
 
     :returns: the path of command or None if not found
 
@@ -146,7 +151,8 @@ def find_command(command):
     return None
 
 def parse_timeout(timeout):
-    """Parse timeout expression, e.g. 12h17m, 12h, 17m
+    """
+    Parse timeout expression, e.g. 12h17m, 12h, 17m
 
     :returns: the seconds represented by timeout, or 0 if timeout is not valid
 
@@ -171,7 +177,8 @@ CRON_TIME = re.compile(r'^\s*([^@#\s]+)\s+([^@#\s]+)\s+([^@#\s]+)' +
 CRON_ITEM = re.compile(r'^(\d+)-(\d+)/(\d+)$')
 
 def parse_cron_time(time):
-    """Parse the cron time formar, e.g. */20 * * * *
+    """
+    Parse the cron time formar, e.g. */20 * * * *
 
     :returns: a tuple with 7 elements,
               (minute, hour, day of month, month, day of week, comment with #,
