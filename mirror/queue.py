@@ -1,4 +1,6 @@
 #
+# Copyright (C) 2013 Shang Yuanchun <idealities@gmail.com>
+#
 #
 # You may redistribute it and/or modify it under the terms of the
 # GNU General Public License, as published by the Free Software
@@ -21,10 +23,10 @@
 import bisect
 
 class TaskInfo():
-    def __init__(self, name, type, time):
-        self.name = name
-        self.type = type
-        self.time = time
+    def __init__(self, name, tasktype, time):
+        self.name     = name
+        self.tasktype = tasktype
+        self.time     = time
 
     def __eq__(self, other):
         return self.name == other.name
@@ -33,7 +35,7 @@ class TaskInfo():
         return self.time - other.time
 
     def __str__(self):
-        return "(name: %s, type: %d, time: %d)" % (self.name, self.type, self.time)
+        return "(name: %s, type: %d, time: %d)" % (self.name, self.tasktype, self.time)
 
 class Queue(object):
     def __init__(self, *items):
@@ -102,5 +104,5 @@ if __name__ == "__main__":
     task4 = TaskInfo("Send letter",  0, 1376704800)
     print task4 in queue
 
-    print queue.size("type", 0)
+    print queue.size("tasktype", 0)
 

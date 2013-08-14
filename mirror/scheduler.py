@@ -96,7 +96,7 @@ class Scheduler(object):
             # next miniute
             end        = timestamp + 60
             for taskinfo in taskqueue:
-                if taskinfo.type != REGULAR_TASK:
+                if taskinfo.tasktype != REGULAR_TASK:
                     continue
                 if taskinfo.time < timestamp:
                     log.info("Strange problem happened,"
