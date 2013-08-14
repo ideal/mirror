@@ -132,7 +132,8 @@ class AbstractTask(object):
     def stop(self, signo = signal.SIGTERM):
         if self.pid > 0:
             os.kill(self.pid, signo)
-        self.set_stop_flag()
+        if not self.twostage:
+            self.set_stop_flag()
 
     def set_stop_flag(self):
         self.pid     = 0
