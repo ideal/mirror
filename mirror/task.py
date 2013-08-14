@@ -247,7 +247,8 @@ class Task(AbstractTask):
     def get_args(self, stage = 1):
         args  = [os.path.basename(self.command)]
         args += self.args.split(" ")
-        args += self.exclude.split(" ")
+        if self.exclude:
+            args += self.exclude.split(" ")
         if self.twostage and stage == 1:
             args += [self.upstream[0] + '::' + self.rsyncdir + self.firststage + '/',\
                      self.localdir + '/' + self.firststage]
@@ -274,7 +275,7 @@ class SimpleTask(AbstractTask):
         if self.twostage and stage == 1:
             args += self.firststage.split(" ")
             return args
-        if self.args is not None:
+        if self.args:
             args += self.args.split(" ")
         return args
 
