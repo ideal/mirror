@@ -95,12 +95,12 @@ class Scheduler(object):
 
         self.init_sysinfo()
 
+        # we do not need microseconds
+        curtime    = int(time.time())
         taskqueue  = [ taskinfo for taskinfo in self.queue ]
-        if ( self.todo & self.SCHEDULE_TASK):
-            # we do not need microseconds
-            timestamp  = int(time.time())
+        if ( self.todo & self.SCHEDULE_TASK ):
             # to move to zero second
-            timestamp -= timestamp % 60
+            timestamp -= curtime   % 60
             # next miniute
             end        = timestamp + 60
             for taskinfo in taskqueue:
@@ -116,6 +116,15 @@ class Scheduler(object):
                     break
                 if taskinfo.time >= timestamp and taskinfo.time < end:
                     self.schedule_task(taskinfo)
+
+        if ( self.todo & self.CHECK_TIMEOUT ):
+            for taskinfo in taskqueue:
+                if taskinfo.tasktype != TIMEOUT_TASK:
+                    continue
+                if taskinfo.time <= curtime:
+                    self.stop_task(taskinfo)
+                if taskinfo.time > curtime:
+                    break
 
     def schedule_task(self, taskinfo):
         """

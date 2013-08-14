@@ -115,7 +115,7 @@ class AbstractTask(object):
         if pid > 0:
             self.pid        = pid
             self.running    = True
-            self.start_time = time.time()
+            self.start_time = int(time.time())
         elif pid == 0:
             self.pid   = os.getpid()
             if self.scheduler:
