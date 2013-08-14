@@ -55,7 +55,8 @@ pattern = (r"\d+:\s+" +
 def tcpconn(port = 80):
     try:
         # TODO: using AF_NETLINK to fetch tcp infomation instead from /proc
-        fd = socket.socket(socket.AF_NETLINK, socket.SOCK_RAW)
+        sock = socket.socket(socket.AF_NETLINK, socket.SOCK_RAW)
+        sock.close()
     except Exception, e:
         pass
     connections = 0
