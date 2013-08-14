@@ -324,7 +324,7 @@ class Scheduler(object):
             if task.pid == pid:
                 if not task.running:
                     return
-                log.info("Task: %s ended with status %d", taskname, status)
+                log.info("Task: %s ended with status %d, pid %d", taskname, status, pid)
                 self.remove_timeout_task(taskname)
                 self.task_post_process(task)
                 return
