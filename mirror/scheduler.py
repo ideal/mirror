@@ -324,7 +324,6 @@ class Scheduler(object):
             if task.pid == pid:
                 if not task.running:
                     return
-                task.set_stop_flag()
                 log.info("Task: %s ended with status %d", taskname, status)
                 self.remove_timeout_task(taskname)
                 self.task_post_process(task)
@@ -336,11 +335,13 @@ class Scheduler(object):
 
         """
         if not task.twostage:
+            task.set_stop_flag()
             return
         if task.stage == 1:
             log.info("Task: %s scheduled to second stage", task.name)
             self.run_task(TaskInfo(task.name, REGULAR_TASK, 0), stage = 2)
         else:
+            task.set_stop_flag()
             task.stage = 1
 
     def stop_all_tasks(self, signo = signal.SIGTERM):
