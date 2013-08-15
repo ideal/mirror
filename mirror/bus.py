@@ -41,7 +41,6 @@ class MirrorBus(dbus.service.Object):
 
     @dbus.service.method("cn.edu.bjtu.mirror")
     def active_task(self):
-        return self.scheduler.qq
         if not self.scheduler:
             return "No scheduler found, can not get task queue info."
         return self.scheduler.active_tasks
