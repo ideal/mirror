@@ -128,7 +128,7 @@ entry_points = {
 # Main setup
 setup(
     name = "mirror",
-    version = "0.6.0",
+    version = "0.6.1",
     fullname = "Mirror for open source mirror site",
     description = "Mirror for open source mirror site to sync files",
     author = "Shang Yuanchun",

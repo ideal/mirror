@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Mirror 0.6.0\n"
+"Project-Id-Version: Mirror 0.6.1\n"
 "Report-Msgid-Bugs-To: http://mirror.bjtu.edu.cn\n"
-"POT-Creation-Date: 2013-06-24 17:31+0800\n"
+"POT-Creation-Date: 2013-08-15 17:55+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,46 +17,54 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: mirror/main.py:53
+#: mirror/main.py:45 mirror/main.py:65
 msgid "Show program's version number and exit"
 msgstr ""
 
-#: mirror/main.py:55
-msgid "Do not daemonize (default is daemonize)"
-msgstr ""
-
-#: mirror/main.py:57
-msgid "Set the config location directory"
-msgstr ""
-
-#: mirror/main.py:59
-msgid "Use pidfile to store process id"
-msgstr ""
-
-#: mirror/main.py:61
-msgid "User to switch to. Need to start as root"
-msgstr ""
-
-#: mirror/main.py:63
-msgid "Group to switch to. Need to start as root"
-msgstr ""
-
-#: mirror/main.py:65
-msgid "Set the logfile location"
+#: mirror/main.py:47
+msgid "List current tasks in scheduler's queue"
 msgstr ""
 
 #: mirror/main.py:67
-msgid "Set the log level: none, info, warning, error, critical, debug"
+msgid "Do not daemonize (default is daemonize)"
 msgstr ""
 
 #: mirror/main.py:69
-msgid "Sets the log level to 'none', this is the same as `-L none`"
+msgid "Set the config location directory"
 msgstr ""
 
 #: mirror/main.py:71
-msgid "Rotate logfiles."
+msgid "Use pidfile to store process id"
 msgstr ""
 
 #: mirror/main.py:73
+msgid "User to switch to. Need to start as root"
+msgstr ""
+
+#: mirror/main.py:75
+msgid "Group to switch to. Need to start as root"
+msgstr ""
+
+#: mirror/main.py:77
+msgid "Set the logfile location"
+msgstr ""
+
+#: mirror/main.py:79
+msgid "Set the log level: none, info, warning, error, critical, debug"
+msgstr ""
+
+#: mirror/main.py:81
+msgid "Sets the log level to 'none', this is the same as `-L none`"
+msgstr ""
+
+#: mirror/main.py:83
+msgid "Rotate logfiles."
+msgstr ""
+
+#: mirror/main.py:85
 msgid "Profiles the daemon"
+msgstr ""
+
+#: mirror/console.py:38
+msgid "Open /tmp/mirrord failed, can't read task infomation"
 msgstr ""

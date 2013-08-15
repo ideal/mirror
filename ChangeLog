@@ -1,2 +1,10 @@
+=== Mirror 0.6.1 ===
+	* a usable version
+
+	TODO:
+	* report task status
+	* more functions to mirror
+	* send email about task failure
+
 === Mirror 0.6.0 (In Development) ===
 	* Initial version
