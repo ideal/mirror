@@ -1,44 +1,46 @@
-==========================
- Mirror for open source mirror site to sync files
-==========================
+# Mirror
+
+Mirror is an open source python application for mirror site (e.g. [mirror.bjtu.edu.cn](http://mirror.bjtu.edu.cn) to sync files from upstreams (it uses rsync internally), it actually works like a cron, but with some differences.
+
+You are welcome to send comments, patches and any others to [github](https://github.com/ideal/mirror/issues) or to [@idealities](http://twitter.com/idealities).
 
 Homepage: http://mirror.bjtu.edu.cn
 
-Authors:
-    Shang Yuanchun
-    Bob Gao
+Authors
+=======
+
+Shang Yuanchun
+Bob Gao
 
 For contributors and past developers see: 
     AUTHORS
 
-==========================
-Installation Instructions:
-==========================
+Installation Instructions
+=========================
 
 Build and install by running:
 
-    $ python setup.py build
-    $ sudo python setup.py install
+```
+python setup.py build
+sudo python setup.py install
+```
 
-    Or to a custom directory:
+Or to a custom directory:
+```
+sudo python setup.py install --root=/tmp
+```
 
-    $ sudo python setup.py install --root=/tmp
+Contact/Support
+===============
 
-==========================
-Contact/Support:
-==========================
+Email: idealities@gmail.com
 
-   Email: idealities@gmail.com
-
-==========================
 Features
-==========================
+========
 
- * 便捷的方式增加镜像
- * 不同镜像可设置优先级(1-10，1为最高)
- * 根据服务器负载和当前HTTP连接数来决定是否调度执行
- * 可配置多个上游，根据上游的状态自动切换
- * 失败时邮件通知
- * 磁盘状况报警
- * 可设置同步的超时时间
- * 支持两阶段同步(for ubuntu, debian等)
+ * It's simple and easy to add a mirror
+ * You can set a priorty for each mirror, from 1 to 10, 1 is highest
+ * And scheduler will schedule a task depending on current conditions
+ * You can also set a timeout for each mirror
+ * Support for two stage syncing (for ubuntu, debian)
+ * You can also use it as another cron...
