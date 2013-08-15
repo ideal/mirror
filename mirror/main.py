@@ -169,8 +169,19 @@ def start_daemon():
     try:
         from mirror.scheduler import Scheduler
         scheduler = Scheduler(options, args)
-        log.info("Starting mirror scheduler...")
-        scheduler.start()
+        from mirror.bus import MirrorBus
+        mirrorbus = MirrorBus(scheduler)
+
+        pid = os.fork()
+        if pid > 0:
+            scheduler.buspid = pid
+            log.info("Starting mirror scheduler...")
+            scheduler.start()
+        elif pid == 0:
+            signal.signal(signal.SIGTERM, signal.SIG_DFL)
+            signal.signal(signal.SIGINT, signal.SIG_IGN)
+            log.info("Starting mirror dbus...")
+            mirrorbus.start()
     except Exception, e:
         log.exception(e)
         sys.exit(1)

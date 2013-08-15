@@ -28,13 +28,33 @@ class MirrorBus(dbus.service.Object):
     def __init__(self, scheduler):
         self.scheduler = scheduler
 
+        DBusGMainLoop(set_as_default=True)
         busname = dbus.service.BusName("cn.edu.bjtu.mirror", bus=dbus.SessionBus())
         dbus.service.Object.__init__(self, busname, "/cn/edu/bjtu/mirror")
 
     @dbus.service.method("cn.edu.bjtu.mirror")
     def list_queue(self):
-        print("queue")
+        if not self.scheduler:
+            return "No scheduler found, can not get task queue info."
+        task_queue = self.scheduler.queue
+        return str(task_queue)
 
-    @classmethod
+    @dbus.service.method("cn.edu.bjtu.mirror")
+    def active_task(self):
+        return self.scheduler.qq
+        if not self.scheduler:
+            return "No scheduler found, can not get task queue info."
+        return self.scheduler.active_tasks
+
     def start(self):
-        DBusGMainLoop(set_as_default=True)
+        import gobject
+        loop = gobject.MainLoop()
+        loop.run()
+
+if __name__ == "__main__":
+    mirrorbus = MirrorBus(None)
+
+    import gobject
+    loop = gobject.MainLoop()
+    loop.run()
+

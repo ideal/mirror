@@ -46,6 +46,11 @@ def shutdown_handler(signo, frame):
     signal.signal(signal.SIGCHLD, signal.SIG_DFL)
     scheduler.stop_all_tasks()
 
+    if hasattr(scheduler, "buspid"):
+        os.kill(scheduler.buspid, signal.SIGTERM)
+        pid, status = os.waitpid(scheduler.buspid, 0)
+        log.info("Killed mirror dbus with pid: %d", pid)
+
     log.info("Bye bye... :)")
     sys.exit(0)
 
