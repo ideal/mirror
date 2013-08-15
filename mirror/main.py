@@ -27,10 +27,31 @@ from   optparse import OptionParser
 
 import mirror.log
 import mirror.error
+import mirror.console
 
 def version_callback(option, opt_str, value, parser):
     print(os.path.basename(sys.argv[0]) + ": " + mirror.common.get_version())
     sys.exit(0)
+
+def start():
+    """Entry point for mirror script"""
+    import mirror.common
+    mirror.common.setup_translations()
+
+    # Setup the argument parser
+    parser = OptionParser(usage="%prog [options]")
+    parser.add_option("-v", "--version", action="callback",
+                      callback=version_callback,
+                      help=_("Show program's version number and exit"))
+    parser.add_option("-l", "--list", dest="listqueue",
+                      help=_("List current tasks in scheduler's queue"), action="store_true", default=False)
+
+    # Get the options and args from the OptionParser
+    (options, args) = parser.parse_args()
+
+    if options.listqueue:
+        mirror.console.list_queue()
+        sys.exit(0)
 
 def start_daemon():
     """Entry point for daemon script"""

@@ -30,6 +30,9 @@ import logging
 import weakref
 import mirror.common
 import mirror.error
+import mmap
+import struct
+import cPickle as pickle
 from mirror.configmanager import ConfigManager
 from mirror.task          import Task, SimpleTask, TASK_TYPES
 from mirror.task          import PRIORITY_MIN, PRIORITY_MAX
@@ -70,6 +73,7 @@ class Scheduler(object):
 
     def sleep(self):
         self.append_tasks()
+        self.write_mmap()
 
         nexttask  = self.queue[0]
         self.todo = 0
@@ -226,6 +230,31 @@ class Scheduler(object):
         if taskinfo in self.queue:
             return
         self.queue.put(taskinfo)
+
+    DEFAULT_BUFFER_SIZE  = 10240
+
+    def write_mmap(self):
+        data = pickle.dumps(self.queue)
+        size = len(data) + 2 + 4
+        if not hasattr(self, "buffer") or self.buffersz < size:
+            self.buffersz = max(self.DEFAULT_BUFFER_SIZE, size)
+            if hasattr(self, "bufferfd"):
+                self.buffer.close()
+                os.close(self.bufferfd)
+            self.bufferfd = os.open("/tmp/mirrord", os.O_CREAT | os.O_TRUNC | os.O_RDWR, 0644)
+            os.write(self.bufferfd, '\x00' * self.buffersz)
+            self.buffer   = mmap.mmap(self.bufferfd, self.buffersz, mmap.MAP_SHARED, mmap.PROT_WRITE)
+            self.buffer.write("\x79\x71")
+        self.buffer.seek(2)
+        self.buffer.write(struct.pack("I", size))
+        self.buffer.write(data)
+
+    def stop(self):
+        if not hasattr(self, "buffer"):
+            return
+        self.buffer.close()
+        os.close(self.bufferfd)
+        os.unlink("/tmp/mirrord")
 
     def append_timeout_task(self, taskname, task, time):
         """
