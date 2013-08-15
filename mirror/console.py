@@ -21,9 +21,15 @@
 #
 
 import os, sys
+import time
 import mmap
 import struct
 import cPickle as pickle
+
+GREEN = '\033[92m'
+CLEND = '\033[0m'
+
+TASK_DESC = { 1: "Normal task", 2: "Timeout check" }
 
 def list_queue():
     try:
@@ -39,8 +45,11 @@ def list_queue():
     size = struct.unpack("I", buffer.read(4))[0]
 
     taskqueue = pickle.loads(buffer.read(size))
+    formatstr = "Task:"+GREEN+"%10s"+CLEND+"\ttype:%14s\ttime: %s"
     for taskinfo in taskqueue:
-        print taskinfo
+        print formatstr % (
+              taskinfo.name, TASK_DESC[taskinfo.tasktype],
+              time.asctime(time.localtime(taskinfo.time)))
 
     buffer.close()
     os.close(bufferfd)
