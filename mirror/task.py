@@ -241,6 +241,11 @@ class Task(AbstractTask):
             if self.rsyncdir[-1] != '/':
                 self.rsyncdir += '/'
             self.localdir = taskinfo['localdir']
+            if not os.path.exists(self.localdir):
+                try:
+                    os.mkdir(self.localdir)
+                except:
+                    log.error("Error when create directory: %s", self.localdir)
         except KeyError, e:
             log.error("Error in config for mirror: %s, key: %s not found.", self.name, e)
             self.enabled  = False

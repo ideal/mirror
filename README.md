@@ -1,6 +1,6 @@
 # Mirror
 
-Mirror is an open source python application for mirror site (e.g. [mirror.bjtu.edu.cn](http://mirror.bjtu.edu.cn) to sync files from upstreams (it uses rsync internally), it actually works like a cron, but with some differences.
+Mirror is an open source python application for mirror site (e.g. [mirror.bjtu.edu.cn](http://mirror.bjtu.edu.cn)) to sync files from upstreams (it uses rsync internally), it actually works like a cron, but with some differences. 
 
 You are welcome to send comments, patches and any others to [github](https://github.com/ideal/mirror/issues) or to [@idealities](http://twitter.com/idealities).
 
@@ -9,8 +9,8 @@ Homepage: http://mirror.bjtu.edu.cn
 Authors
 =======
 
-Shang Yuanchun
-Bob Gao
+* Shang Yuanchun
+* Bob Gao
 
 For contributors and past developers see: 
     AUTHORS
@@ -29,6 +29,22 @@ Or to a custom directory:
 ```
 sudo python setup.py install --root=/tmp
 ```
+
+After that, you are going to set up environment, you are encouraged to add a specific user to run `mirrord`, here we suppose the username is `mirror` and its home directory is `/home/mirror`.
+
+Make necessary directories:
+```sh
+sudo mkdir /var/log/mirrord /var/log/rsync
+sudo chown mirror:mirror /var/log/mirrord /var/log/rsync
+mkdir ~/.config/mirror
+cp config/mirror.ini ~/config/mirror/
+```
+
+Now you can edit mirror.ini and run:
+```
+mirrord
+```
+and that's done. Also you can use `man mirrord` to read documents.
 
 Contact/Support
 ===============
