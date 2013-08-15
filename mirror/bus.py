@@ -22,6 +22,7 @@
 
 import dbus
 import dbus.service
+import threading
 from dbus.mainloop.glib import DBusGMainLoop
 
 class MirrorBus(dbus.service.Object):
@@ -49,6 +50,14 @@ class MirrorBus(dbus.service.Object):
         import gobject
         loop = gobject.MainLoop()
         loop.run()
+
+class MirrorBusThread(threading.Thread):
+    def __init__(self, scheduler):
+        threading.Thread.__init__(self, name="mirrorbus")
+        self.mirrorbus = MirrorBus(scheduler)
+
+    def run(self):
+        self.mirrorbus.start()
 
 if __name__ == "__main__":
     mirrorbus = MirrorBus(None)
