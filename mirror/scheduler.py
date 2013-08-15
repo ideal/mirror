@@ -312,7 +312,7 @@ class Scheduler(object):
         pid  = task.pid
         task.stop()
         log.info("Killed task: %s with pid %d", taskinfo.name, pid)
-        if task.timeout > 0:
+        if task.timeout > 0 and ( not task.twostage ):
             self.remove_timeout_task(taskinfo.name)
 
     def stop_task_with_pid(self, pid, status):
