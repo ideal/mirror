@@ -223,7 +223,7 @@ class Scheduler(object):
         is a running one, but this is a feature, not a bug...
 
         """
-        if task.running:
+        if task.running and task.timeout > 0:
             return
         if not task.enabled:
             return
@@ -319,6 +319,8 @@ class Scheduler(object):
         if taskinfo.name not in self.tasks:
             return
         task = self.tasks[taskinfo.name]
+        if task.running and task.timeout <= 0:
+            taskinfo.time  = task.get_schedule_time(since = time.time())
         if task.running and ( not task.twostage ):
             return
         task.run(stage)
@@ -326,8 +328,10 @@ class Scheduler(object):
             self.queue.remove(taskinfo)
         log.info("Task: %s begin to run with pid %d", taskinfo.name, task.pid)
         if task.timeout <= 0:
-            return
-        self.append_timeout_task(taskinfo.name, task, task.start_time + task.timeout)
+            self.append_task(taskinfo.name, task, time.time())
+        else:
+            self.append_timeout_task(taskinfo.name, task,
+                                     task.start_time + task.timeout)
 
     def stop_task(self, taskinfo):
         """
