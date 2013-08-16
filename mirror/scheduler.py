@@ -196,8 +196,6 @@ class Scheduler(object):
         Calculate the number of current running tasks.
 
         """
-        if self.active_tasks >= 0:
-            return self.active_tasks - self.queue.size("tasktype", REGULAR_TASK)
         running = 0
         for taskname, task in self.tasks.iteritems():
             running += task.running

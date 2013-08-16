@@ -64,7 +64,7 @@ class Queue(object):
         if key is None or value is None:
             return len(self.queue)
         else:
-            if not hasattr(TaskInfo, key):
+            if not hasattr(self.queue[0], key):
                 return 0
             count = 0
             for item in self.queue:
