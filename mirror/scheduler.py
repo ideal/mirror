@@ -28,11 +28,12 @@ import time
 import signal
 import logging
 import weakref
-import mirror.common
-import mirror.error
 import mmap
 import struct
 import cPickle as pickle
+import mirror.common
+import mirror.error
+import mirror.handler
 from mirror.configmanager import ConfigManager
 from mirror.task          import Task, SimpleTask, TASK_TYPES
 from mirror.task          import PRIORITY_MIN, PRIORITY_MAX
@@ -339,10 +340,23 @@ class Scheduler(object):
         if not task.running:
             return
         pid  = task.pid
+        # Python's SIGCHLD sometimes has delay in calling its handler,
+        # we have to disable sigchld_handler() here.
+        # More: http://utcc.utoronto.ca/~cks/space/blog/python/CPythonSignals
+        signal.signal(signal.SIGCHLD, signal.SIG_DFL)
         task.stop()
-        log.info("Killed task: %s with pid %d", taskinfo.name, pid)
-        if task.timeout > 0 and ( not task.twostage ):
-            self.remove_timeout_task(taskinfo.name)
+        self.stop_task_manually(task, pid)
+        signal.signal(signal.SIGCHLD, mirror.handler.sigchld_handler)
+
+    def stop_task_manually(self, task, pid):
+        """
+        Without SIGCHLD handler, we have to waitpid() here.
+
+        """
+        pid, status = os.waitpid(pid, 0)
+        log.info("Killed task: %s with pid %d, status %d", task.name, pid, status)
+        self.remove_timeout_task(task.name)
+        self.task_post_process(task)
 
     def stop_task_with_pid(self, pid, status):
         """
