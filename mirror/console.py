@@ -45,7 +45,7 @@ def list_queue():
     size = struct.unpack("I", buffer.read(4))[0]
 
     taskqueue = pickle.loads(buffer.read(size))
-    formatstr = "Task:"+GREEN+"%-10s"+CLEND+"\ttype:%14s\ttime: %s"
+    formatstr = "Task:"+GREEN+"%-18s"+CLEND+"\ttype:%14s\ttime: %s"
     for taskinfo in taskqueue:
         print formatstr % (
               taskinfo.name, TASK_DESC[taskinfo.tasktype],
