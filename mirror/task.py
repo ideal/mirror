@@ -243,7 +243,7 @@ class Task(AbstractTask):
             self.localdir = taskinfo['localdir']
             if not os.path.exists(self.localdir):
                 try:
-                    os.mkdir(self.localdir)
+                    os.makedirs(self.localdir, 0755)
                 except:
                     log.error("Error when create directory: %s", self.localdir)
         except KeyError, e:
@@ -256,6 +256,9 @@ class Task(AbstractTask):
     def get_args(self, stage = 1):
         args  = [os.path.basename(self.command)]
         args += self.args.split(" ")
+        if self.twostage and stage == 2:
+            args.remove("--delete")
+            args.append("--delete-after")
         if self.exclude:
             args += self.exclude.split(" ")
         if self.twostage and stage == 1:
