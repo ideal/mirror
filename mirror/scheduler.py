@@ -157,7 +157,7 @@ class Scheduler(object):
                      taskinfo.name)
             self.delay_task(taskinfo)
             return
-        if self.maxtasks > 0 and self.count_running_tasks() >= self.maxtasks and task.pririty > 2:
+        if self.maxtasks > 0 and self.count_running_tasks() >= self.maxtasks and task.priority > 2:
             log.info("Task: %s not scheduled because running tasks is larger than %d",
                      taskinfo, self.maxtasks)
             self.delay_task(taskinfo)
