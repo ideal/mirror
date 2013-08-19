@@ -225,7 +225,8 @@ class Scheduler(object):
             return
         if not task.enabled:
             return
-        taskinfo = TaskInfo(taskname, REGULAR_TASK, task.get_schedule_time(since))
+        taskinfo = TaskInfo(taskname, REGULAR_TASK,
+                            task.get_schedule_time(since), task.priority)
         if taskinfo in self.queue:
             return
         self.queue.put(taskinfo)
@@ -264,7 +265,8 @@ class Scheduler(object):
             return
         if not task.enabled:
             return
-        taskinfo = TaskInfo(taskname, TIMEOUT_TASK, time)
+        taskinfo = TaskInfo(taskname, TIMEOUT_TASK,
+                            time, task.priority)
         if taskinfo in self.queue:
             return
         self.queue.put(taskinfo)
@@ -384,7 +386,7 @@ class Scheduler(object):
             return
         if task.stage == 1:
             log.info("Task: %s scheduled to second stage", task.name)
-            self.run_task(TaskInfo(task.name, REGULAR_TASK, 0), stage = 2)
+            self.run_task(TaskInfo(task.name, REGULAR_TASK, 0, task.priority), stage = 2)
         else:
             task.set_stop_flag()
             task.stage = 1

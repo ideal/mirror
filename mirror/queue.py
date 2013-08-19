@@ -23,19 +23,22 @@
 import bisect
 
 class TaskInfo():
-    def __init__(self, name, tasktype, time):
+    def __init__(self, name, tasktype, time, priority):
         self.name     = name
         self.tasktype = tasktype
         self.time     = time
+        self.priority = priority
 
     def __eq__(self, other):
         return self.name == other.name
 
     def __cmp__(self, other):
-        return self.time - other.time
+        return (self.time - other.time) if self.time != other.time else (
+                                           self.priority - other.priority)
 
     def __str__(self):
-        return "(name: %s, type: %d, time: %d)" % (self.name, self.tasktype, self.time)
+        return "(name: %s, type: %d, time: %d, priority: %d)" % (self.name,
+                                    self.tasktype, self.time, self.priority)
 
 class Queue(object):
     def __init__(self, *items):
@@ -64,6 +67,8 @@ class Queue(object):
         if key is None or value is None:
             return len(self.queue)
         else:
+            if self.empty():
+                return 0
             if not hasattr(self.queue[0], key):
                 return 0
             count = 0
@@ -88,12 +93,13 @@ class Queue(object):
         return item in self.queue
 
 if __name__ == "__main__":
-    task1 = TaskInfo("Buy clock",    0, 1376712000)
-    task2 = TaskInfo("Wash clothes", 0, 1376701200)
-    task3 = TaskInfo("Send letter",  0, 1376704800)
+    task1 = TaskInfo("Buy clock",    0, 1376712000, 2)
+    task2 = TaskInfo("Basketball",   0, 1376701200, 1)
+    task3 = TaskInfo("Wash clothes", 0, 1376701200, 2)
+    task4 = TaskInfo("Send letter",  0, 1376704800, 4)
 
-    queue = Queue(task1, task2, task3, "Qiandao Lake")
-    assert(queue.size() == 3)
+    queue = Queue(task1, task2, task3, task4, "Qiandao Lake")
+    assert(queue.size() == 4)
     assert(not queue.empty())
     print(queue)
 
@@ -101,7 +107,7 @@ if __name__ == "__main__":
     print(task)
 
     print task in queue
-    task4 = TaskInfo("Send letter",  0, 1376704800)
+    task4 = TaskInfo("Send letter",  0, 1376704800, 4)
     print task4 in queue
 
     print queue.size("tasktype", 0)
