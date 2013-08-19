@@ -25,9 +25,7 @@ import time
 import mmap
 import struct
 import cPickle as pickle
-
-GREEN = '\033[92m'
-CLEND = '\033[0m'
+import mirror.color
 
 TASK_DESC = { 1: "Normal task", 2: "Timeout check" }
 
@@ -45,7 +43,8 @@ def list_queue():
     size = struct.unpack("I", buffer.read(4))[0]
 
     taskqueue = pickle.loads(buffer.read(size))
-    formatstr = "Task:"+GREEN+"%-18s"+CLEND+"\ttype:%14s\ttime: %s"
+    formatstr = ("Task:"+mirror.color.FOREGROUND_COLORS.GREEN
+                +"%-18s"+mirror.color.COLOR_END+"\ttype:%14s\ttime: %s")
     for taskinfo in taskqueue:
         print formatstr % (
               taskinfo.name, TASK_DESC[taskinfo.tasktype],
