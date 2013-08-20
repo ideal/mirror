@@ -1,21 +1,21 @@
-.TH mirror 1 "April 2013" "0.6.0"
+.TH mirrord 1 "August 2013" "0.6.1"
 
 .SH NAME
-mirror - a tool for open source mirror site to sync files
+mirrord - a tool for open source mirror site to sync files
 
 .SH SYNOPSIS
-.B mirror [options]
+.B mirrord [options]
 
 .SH DESCRIPTION
 .br
 .P
-Without any option, mirror will become a daemon, and reads /etc/mirror.ini as config file to sync files from upstreams.
+Without any option, mirrord will become a daemon, and reads ~/.config/mirror/mirror.ini as config file to sync files from upstreams.
 .br
 
 .SH OPTIONS
 .TP
-.I -l --list
-List current mirrors and exit.
+.I -D --do-not-daemonize
+Tell mirrord to not to fork as a daemon.
 .TP
 .I --version
 Show program's version number and exit.
@@ -25,6 +25,15 @@ Show this help message and exit.
 .TP
 .I -c CONFIG, --config=CONFIG
 Sets the configuration path.
+.TP
+.I -P --pidfile=PIDFILE
+Use PIDFILe to store mirrord's process id.
+.TP
+.I -U --user=USER
+User to switch to, this need to be root when starting.
+.TP
+.I -G --group=GROUP
+Group to switch to, this need to be root when starting.
 .TP
 .I -l LOGFILE, --logfile=LOGFILE
 Output to designated logfile instead of stdout

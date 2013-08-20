@@ -53,6 +53,8 @@ def start():
         mirror.console.list_queue()
         sys.exit(0)
 
+    parser.print_help()
+
 def start_daemon():
     """Entry point for daemon script"""
     import mirror.common
