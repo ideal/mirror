@@ -55,11 +55,16 @@ def get_default_config_dir(filename=None):
 
     """
 
-    from xdg.BaseDirectory import save_config_path
+    try:
+        from xdg.BaseDirectory import save_config_path
+        config_path = save_config_path("mirror")
+    except:
+        config_path = os.path.join(os.path.expanduser("~/.config"),
+                                   "mirror")
     if not filename:
         filename = ''
     try:
-        return os.path.join(save_config_path("mirror"), filename)
+        return os.path.join(config_path, filename)
     except OSError, e:
         log.error("Unable to use default config directory, exiting... (%s)", e)
         sys.exit(1)
