@@ -190,6 +190,7 @@ class Scheduler(object):
         else:
             # In python objects are passed by reference
             taskinfo.time += delay_seconds
+        self.reappend_task(task, taskinfo)
 
     def count_running_tasks(self):
         """
@@ -229,6 +230,17 @@ class Scheduler(object):
                             task.get_schedule_time(since), task.priority)
         if taskinfo in self.queue:
             return
+        self.queue.put(taskinfo)
+
+    def reappend_task(self, task, taskinfo):
+        """
+        Remove a taskinfo from queue and put it in again,
+        to keep the queue in order.
+
+        """
+        if taskinfo not in self.queue:
+            return
+        self.queue.remove(taskinfo)
         self.queue.put(taskinfo)
 
     DEFAULT_BUFFER_SIZE  = 10240
