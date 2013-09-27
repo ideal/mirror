@@ -183,7 +183,7 @@ CRON_ITEM = re.compile(r'^(\d+)-(\d+)/(\d+)$')
 
 def parse_cron_time(time):
     """
-    Parse the cron time formar, e.g. */20 * * * *
+    Parse the cron time format, e.g. */20 * * * *
 
     :returns: a tuple with 7 elements,
               (minute, hour, day of month, month, day of week, comment with #,
