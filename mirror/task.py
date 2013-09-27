@@ -94,7 +94,7 @@ class AbstractTask(object):
                     log.error("Error in config for task: %s, time: %s not valid.", self.name, attr)
                     self.enabled = False
         else:
-            log.error("Error in config for task: %s, time not valid.")
+            log.error("Error in config for task: %s, time not valid.", self.name)
             self.enabled = False
 
     def run(self, stage = 1):
