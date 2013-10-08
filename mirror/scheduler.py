@@ -333,7 +333,9 @@ class Scheduler(object):
         task = self.tasks[taskinfo.name]
         if task.running and task.timeout <= 0:
             taskinfo.time  = task.get_schedule_time(since = time.time())
+            self.reappend_task(task, taskinfo)
         if task.running and ( not task.twostage ):
+            log.info("Task: %s is still running and no timeout set, skipped", taskinfo.name)
             return
         task.run(stage)
         if taskinfo in self.queue:
