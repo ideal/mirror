@@ -385,7 +385,14 @@ class Scheduler(object):
             if task.pid == pid:
                 if not task.running:
                     return
-                log.info("Task: %s ended with status %d, pid %d", taskname, status, pid)
+                if (status & 0xff) != 0:
+                    endstr = "killed by signal"
+                    code   = (status & 0xff)
+                else:
+                    endstr = "ended with return code"
+                    # See "EXIT VALUES" section in man rsync
+                    code   = (status >> 8)
+                log.info("Task: %s %s %d, pid %d", taskname, endstr, code, pid)
                 self.remove_timeout_task(taskname)
                 self.task_post_process(task)
                 return
