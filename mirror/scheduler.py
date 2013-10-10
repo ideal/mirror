@@ -57,7 +57,8 @@ class Scheduler(object):
         self.queue   = Queue()
         self.todo    = self.SCHEDULE_TASK
         # the number of tasks that enabled
-        self.active_tasks = -1
+        self.active_tasks    = -1
+        self.roused_by_child = False
 
         self.init_general(self.config)
         self.init_tasks  (self.config)
@@ -67,7 +68,8 @@ class Scheduler(object):
     def start(self):
         while (True):
             self.sleep()
-            log.info("I am waking up...")
+            if not self.roused_by_child:
+                log.info("I am waking up...")
             self.schedule()
 
     TODO = { REGULAR_TASK : SCHEDULE_TASK, TIMEOUT_TASK : CHECK_TIMEOUT }
@@ -91,6 +93,7 @@ class Scheduler(object):
             sleeptime = 1800 # half an hour
         log.info("I am going to sleep, next waking up: %s",
                  time.ctime(time.time() + sleeptime))
+        self.roused_by_child = False
         time.sleep(sleeptime)
 
     def schedule(self):
@@ -381,6 +384,7 @@ class Scheduler(object):
         Change task's running and pid attr as it's stopped.
 
         """
+        self.roused_by_child = True
         for taskname, task in self.tasks.iteritems():
             if task.pid == pid:
                 if not task.running:
