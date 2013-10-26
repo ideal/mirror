@@ -32,3 +32,22 @@ class PluginManager(object):
         self.config     = mirror.configmanager.ConfigManager(config_file)
         self.entry_name = entry_name
 
+        self.plugins    = {}
+        self.hooks      = {}
+
+        self.scan_plugins()
+
+    def enable_plugins(self):
+        pass
+
+    def enable_plugin(self, plugin_name):
+        pass
+
+    def disable_plugins(self):
+        pass
+
+    def disable_plugin(self, plugin_name):
+        pass
+
+    def scan_plugins():
+        pass
