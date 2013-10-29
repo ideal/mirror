@@ -28,8 +28,9 @@ log = logging.getLogger(__name__)
 
 class PluginThread(threading.Thread):
 
-    def __init__(self):
+    def __init__(self, hook):
         threading.Thread.__init__(self, name="mirror.plugin")
+        self.hook = hook
 
     def run(self):
         pass

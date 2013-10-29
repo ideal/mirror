@@ -28,7 +28,7 @@ __author_email__ = "idealities@gmail.com"
 __version__      = "0.6"
 __url__          = "http://mirror.bjtu.edu.cn"
 __license__      = "GPLv3"
-__description__  = "Monitors folders for .torrent files."
+__description__  = "Example plugin for mirror."
 __long_description__ = """"""
 __pkg_data__     = { 'mirror.plugins.' + __plugin_name__.lower(): [ "data/*" ] }
 
