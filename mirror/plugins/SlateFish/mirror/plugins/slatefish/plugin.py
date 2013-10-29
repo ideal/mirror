@@ -23,7 +23,7 @@
 from mirror.pluginbase import PluginBase
 
 class Plugin(PluginBase):
-    
+
     def enable(self):
         pass
 
