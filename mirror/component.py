@@ -85,10 +85,10 @@ class ComponentRegistry(object):
 
         """
 
-        if obj in self.components:
+        if obj in self.components.values():
             log.debug("Deregistering Component: %s", obj._name)
             self.stop([obj._name])
-            del self.components[obj._name]
+            self.components.pop(obj._name)
 
     def start(self, names = []):
         """

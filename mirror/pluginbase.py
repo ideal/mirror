@@ -22,12 +22,14 @@
 
 
 import logging
+from mirror.component import Component
 
 log = logging.getLogger(__name__)
 
-class PluginBase(object):
+class PluginBase(Component):
 
     def __init__(self, name):
+        super(PluginBase, self).__init__(name)
         self.name = name
 
     def enable(self):

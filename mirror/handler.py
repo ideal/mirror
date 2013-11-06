@@ -52,7 +52,12 @@ def shutdown_handler(signo, frame):
         pid, status = os.waitpid(scheduler.buspid, 0)
         log.info("Killed mirror dbus with pid: %d", pid)
 
-    scheduler.stop()
+    # Deregister the scheduler,
+    # this will call scheduler's stop().
+    # But scheduler's start() is called
+    # directly, not by component's start()
+    component.deregister(scheduler)
+
     log.info("Bye bye... :)")
     sys.exit(0)
 

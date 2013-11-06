@@ -266,6 +266,7 @@ class Scheduler(Component):
         self.buffer.write(data)
 
     def stop(self):
+        log.info("Stopping mirror scheduler")
         if not hasattr(self, "buffer"):
             return
         self.buffer.close()
