@@ -28,6 +28,8 @@ log = logging.getLogger(__name__)
 
 class PluginBase(Component):
 
+    enabled = True
+
     def __init__(self, name):
         super(PluginBase, self).__init__(name)
         self.name = name
