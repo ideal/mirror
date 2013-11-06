@@ -62,8 +62,7 @@ def sigchld_handler(signo, frame):
     except OSError,e:
         log.error("Error occured when waitpid(), %s.", e)
         return
-    scheduler_ref = schedulers.get(os.getpid(), None)
-    if scheduler_ref is None:
-        return
     scheduler = component.get("scheduler")
+    if scheduler is None:
+        return
     scheduler.stop_task_with_pid(pid, status)
