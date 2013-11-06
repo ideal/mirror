@@ -131,12 +131,13 @@ class ComponentRegistry(object):
         for name in names:
             if name in stopped:
                 continue
-            if name in self.components:
-                if name in self.dependents:
-                    # If other components depend on this component, stop them first
-                    self.stop(self.dependents[name])
-                    stopped.update(self.dependents[name])
-                self.components[name].stop()
+            if name not in self.components:
+                continue
+            if name in self.dependents:
+                # If other components depend on this component, stop them first
+                self.stop(self.dependents[name])
+                stopped.update(self.dependents[name])
+            self.components[name].stop()
 
 _component_registry = ComponentRegistry()
 
