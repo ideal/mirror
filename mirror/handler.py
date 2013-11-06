@@ -38,7 +38,7 @@ def shutdown_handler(signo, frame):
     log.info("Got signal %s, exiting...", signals[signo])
 
     import sys
-    scheduler = component.get("scheduler")
+    scheduler = component.get("Scheduler")
     if scheduler is None:
         sys.exit(0)
 
@@ -55,7 +55,7 @@ def shutdown_handler(signo, frame):
     # Deregister the scheduler,
     # this will call scheduler's stop().
     # But scheduler's start() is called
-    # directly, not by component's start()
+    # directly, not by component's start().
     component.deregister(scheduler)
 
     log.info("Bye bye... :)")
@@ -67,7 +67,7 @@ def sigchld_handler(signo, frame):
     except OSError,e:
         log.error("Error occured when waitpid(), %s.", e)
         return
-    scheduler = component.get("scheduler")
+    scheduler = component.get("Scheduler")
     if scheduler is None:
         return
     scheduler.stop_task_with_pid(pid, status)

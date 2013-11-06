@@ -51,8 +51,8 @@ class Scheduler(Component):
     SCHEDULE_TASK = 0x02
 
     def __init__(self, options = None, args = None):
-        # The name is "scheduler"
-        super(Scheduler, self).__init__("scheduler")
+        # The name is "Scheduler"
+        super(Scheduler, self).__init__(self.__class__.__name__)
         # self.tasks contains all tasks needed to run in theory,
         # including the tasks that are not enabled
         self.config  = ConfigManager("mirror.ini")
