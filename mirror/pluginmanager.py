@@ -25,6 +25,7 @@ import logging
 import pkg_resources
 import mirror.common
 import mirror.configmanager
+from   mirror.component import Component
 
 log = logging.getLogger(__name__)
 
@@ -40,7 +41,7 @@ METADATA_KEYS = (
     "Description",
 )
 
-class PluginManager(object):
+class PluginManager(Component):
 
     def __init__(self, config_file, entry_name):
         self.config     = mirror.configmanager.ConfigManager(config_file)
