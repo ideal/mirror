@@ -1,4 +1,6 @@
 #
+# Copyright (C) 2013 Shang Yuanchun <idealities@gmail.com>
+#
 #
 # You may redistribute it and/or modify it under the terms of the
 # GNU General Public License, as published by the Free Software
@@ -22,7 +24,6 @@ import os
 import signal
 import logging
 import mirror.component as component
-from   mirror.scheduler import schedulers
 
 log = logging.getLogger(__name__)
 
