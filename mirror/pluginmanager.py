@@ -45,6 +45,7 @@ METADATA_KEYS = (
 class PluginManager(Component):
 
     def __init__(self, config_file, entry_name):
+        super(PluginManager, self).__init__(PluginManager.__name__)
         self.config     = mirror.configmanager.ConfigManager(config_file)
         self.entry_name = entry_name
 
