@@ -24,7 +24,7 @@ import logging
 
 from mirror import common
 
-__all__ = ["setupLogger", "setLoggerLevel"]
+__all__ = ["setupLogger", "setLoggerLevel", "addStreamHandler"]
 
 if 'dev' in common.get_version():
     DEFAULT_LOGGING_FORMAT = "%%(asctime)s.%%(msecs)03.0f [%%(levelname)-8s]"\
