@@ -40,16 +40,19 @@ from mirror.task          import PRIORITY_MIN, PRIORITY_MAX
 from mirror.task          import REGULAR_TASK, TIMEOUT_TASK
 from mirror.sysinfo       import loadavg, tcpconn
 from mirror.queue         import TaskInfo, Queue
+from mirror.component     import Component
 
 from collections import OrderedDict as odict
 
 log = logging.getLogger(__name__)
 
-class Scheduler(object):
+class Scheduler(Component):
     CHECK_TIMEOUT = 0x01
     SCHEDULE_TASK = 0x02
 
     def __init__(self, options = None, args = None):
+        # The name is "scheduler"
+        super(Scheduler, self).__init__("scheduler")
         # self.tasks contains all tasks needed to run in theory,
         # including the tasks that are not enabled
         self.config  = ConfigManager("mirror.ini")
@@ -62,8 +65,6 @@ class Scheduler(object):
 
         self.init_general(self.config)
         self.init_tasks  (self.config)
-
-        schedulers[os.getpid()] = weakref.ref(self)
 
     def start(self):
         while (True):
@@ -447,5 +448,3 @@ class Scheduler(object):
             return PRIORITY_MAX
         return (-4.55 * (current * 1.0 / limit)) + 14.55
 
-# Store Scheduler instance
-schedulers = {}

@@ -21,7 +21,8 @@
 import os
 import signal
 import logging
-from mirror.scheduler import schedulers
+import mirror.component as component
+from   mirror.scheduler import schedulers
 
 log = logging.getLogger(__name__)
 
@@ -36,10 +37,9 @@ def shutdown_handler(signo, frame):
     log.info("Got signal %s, exiting...", signals[signo])
 
     import sys
-    scheduler_ref = schedulers.get(os.getpid(), None)
-    if scheduler_ref is None:
+    scheduler = component.get("scheduler")
+    if scheduler is None:
         sys.exit(0)
-    scheduler     = scheduler_ref()
 
     # We will waitpid() in stop_all_tasks(),
     # so unregister sigchld_handler here.
@@ -64,5 +64,5 @@ def sigchld_handler(signo, frame):
     scheduler_ref = schedulers.get(os.getpid(), None)
     if scheduler_ref is None:
         return
-    scheduler     = scheduler_ref()
+    scheduler = component.get("scheduler")
     scheduler.stop_task_with_pid(pid, status)
