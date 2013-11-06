@@ -49,9 +49,19 @@ class MirrorEvent(object):
     name = property(fget=_get_name)
     args = property(fget=_get_args)
 
+def PreTaskStartEvent(MirrorEvent):
+    """
+    The event occurs when a new task is going to be running.
+
+    :param taskname: task's name
+
+    """
+    def __init__(self, taskname):
+        self._args = [ taskname ]
+
 def TaskStartEvent(MirrorEvent):
     """
-    The event occured when a new task is running.
+    The event occurs when a new task is running.
 
     :param taskname: task's name
     :param taskpid: task's process id
@@ -62,12 +72,13 @@ def TaskStartEvent(MirrorEvent):
 
 def TaskEndEvent(MirrorEvent):
     """
-    The event occured when a new task is ended.
+    The event occurs when a new task is ended.
 
     :param taskname: task's name
     :param taskpid: task's process id
+    :param exitcode: task's exit code
 
     """
     def __init__(self, taskname, taskpid, exitcode):
-        self._args = [ taskname, taskpid ]
+        self._args = [ taskname, taskpid, exitcode ]
 
