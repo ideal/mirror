@@ -161,3 +161,10 @@ class PluginManager(Component):
                     info[last_header] = line.split(":", 1)[1].strip()
 
         return info
+
+    def start(self):
+        self.enable_plugins()
+
+    def start(self):
+        self.disable_plugins()
+

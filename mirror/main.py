@@ -190,10 +190,9 @@ def start_daemon():
         hsp = hotshot.Profile(mirror.configmanager.get_config_dir("mirrord.profile"))
         hsp.start()
     try:
-        from mirror.scheduler import Scheduler
-        scheduler = Scheduler(options, args)
-        log.info("Starting mirror scheduler...")
-        scheduler.start()
+        log.info("Starting mirror daemon...")
+        from mirror.daemon import MirrorDaemon
+        daemon = MirrorDaemon(options, args)
     except Exception, e:
         log.exception(e)
         sys.exit(1)
