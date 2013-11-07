@@ -110,6 +110,7 @@ class ComponentRegistry(object):
             if self.components[name]._depend:
                 # This component has depends, so we need to start them first.
                 self.start(self.components[name]._depend)
+            log.debug("Starting component: %s", name)
             self.components[name].start()
 
     def stop(self, names = []):
