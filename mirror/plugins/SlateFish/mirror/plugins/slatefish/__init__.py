@@ -20,7 +20,7 @@
 #
 #
 
-from mirror.pluginsinit import PluginInitBase
+from mirror.plugininit import PluginInitBase
 
 class MirrorPlugin(PluginInitBase):
 
