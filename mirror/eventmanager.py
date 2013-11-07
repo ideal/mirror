@@ -28,7 +28,7 @@ class EventManager(Component):
 
     def __init__(self):
         # The name is "EventManager"
-        super(Component, self).__init__(self.__class__.__name__)
+        super(EventManager, self).__init__(self.__class__.__name__)
 
         self.handlers = {}
         self.plugin_thread = None
