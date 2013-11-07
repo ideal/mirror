@@ -24,7 +24,7 @@ import logging
 import mirror.component as component
 from mirror.pluginbase import PluginBase
 
-log = logging.getLogger(__name__)
+log = logging.getLogger(__name__.split('.')[-2])
 
 class Plugin(PluginBase):
 
