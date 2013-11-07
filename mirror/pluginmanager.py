@@ -105,7 +105,7 @@ class PluginManager(Component):
         component.deregister(instance)
         self.plugins.pop(plugin_name)
 
-    def scan_plugins():
+    def scan_plugins(self):
         """
         Scans for available plugins
 
