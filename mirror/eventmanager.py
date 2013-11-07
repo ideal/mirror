@@ -20,6 +20,7 @@
 
 import logging
 from   mirror.component import Component
+from   mirror.pluginthread import PluginThread
 
 log = logging.getLogger(__name__)
 
@@ -30,6 +31,7 @@ class EventManager(Component):
         super(Component, self).__init__(self.__class__.__name__)
 
         self.handlers = {}
+        self.plugin_thread = None
 
     def emit(self, event):
         """
@@ -39,13 +41,13 @@ class EventManager(Component):
         """
         if event.name not in self.handlers:
             return
-        # Call any handlers for the event
-        for handler in self.handlers[event.name]:
-            log.debug("Running handler %s for event %s with args: %s", event.name, handler, event.args)
-            try:
-                handler(*event.args)
-            except Exception, e:
-                log.error("Event handler %s failed in %s with exception %s", event.name, handler, e)
+
+        if (not self.plugin_thread) or (not self.plugin_thread.isAlive()):
+            if self.plugin_thread:
+                del self.plugin_thread
+            self.plugin_thread = PluginThread()
+            self.plugin_thread.start()
+        self.plugin_thread.add_event(event)
 
     def register_event_handler(self, event, handler):
         """

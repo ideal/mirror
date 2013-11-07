@@ -21,16 +21,43 @@
 #
 
 
+import time
 import logging
 import threading
+import mirror.component as component
 
 log = logging.getLogger(__name__)
 
 class PluginThread(threading.Thread):
 
-    def __init__(self, hook):
+    def __init__(self):
         threading.Thread.__init__(self, name="mirror.plugin")
-        self.hook = hook
+        # python list is thread safe
+        self.event_queue   = [ ]
+        self.event_manager = component.get("EventManager")
+
+    def add_event(event):
+        self.event_queue.append(event)
 
     def run(self):
-        pass
+        log.info("Plugin thread started")
+        sleep_count = 0
+        while (True):
+            try:
+                event = self.event_queue.pop(0)
+            except:
+                time.sleep(0.1)
+                sleep_count += 1
+                if sleep_count > 600:
+                    log.info("Plugin thread ended")
+                    break
+                else:
+                    continue
+            # Call any handlers for the event
+            for handler in self.event_manager.handlers[event.name]:
+                log.debug("Running handler %s for event %s with args: %s", event.name, handler, event.args)
+                try:
+                    handler(*event.args)
+                except Exception, e:
+                    log.error("Event handler %s failed in %s with exception %s", event.name, handler, e)
+
