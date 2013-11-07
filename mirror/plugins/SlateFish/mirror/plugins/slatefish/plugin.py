@@ -21,11 +21,19 @@
 #
 
 from mirror.pluginbase import PluginBase
+import mirror.component as component
 
 class Plugin(PluginBase):
 
     def enable(self):
-        pass
+        event_manager = component.get("EventManager")
+        event_manager.register_event_handler("MirrorStartEvent",
+                                             self.__on_mirror_start_event)
 
     def disable(self):
         pass
+
+    def __on_mirror_start_event(self):
+        import time
+        self.start_time = time.time()
+        log.info("Hi, this is message from SlateFish: %r", self.start_time)
