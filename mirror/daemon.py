@@ -22,6 +22,7 @@
 
 
 import logging
+import mirror.component   as     component
 from mirror.scheduler     import Scheduler
 from mirror.eventmanager  import EventManager
 from mirror.pluginmanager import PluginManager

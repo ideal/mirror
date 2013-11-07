@@ -21,6 +21,7 @@
 #
 
 
+import os
 import logging
 import pkg_resources
 import mirror.common
