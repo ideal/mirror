@@ -49,14 +49,14 @@ class MirrorEvent(object):
     name = property(fget=_get_name)
     args = property(fget=_get_args)
 
-def MirrorStartEvent(MirrorEvent):
+class MirrorStartEvent(MirrorEvent):
     """
     The event occurs when mirror daemon is to be running.
 
     """
     pass
 
-def PreTaskStartEvent(MirrorEvent):
+class PreTaskStartEvent(MirrorEvent):
     """
     The event occurs when a new task is going to be running.
 
@@ -66,7 +66,7 @@ def PreTaskStartEvent(MirrorEvent):
     def __init__(self, taskname):
         self._args = [ taskname ]
 
-def TaskStartEvent(MirrorEvent):
+class TaskStartEvent(MirrorEvent):
     """
     The event occurs when a new task is running.
 
@@ -77,7 +77,7 @@ def TaskStartEvent(MirrorEvent):
     def __init__(self, taskname, taskpid):
         self._args = [ taskname, taskpid ]
 
-def TaskEndEvent(MirrorEvent):
+class TaskEndEvent(MirrorEvent):
     """
     The event occurs when a new task is ended.
 

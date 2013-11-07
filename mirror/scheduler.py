@@ -34,6 +34,8 @@ import cPickle as pickle
 import mirror.common
 import mirror.error
 import mirror.handler
+import mirror.event
+import mirror.component   as     component
 from mirror.configmanager import ConfigManager
 from mirror.task          import Task, SimpleTask, TASK_TYPES
 from mirror.task          import PRIORITY_MIN, PRIORITY_MAX
@@ -67,6 +69,8 @@ class Scheduler(Component):
         self.init_tasks  (self.config)
 
     def start(self):
+        event_manager = component.get("EventManager")
+        event_manager.emit(mirror.event.MirrorStartEvent())
         while (True):
             self.sleep()
             if not self.roused_by_child:

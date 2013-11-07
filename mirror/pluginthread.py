@@ -36,7 +36,7 @@ class PluginThread(threading.Thread):
         self.event_queue   = [ ]
         self.event_manager = component.get("EventManager")
 
-    def add_event(event):
+    def add_event(self, event):
         self.event_queue.append(event)
 
     def run(self):
