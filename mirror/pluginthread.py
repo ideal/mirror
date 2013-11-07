@@ -35,6 +35,7 @@ class PluginThread(threading.Thread):
         # python list is thread safe
         self.event_queue   = [ ]
         self.event_manager = component.get("EventManager")
+        self.stop_event    = threading.Event()
 
     def add_event(self, event):
         self.event_queue.append(event)
@@ -43,6 +44,9 @@ class PluginThread(threading.Thread):
         log.info("Plugin thread started")
         sleep_count = 0
         while (True):
+            if self.stop_event.isSet():
+                log.debug("PluginThread's stop_event is set, thread is exiting...")
+                break
             try:
                 event = self.event_queue.pop(0)
             except:

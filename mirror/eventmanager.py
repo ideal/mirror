@@ -73,3 +73,7 @@ class EventManager(Component):
         """
         if event in self.handlers and handler in self.handlers[event]:
             self.handlers[event].remove(handler)
+
+    def stop(self):
+        if self.plugin_thread and self.plugin_thread.isAlive():
+            self.plugin_thread.stop_event.set()

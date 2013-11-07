@@ -37,6 +37,9 @@ def shutdown_handler(signo, frame):
         os.remove(pidfile)
     log.info("Got signal %s, exiting...", signals[signo])
 
+    event_manager = component.get("EventManager")
+    component.deregister(event_manager)
+
     import sys
     scheduler = component.get("Scheduler")
     if scheduler is None:
