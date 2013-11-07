@@ -32,7 +32,7 @@ class MirrorDaemon(object):
 
     def __init__(self, options = None, args = None):
         self.event_manager  = EventManager()
-        self.plugin_manager = PluginManager("mirror.plugin.mirrorplugin")
+        self.plugin_manager = PluginManager("mirror.ini", "mirror.plugin.mirrorplugin")
         component.start()
 
         self.scheduler = Scheduler(options, args)
