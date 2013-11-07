@@ -24,6 +24,8 @@ from mirror.plugins.init import PluginInitBase
 
 class MirrorPlugin(PluginInitBase):
 
+    enabled = True
+
     def __init__(self, plugin_name):
         from plugin import Plugin as _plugin_class
         self._plugin_class = _plugin_class

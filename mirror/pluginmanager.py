@@ -166,6 +166,6 @@ class PluginManager(Component):
     def start(self):
         self.enable_plugins()
 
-    def start(self):
+    def stop(self):
         self.disable_plugins()
 

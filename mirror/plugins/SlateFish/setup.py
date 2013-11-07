@@ -42,6 +42,7 @@ setup(
     license=__license__,
     long_description=__long_description__ if __long_description__ else __description__,
     packages=find_packages(),
+    namespace_packages = ["mirror", "mirror.plugins"],
     package_data = __pkg_data__,
 
     entry_points="""

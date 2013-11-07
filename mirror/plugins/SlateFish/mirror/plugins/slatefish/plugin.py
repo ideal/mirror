@@ -20,8 +20,11 @@
 #
 #
 
-from mirror.pluginbase import PluginBase
+import logging
 import mirror.component as component
+from mirror.pluginbase import PluginBase
+
+log = logging.getLogger(__name__)
 
 class Plugin(PluginBase):
 
@@ -29,6 +32,8 @@ class Plugin(PluginBase):
         event_manager = component.get("EventManager")
         event_manager.register_event_handler("MirrorStartEvent",
                                              self.__on_mirror_start_event)
+        log.info(("I am a slate fish living in the upstream river"
+                  " of Qiandao Lake."))
 
     def disable(self):
         pass
