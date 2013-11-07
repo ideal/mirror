@@ -29,6 +29,7 @@ except ImportError:
     from setuptools import setup, find_packages, Extension
 
 import os, sys
+import glob
 import msgfmt
 import platform
 
@@ -91,8 +92,28 @@ class build_trans(cmd.Command):
         sys.stdout.write('\b\b \nFinished compiling translation files. \n')
 
 
+class build_plugins(cmd.Command):
+    description = "Build plugins into .eggs"
+
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        # Build the plugin eggs
+        PLUGIN_PATH = "mirror/plugins/*"
+
+        for path in glob.glob(PLUGIN_PATH):
+            if os.path.exists(os.path.join(path, "setup.py")):
+                os.system("cd " + path + " && " + sys.executable + " setup.py bdist_egg -d ..")
+
+
 class build(_build):
-    sub_commands = [('build_trans', None), ] + _build.sub_commands
+    sub_commands = [ ('build_trans', None), ('build_plugins', None) ] + _build.sub_commands
     def run(self):
         # Run all sub-commands (at least those that need to be run)
         _build.run(self)
@@ -109,6 +130,7 @@ class clean(_clean):
 cmdclass = {
     'build': build,
     'build_trans': build_trans,
+    'build_plugins': build_plugins,
     'clean': clean,
 }
 
@@ -140,6 +162,7 @@ setup(
     cmdclass = cmdclass,
     data_files = _data_files,
     package_data = {"mirror": [
+                               "plugins/*.egg",
                                "i18n/*/LC_MESSAGES/*.mo",
                                ]},
     packages = find_packages(exclude=["docs",]),
