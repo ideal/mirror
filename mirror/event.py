@@ -77,7 +77,7 @@ class TaskStartEvent(MirrorEvent):
     def __init__(self, taskname, taskpid):
         self._args = [ taskname, taskpid ]
 
-class TaskEndEvent(MirrorEvent):
+class TaskStopEvent(MirrorEvent):
     """
     The event occurs when a new task is ended.
 
