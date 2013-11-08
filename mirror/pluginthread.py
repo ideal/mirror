@@ -26,7 +26,7 @@ import logging
 import threading
 import mirror.component as component
 
-log = logging.getLogger(__name__)
+log = logging.getLogger("pluginthread")
 
 class PluginThread(threading.Thread):
 

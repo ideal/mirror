@@ -29,7 +29,7 @@ import mirror.configmanager
 import mirror.component as component
 from   mirror.component import Component
 
-log = logging.getLogger(__name__)
+log = logging.getLogger("pluginmanager")
 
 METADATA_KEYS = (
     "Name",
