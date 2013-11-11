@@ -79,7 +79,7 @@ class TaskStartEvent(MirrorEvent):
 
 class TaskStopEvent(MirrorEvent):
     """
-    The event occurs when a new task is ended.
+    The event occurs when a task is ended.
 
     :param taskname: task's name
     :param taskpid: task's process id

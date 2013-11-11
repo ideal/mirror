@@ -75,5 +75,10 @@ class EventManager(Component):
             self.handlers[event].remove(handler)
 
     def stop(self):
+        """
+        When EventManager is stopped, if plugin_thread is still alive,
+        set the stop_event to make it exit.
+
+        """
         if self.plugin_thread and self.plugin_thread.isAlive():
             self.plugin_thread.stop_event.set()
