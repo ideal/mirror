@@ -90,7 +90,7 @@ class PluginManager(Component):
             component.start([instance.plugin.name])
             plugin_name = plugin_name.replace('-', ' ')
             self.plugins[plugin_name] = instance
-            log.info("Plugin %s enabled..", plugin_name)
+            log.info("Plugin %s enabled...", plugin_name)
 
     def disable_plugins(self):
         for name in self.plugins:
