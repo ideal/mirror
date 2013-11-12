@@ -435,13 +435,18 @@ class Scheduler(Component):
         Currently when mirrord is shut down, all running tasks will also be killed.
 
         """
+        event_manager = component.get("EventManager")
         for taskname, task in self.tasks.iteritems():
             if not task.running:
                 continue
             pid = task.pid
             task.stop(signo)
             # Not sure it is ok...
-            pid, status = os.waitpid(pid, 0)
+            pid, status  = os.waitpid(pid, 0)
+
+            endstr, code = self.parse_return_status(status)
+            task.code    = code
+            event_manager.emit(mirror.event.TaskStopEvent(task.name, task.pid, task.code))
             log.info("Killed task: %s with pid %d", taskname, pid)
 
     @classmethod
