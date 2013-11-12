@@ -44,7 +44,7 @@ class PluginThread(threading.Thread):
         log.info("Plugin thread started")
         sleep_count = 0
         while (True):
-            if self.stop_event.isSet():
+            if self.stop_event.isSet() and len(self.event_queue) == 0:
                 log.debug("PluginThread's stop_event is set, thread is exiting...")
                 break
             try:
