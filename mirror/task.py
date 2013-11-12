@@ -59,6 +59,7 @@ class AbstractTask(object):
         self.running   = False
         self.pid       = 0
         self.stage     = 1
+        self.code      = 0
         try:
             self.twostage = taskinfo['twostage'] != "0" 
             self.timeout  = mirror.common.parse_timeout(taskinfo['timeout'])

@@ -346,10 +346,15 @@ class Scheduler(Component):
         if task.running and ( not task.twostage ):
             log.info("Task: %s is still running and no timeout set, skipped", taskinfo.name)
             return
+
+        event_manager = component.get("EventManager")
+        event_manager.emit(mirror.event.PreTaskStartEvent(taskinfo.name))
         task.run(stage)
         if taskinfo in self.queue:
             self.queue.remove(taskinfo)
         log.info("Task: %s begin to run with pid %d", taskinfo.name, task.pid)
+        event_manager.emit(mirror.event.TaskStartEvent(taskinfo.name, task.pid))
+
         if task.timeout <= 0:
             self.append_task(taskinfo.name, task, time.time())
         else:
@@ -380,8 +385,10 @@ class Scheduler(Component):
         Without SIGCHLD handler, we have to waitpid() here.
 
         """
-        pid, status = os.waitpid(pid, 0)
-        log.info("Killed task: %s with pid %d, status %d", task.name, pid, status)
+        pid, status  = os.waitpid(pid, 0)
+        endstr, code = self.parse_return_status(status)
+        task.code    = code
+        log.info("Killed task: %s %s %d, pid %d", task.name, endstr, code, pid)
         self.remove_timeout_task(task.name)
         self.task_post_process(task)
 
@@ -395,13 +402,8 @@ class Scheduler(Component):
             if task.pid == pid:
                 if not task.running:
                     return
-                if (status & 0xff) != 0:
-                    endstr = "killed by signal"
-                    code   = (status & 0xff)
-                else:
-                    endstr = "ended with return code"
-                    # See "EXIT VALUES" section in man rsync
-                    code   = (status >> 8)
+                endstr, code = self.parse_return_status(status)
+                task.code    = code
                 log.info("Task: %s %s %d, pid %d", taskname, endstr, code, pid)
                 self.remove_timeout_task(taskname)
                 self.task_post_process(task)
@@ -412,13 +414,16 @@ class Scheduler(Component):
         Check whether a task needs post process, e.g. two stage tasks.
 
         """
+        event_manager = component.get("EventManager")
         if not task.twostage:
+            event_manager.emit(mirror.event.TaskStopEvent(task.name, task.pid, task.code))
             task.set_stop_flag()
             return
         if task.stage == 1:
             log.info("Task: %s scheduled to second stage", task.name)
             self.run_task(TaskInfo(task.name, REGULAR_TASK, 0, task.priority), stage = 2)
         else:
+            event_manager.emit(mirror.event.TaskStopEvent(task.name, task.pid, task.code))
             task.set_stop_flag()
             task.stage = 1
 
@@ -453,3 +458,13 @@ class Scheduler(Component):
             return PRIORITY_MAX
         return (-4.55 * (current * 1.0 / limit)) + 14.55
 
+    @classmethod
+    def parse_return_status(cls, status):
+        if (status & 0xff) != 0:
+            endstr = "killed by signal"
+            code   = (status & 0xff)
+        else:
+            endstr = "ended with return code"
+            # See "EXIT VALUES" section in man rsync
+            code   = (status >> 8)
+        return (endstr, code)
