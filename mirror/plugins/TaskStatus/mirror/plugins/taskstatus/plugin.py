@@ -25,13 +25,24 @@ import logging
 import mirror.component as component
 from mirror.pluginbase import PluginBase
 
-log = logging.getLogger("taskstatus")
+__plugin_name = "taskstatus"
+
+log = logging.getLogger(__plugin_name)
 
 class Plugin(PluginBase):
+
+    DEFAULT_STATUS_FILE = "/home/mirror/status/task_status.json"
 
     def enable(self):
         plugin_manager = component.get("PluginManager")
         config = plugin_manager.config
+
+        try:
+            self.status_file = config(__plugin_name)["status_file"]
+        except:
+            self.status_file = Plugin.DEFAULT_STATUS_FILE
+            log.info(("Didn't set `status_file` in plugin.ini in `%s` section"
+                      ", use default one: %s"), __plugin_name, self.status_file)
 
         event_manager  = component.get("EventManager")
         event_manager.register_event_handler("TaskStartEvent",
