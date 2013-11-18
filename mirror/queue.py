@@ -76,6 +76,12 @@ class Queue(object):
                 count += ( getattr(item, key) == value )
             return count
 
+    def find(self, name):
+        for taskinfo in self.queue:
+            if taskinfo.name == name:
+                return taskinfo
+        return None
+
     def __getitem__(self, key):
         try:
             return self.queue[key]

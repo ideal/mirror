@@ -52,6 +52,7 @@ class AbstractTask(object):
         # NOTE: `command` is just a command name, but
         # self.command is the complete path...
         self.command   = mirror.common.find_command(command)
+        self.cmdname   = command
         if not self.command:
             log.error("command `%s` not found in PATH, please install that first :)",
                       command)

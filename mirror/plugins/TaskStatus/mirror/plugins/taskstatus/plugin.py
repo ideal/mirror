@@ -20,6 +20,7 @@
 #
 #
 
+import os
 import json
 import logging
 import mirror.component as component
@@ -29,9 +30,34 @@ _plugin_name = "taskstatus"
 
 log = logging.getLogger(_plugin_name)
 
+_rsync_error = { 0:  "Sync succeed",
+                 1:  "Syntax or usage error",
+                 2:  "Protocol incompatibility",
+                 3:  "Errors selecting input/output files, dirs",
+                 4:  "Requested  action not supported",
+                 5:  "Error starting client-server protocol",
+                 6:  "Daemon unable to append to log-file",
+                10:  "Error in socket I/O",
+                11:  "Error in file I/O",
+                12:  "Error in rsync protocol data stream",
+                13:  "Errors with program diagnostics",
+                14:  "Error in IPC code",
+                20:  "Received SIGUSR1 or SIGINT",
+                21:  "Some error returned by waitpid()",
+                22:  "Error allocating core memory buffers",
+                23:  "Partial transfer due to error",
+                24:  "Partial transfer due to vanished source files",
+                25:  "The --max-delete limit stopped deletions",
+                30:  "Timeout in data send/receive",
+                35:  "Timeout waiting for daemon connection",
+               }
+
 class Plugin(PluginBase):
 
     DEFAULT_STATUS_FILE = "/home/mirror/status/task_status.json"
+
+    STATUS_RUNNING  = 0
+    STATUS_FINISHED = 1
 
     def enable(self):
         plugin_manager = component.get("PluginManager")
@@ -44,11 +70,13 @@ class Plugin(PluginBase):
             log.info(("Didn't set `status_file` in plugin.ini in `%s` section"
                       ", use default one: %s"), _plugin_name, self.status_file)
 
-        status_dir = os.path.dirname(self.status_file)
+        self.enabled = True
+        status_dir   = os.path.dirname(self.status_file)
         if not os.path.exists(status_dir):
             try:
                 os.makedirs(status_dir)
             except:
+                self.enabled = False
                 log.warning("Create directory failed: %s", status_dir)
 
         event_manager  = component.get("EventManager")
@@ -61,7 +89,54 @@ class Plugin(PluginBase):
         pass
 
     def __on_task_start(self, taskname, pid):
-        pass
+        if not self.enabled:
+            return
+
+        status = { "status": self.STATUS_RUNNING }
+        self.__set_task_status(taskname, status)
 
     def __on_task_stop(self, taskname, pid, exitcode):
-        pass
+        if not self.enabled:
+            return
+
+        scheduler = component.get("Scheduler")
+        task = scheduler.tasks.get(taskname, None)
+        if not task:
+            return
+        status = { "status": self.STATUS_FINISHED }
+        if task.cmdname == "rsync":
+            status["message"] = _rsync_error[exitcode]
+        else:
+            status["message"] = "Task finished"
+
+        format = "%Y-%m-%d %H:%M:%S"
+        status["date"] = time.strftime(format)
+
+        taskinfo = scheduler.queue.find(taskname)
+        if taskinfo:
+            status["schedule"] = time.strftime(format, taskinfo.time)
+        else:
+            status["schedule"] = "Unknown"
+        self.__set_task_status(taskname, status)
+
+    def __set_task_status(self, taskname, status):
+        try:
+            fp = open(self.status_file, "w+")
+        except:
+            log.warning("Open file failed: %s", self.status_file)
+            return
+        task_status = fp.read().rstrip("\r\n")
+        if task_status:
+            task_status = json.loads(task_status)
+        else:
+            task_status = {}
+        task_status[taskname] = status
+        fp.seek(0)
+        try:
+            fp.write(json.dumps(task_status))
+        except Exception, e:
+            log.exception(e)
+            fp.truncate(0)
+        else:
+            fp.truncate()
+        fp.close()
