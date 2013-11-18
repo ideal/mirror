@@ -44,6 +44,13 @@ class Plugin(PluginBase):
             log.info(("Didn't set `status_file` in plugin.ini in `%s` section"
                       ", use default one: %s"), _plugin_name, self.status_file)
 
+        status_dir = os.path.dirname(self.status_file)
+        if not os.path.exists(status_dir):
+            try:
+                os.makedirs(status_dir)
+            except:
+                log.warning("Create directory failed: %s", status_dir)
+
         event_manager  = component.get("EventManager")
         event_manager.register_event_handler("TaskStartEvent",
                                              self.__on_task_start)
