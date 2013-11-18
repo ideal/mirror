@@ -56,8 +56,11 @@ class Plugin(PluginBase):
 
     DEFAULT_STATUS_FILE = "/home/mirror/status/task_status.json"
 
-    STATUS_RUNNING  = 0
-    STATUS_FINISHED = 1
+    STATUS_INITIAL  = 0
+    STATUS_RUNNING  = 1
+    STATUS_FINISHED = 2
+
+    DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
     def enable(self):
         plugin_manager = component.get("PluginManager")
@@ -80,6 +83,8 @@ class Plugin(PluginBase):
                 log.warning("Create directory failed: %s", status_dir)
 
         event_manager  = component.get("EventManager")
+        event_manager.register_event_handler("TaskEnqueueEvent",
+                                             self.__on_task_enqueue)
         event_manager.register_event_handler("TaskStartEvent",
                                              self.__on_task_start)
         event_manager.register_event_handler("TaskStopEvent",
@@ -87,6 +92,15 @@ class Plugin(PluginBase):
 
     def disable(self):
         pass
+
+    def __on_task_enqueue(self, taskname):
+        if not self.enabled:
+            return
+
+        scheduler = component.get("Scheduler")
+        taskinfo  = scheduler.queue.find(taskname)
+        status    = { "schedule": time.strftime(self.DATE_FORMAT, taskinfo.time) }
+        self.__set_task_status(taskname, status, overwrite = False)
 
     def __on_task_start(self, taskname, pid):
         if not self.enabled:
@@ -109,17 +123,16 @@ class Plugin(PluginBase):
         else:
             status["message"] = "Task finished"
 
-        format = "%Y-%m-%d %H:%M:%S"
-        status["date"] = time.strftime(format)
+        status["date"] = time.strftime(self.DATE_FORMAT)
 
         taskinfo = scheduler.queue.find(taskname)
         if taskinfo:
-            status["schedule"] = time.strftime(format, taskinfo.time)
+            status["schedule"] = time.strftime(self.DATE_FORMAT, taskinfo.time)
         else:
             status["schedule"] = "Unknown"
         self.__set_task_status(taskname, status)
 
-    def __set_task_status(self, taskname, status):
+    def __set_task_status(self, taskname, status, overwrite = True):
         try:
             fp = open(self.status_file, "w+")
         except:
@@ -130,7 +143,14 @@ class Plugin(PluginBase):
             task_status = json.loads(task_status)
         else:
             task_status = {}
-        task_status[taskname] = status
+        if overwrite:
+            task_status[taskname] = status
+        else:
+            if taskname in task_status:
+                task_status[taskname]["schedule"] = status["schedule"]
+            else:
+                status["status"] = self.STATUS_INITIAL
+                task_status[taskname] = status
         fp.seek(0)
         try:
             fp.write(json.dumps(task_status))

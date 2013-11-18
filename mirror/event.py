@@ -56,6 +56,16 @@ class MirrorStartEvent(MirrorEvent):
     """
     pass
 
+class TaskEnqueueEvent(MirrorEvent):
+    """
+    The event occurs when a task is appended into the queue.
+
+    :param taskname: task's name
+
+    """
+    def __init__(self, taskname):
+        self._args = [ taskname ]
+
 class PreTaskStartEvent(MirrorEvent):
     """
     The event occurs when a new task is going to be running.

@@ -239,6 +239,8 @@ class Scheduler(Component):
         if taskinfo in self.queue:
             return
         self.queue.put(taskinfo)
+        event_manager = component.get("EventManager")
+        event_manager.emit(mirror.event.TaskEnqueueEvent(taskname))
 
     def reappend_task(self, task, taskinfo):
         """
@@ -250,6 +252,8 @@ class Scheduler(Component):
             return
         self.queue.remove(taskinfo)
         self.queue.put(taskinfo)
+        event_manager = component.get("EventManager")
+        event_manager.emit(mirror.event.TaskEnqueueEvent(taskinfo.name))
 
     DEFAULT_BUFFER_SIZE  = 10240
 
@@ -291,6 +295,8 @@ class Scheduler(Component):
         if taskinfo in self.queue:
             return
         self.queue.put(taskinfo)
+        event_manager = component.get("EventManager")
+        event_manager.emit(mirror.event.TaskEnqueueEvent(taskname))
 
     def remove_timeout_task(self, taskname):
         """
