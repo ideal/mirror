@@ -21,6 +21,7 @@
 #
 
 import os
+import time
 import signal
 import logging
 import mirror.component as component
@@ -37,9 +38,6 @@ def shutdown_handler(signo, frame):
         os.remove(pidfile)
     log.info("Got signal %s, exiting...", signals[signo])
 
-    event_manager = component.get("EventManager")
-    component.deregister(event_manager)
-
     import sys
     scheduler = component.get("Scheduler")
     if scheduler is None:
@@ -54,6 +52,12 @@ def shutdown_handler(signo, frame):
         os.kill(scheduler.buspid, signal.SIGTERM)
         pid, status = os.waitpid(scheduler.buspid, 0)
         log.info("Killed mirror dbus with pid: %d", pid)
+
+    event_manager = component.get("EventManager")
+    while (event_manager.plugin_thread and
+           len(event_manager.plugin_thread.event_queue) > 0):
+           time.sleep(0.1)
+    component.deregister(event_manager)
 
     # Deregister the scheduler,
     # this will call scheduler's stop().

@@ -21,6 +21,7 @@
 #
 
 import os
+import time
 import json
 import logging
 import mirror.component as component
@@ -99,7 +100,8 @@ class Plugin(PluginBase):
 
         scheduler = component.get("Scheduler")
         taskinfo  = scheduler.queue.find(taskname)
-        status    = { "schedule": time.strftime(self.DATE_FORMAT, taskinfo.time) }
+        status    = { "schedule": time.strftime(self.DATE_FORMAT,
+                                       time.localtime(taskinfo.time)) }
         self.__set_task_status(taskname, status, overwrite = False)
 
     def __on_task_start(self, taskname, pid):
@@ -127,14 +129,15 @@ class Plugin(PluginBase):
 
         taskinfo = scheduler.queue.find(taskname)
         if taskinfo:
-            status["schedule"] = time.strftime(self.DATE_FORMAT, taskinfo.time)
+            status["schedule"] = time.strftime(self.DATE_FORMAT,
+                                      time.localtime(taskinfo.time))
         else:
             status["schedule"] = "Unknown"
         self.__set_task_status(taskname, status)
 
     def __set_task_status(self, taskname, status, overwrite = True):
         try:
-            fp = open(self.status_file, "w+")
+            fp = open(self.status_file, "r+" if os.path.exists(self.status_file) else "w+")
         except:
             log.warning("Open file failed: %s", self.status_file)
             return
