@@ -93,7 +93,8 @@ class PluginManager(Component):
             log.info("Plugin %s enabled...", plugin_name)
 
     def disable_plugins(self):
-        for name in self.plugins:
+        plugin_names = self.plugins.keys()
+        for name in plugin_names:
             self.disable_plugin(name)
 
     def disable_plugin(self, plugin_name):
