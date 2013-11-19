@@ -56,8 +56,9 @@ def shutdown_handler(signo, frame):
     event_manager = component.get("EventManager")
     while (event_manager.plugin_thread and
            len(event_manager.plugin_thread.event_queue) > 0):
-           time.sleep(0.1)
+        time.sleep(0.1)
     component.deregister(event_manager)
+    component.deregister(component.get("PluginManager"))
 
     # Deregister the scheduler,
     # this will call scheduler's stop().
