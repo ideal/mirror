@@ -161,9 +161,11 @@ def start_daemon():
 
     # Close stdin, stdout, stderr ...
     if not options.donot:
-        os.close(sys.stdin.fileno())
-        os.close(sys.stdout.fileno())
-        os.close(sys.stderr.fileno())
+        fp = open("/dev/null", 'r+')
+        os.dup2(fp.fileno(), sys.stdin.fileno())
+        os.dup2(fp.fileno(), sys.stdout.fileno())
+        os.dup2(fp.fileno(), sys.stderr.fileno())
+        fp.close()
 
     import logging
     log = logging.getLogger(__name__)
