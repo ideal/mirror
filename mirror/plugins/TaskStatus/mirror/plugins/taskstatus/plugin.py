@@ -26,6 +26,7 @@ import json
 import logging
 import mirror.component as component
 from mirror.pluginbase import PluginBase
+from collections import OrderedDict as odict
 
 _plugin_name = "taskstatus"
 
@@ -125,6 +126,7 @@ class Plugin(PluginBase):
         else:
             status["message"] = "Task finished"
 
+        status["exitcode"] = exitcode
         status["date"] = time.strftime(self.DATE_FORMAT)
 
         taskinfo = scheduler.queue.find(taskname)
@@ -133,6 +135,7 @@ class Plugin(PluginBase):
                                       time.localtime(taskinfo.time))
         else:
             status["schedule"] = "Unknown"
+
         self.__set_task_status(taskname, status)
 
     def __set_task_status(self, taskname, status, overwrite = True):
@@ -154,6 +157,8 @@ class Plugin(PluginBase):
             else:
                 status["status"] = self.STATUS_INITIAL
                 task_status[taskname] = status
+        if len(task_status) > 1:
+            task_status = odict(sorted(task_status.iteritems()))
         fp.seek(0)
         try:
             fp.write(json.dumps(task_status))
