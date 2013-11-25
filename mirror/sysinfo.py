@@ -28,7 +28,13 @@ d = { 1: 0, 5: 1, 15: 2}
 def loadavg(duration = 5):
     if duration not in d:
         duration = 5
-    return os.getloadavg()[d[duration]]
+    if hasattr(os, "getloadavg"):
+        return os.getloadavg()[d[duration]]
+    try:
+        loadavgs = open("/proc/loadavg").read().split(" ")
+        return float(loadavgs[d[duration]])
+    except:
+        return 0.0
 
 def enum(**enums):
     return type('Enum', (), enums)
