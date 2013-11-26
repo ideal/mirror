@@ -109,7 +109,9 @@ class Plugin(PluginBase):
         if not self.enabled:
             return
 
-        status = { "status": self.STATUS_RUNNING }
+        status = { "status": self.STATUS_RUNNING,
+                   "date": time.strftime(self.DATE_FORMAT,
+                                         time.localtime())}
         self.__set_task_status(taskname, status)
 
     def __on_task_stop(self, taskname, pid, exitcode):
