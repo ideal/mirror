@@ -1,4 +1,6 @@
 #
+# Copyright (C) 2013 Shang Yuanchun <idealities@gmail.com>
+#
 #
 # You may redistribute it and/or modify it under the terms of the
 # GNU General Public License, as published by the Free Software
@@ -42,6 +44,29 @@ class AbstractTask(object):
         self.name      = name
         self.enabled   = True
 
+        self.time      = taskinfo.get("time", None)
+        if not self.time:
+            log.error("Error in config for task: %s, time not set.", self.name)
+            self.enabled = False
+        crontime = mirror.common.parse_cron_time(self.time)
+        if crontime:
+            self.time_miniute = crontime[0]
+            self.time_hour    = crontime[1]
+            self.time_dom     = crontime[2]
+            self.time_month   = crontime[3]
+            self.time_dow     = crontime[4]
+            for attr in ('time_miniute', 'time_hour', 'time_dom', 'time_month', 'time_dow'):
+                if len(getattr(self, attr)) == 0:
+                    log.error("Error in config for task: %s, time: %s not valid.",
+                              self.name, attr)
+                    self.enabled = False
+        else:
+            log.error("Error in config for task: %s, time not valid.", self.name)
+            self.enabled = False
+
+        if taskinfo.get("isinternal", False) != False:
+            return
+
         if taskinfo.get("command", None) == None:
             log.warn("In config for task: %s, key: command not found, "
                      "using rsync as default",
@@ -64,7 +89,6 @@ class AbstractTask(object):
         try:
             self.twostage = taskinfo['twostage'] != "0" 
             self.timeout  = mirror.common.parse_timeout(taskinfo['timeout'])
-            self.time     = taskinfo['time']
         except KeyError, e:
             log.error("Error in config for task: %s, key: %s not found.", self.name, e)
             self.enabled  = False
@@ -84,20 +108,6 @@ class AbstractTask(object):
             self.twostage = False
         if self.twostage:
             self.firststage = taskinfo['firststage']
-        crontime = mirror.common.parse_cron_time(self.time)
-        if crontime:
-            self.time_miniute = crontime[0]
-            self.time_hour    = crontime[1]
-            self.time_dom     = crontime[2]
-            self.time_month   = crontime[3]
-            self.time_dow     = crontime[4]
-            for attr in ('time_miniute', 'time_hour', 'time_dom', 'time_month', 'time_dow'):
-                if len(getattr(self, attr)) == 0:
-                    log.error("Error in config for task: %s, time: %s not valid.", self.name, attr)
-                    self.enabled = False
-        else:
-            log.error("Error in config for task: %s, time not valid.", self.name)
-            self.enabled = False
 
     def run(self, stage = 1):
         try:
@@ -292,6 +302,19 @@ class SimpleTask(AbstractTask):
         if self.args:
             args += self.args.split(" ")
         return args
+
+class SystemTask(AbstractTask):
+    """
+    This is internal task for mirror, so it will not fork.
+
+    """
+    def __init__(self, name, scheduler_ref=None, **taskinfo):
+        if "isinternal" not in taskinfo:
+            taskinfo["isinternal"] = True
+        super(SystemTask, self).__init__(name, scheduler_ref, **taskinfo)
+
+    def run(self):
+        pass
 
 # from name to Task
 TASK_TYPES = { "simple" : SimpleTask }
