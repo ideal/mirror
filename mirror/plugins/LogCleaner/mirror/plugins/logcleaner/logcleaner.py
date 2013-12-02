@@ -34,12 +34,19 @@ class LogCleaner(PluginBase):
 
     def enable(self):
         event_manager  = component.get("EventManager")
+        event_manager.register_event_handler("MirrorStartEvent",
+                                             self.__on_mirror_start)
         event_manager.register_event_handler("RunSystemTaskEvent",
                                              self.__run_log_cleaner)
         self.task = logcleantask.LogCleanTask()
 
     def disable(self):
         pass
+
+    def __on_mirror_start(self):
+        self.scheduler = component.get("Scheduler")
+        self.scheduler.tasks[_plugin_name] = self.task
+        self.scheduler.active_tasks += 1
 
     def __run_log_cleaner(self, taskinfo):
         log.info("Running task: %s", taskinfo.name)
