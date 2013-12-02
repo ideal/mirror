@@ -21,9 +21,12 @@
 #
 
 import os
+import glob
+import time
 import logging
 import mirror.component as component
 from mirror.task import SystemTask
+from datetime    import datetime
 
 _name = "logcleaner"
 
@@ -39,4 +42,18 @@ class LogCleanTask(SystemTask):
     def run(self):
         scheduler = component.get("Scheduler")
         logdir    = scheduler.logdir
+
+        now       = datetime.now()
+        paths     = glob.glob(os.path.join(logdir, '*'))
+        for path in paths:
+            try:
+                datestr = path.split('.')[-1]
+                date    = time.strptime(datestr, "%Y-%m-%d")
+                delta   = now - datetime.fromtimestamp(time.mktime(date))
+                if delta.days > 10:
+                    os.unlink(path)
+            except Exception, e:
+                log.exception(e)
+            else:
+                log.info("Deleted log file: %s", path)
 
