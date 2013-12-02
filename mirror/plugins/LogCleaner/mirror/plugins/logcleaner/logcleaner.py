@@ -55,6 +55,10 @@ class LogCleaner(PluginBase):
         log.info("Task: %s added", _plugin_name)
 
     def __run_log_cleaner(self, taskinfo):
+        # FIXME: need a better way
+        if taskinfo.name != _plugin_name:
+            return
+
         log.info("Running task: %s", taskinfo.name)
         self.task.run()
         log.info("Finished task: %s", taskinfo.name)
