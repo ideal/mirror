@@ -211,6 +211,8 @@ class Scheduler(Component):
         """
         running = 0
         for taskname, task in self.tasks.iteritems():
+            if task.isinternal:
+                continue
             running += task.running
         return running
 
@@ -451,6 +453,8 @@ class Scheduler(Component):
         """
         event_manager = component.get("EventManager")
         for taskname, task in self.tasks.iteritems():
+            if task.isinternal:
+                continue
             if not task.running:
                 continue
             pid = task.pid

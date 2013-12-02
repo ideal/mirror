@@ -47,6 +47,12 @@ class LogCleaner(PluginBase):
         self.scheduler = component.get("Scheduler")
         self.scheduler.tasks[_plugin_name] = self.task
         self.scheduler.active_tasks += 1
+        # NOTE: However currently SystemTask is run in plugin thread,
+        # and the Scheduler sleeps before SystemTask is appended into
+        # the queue, so SystemTask will only begin to task effect on
+        # next sleep loop.
+        # However for most system tasks, this is acceptable.
+        log.info("Task: %s added", _plugin_name)
 
     def __run_log_cleaner(self, taskinfo):
         log.info("Running task: %s", taskinfo.name)

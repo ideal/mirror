@@ -75,6 +75,7 @@ class AbstractTask(object):
             log.error("Error in config for task: %s, priority not valid.", self.name)
             self.priority = PRIORITY_MAX
 
+        self.running = False
         if taskinfo.get("isinternal", False) != False:
             self.isinternal = True
             return
@@ -94,7 +95,6 @@ class AbstractTask(object):
             log.error("command `%s` not found in PATH, please install that first :)",
                       command)
             self.enabled = False
-        self.running   = False
         self.pid       = 0
         self.stage     = 1
         self.code      = 0
