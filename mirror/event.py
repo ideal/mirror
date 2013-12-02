@@ -99,3 +99,13 @@ class TaskStopEvent(MirrorEvent):
     def __init__(self, taskname, taskpid, exitcode):
         self._args = [ taskname, taskpid, exitcode ]
 
+class RunSystemTaskEvent(MirrorEvent):
+    """
+    The event occurs when an internal task needs to run.
+
+    :param taskinfo: TaskInfo instance
+
+    """
+    def __init__(self, taskinfo):
+        self._args = [ taskinfo ]
+

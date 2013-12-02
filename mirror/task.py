@@ -43,6 +43,7 @@ class AbstractTask(object):
         self.scheduler = (scheduler_ref() if scheduler_ref is not None else None)
         self.name      = name
         self.enabled   = True
+        self.isinternal= False
 
         self.time      = taskinfo.get("time", None)
         if not self.time:
@@ -64,7 +65,18 @@ class AbstractTask(object):
             log.error("Error in config for task: %s, time not valid.", self.name)
             self.enabled = False
 
+        try:
+            self.priority = int(taskinfo['priority'])
+            if self.priority < PRIORITY_MIN:
+                self.priority = PRIORITY_MIN
+            if self.priority > PRIORITY_MAX:
+                self.priority = PRIORITY_MAX
+        except:
+            log.error("Error in config for task: %s, priority not valid.", self.name)
+            self.priority = PRIORITY_MAX
+
         if taskinfo.get("isinternal", False) != False:
+            self.isinternal = True
             return
 
         if taskinfo.get("command", None) == None:
@@ -92,16 +104,6 @@ class AbstractTask(object):
         except KeyError, e:
             log.error("Error in config for task: %s, key: %s not found.", self.name, e)
             self.enabled  = False
-
-        try:
-            self.priority = int(taskinfo['priority'])
-            if self.priority < PRIORITY_MIN:
-                self.priority = PRIORITY_MIN
-            if self.priority > PRIORITY_MAX:
-                self.priority = PRIORITY_MAX
-        except:
-            log.error("Error in config for task: %s, priority not valid.", self.name)
-            self.priority = PRIORITY_MAX
 
         if self.twostage and not taskinfo.has_key("firststage"):
             log.error("Error in config for task: %s, `twostage` is set but no `firststage`.", self.name)

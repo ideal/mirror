@@ -84,6 +84,7 @@ class Plugin(PluginBase):
                 self.enabled = False
                 log.warning("Create directory failed: %s", status_dir)
 
+        self.scheduler = component.get("Scheduler")
         event_manager  = component.get("EventManager")
         event_manager.register_event_handler("TaskEnqueueEvent",
                                              self.__on_task_enqueue)
@@ -99,8 +100,7 @@ class Plugin(PluginBase):
         if not self.enabled:
             return
 
-        scheduler = component.get("Scheduler")
-        taskinfo  = scheduler.queue.find(taskname)
+        taskinfo  = self.scheduler.queue.find(taskname)
         status    = { "schedule": time.strftime(self.DATE_FORMAT,
                                        time.localtime(taskinfo.time)) }
         self.__set_task_status(taskname, status, overwrite = False)
@@ -118,8 +118,7 @@ class Plugin(PluginBase):
         if not self.enabled:
             return
 
-        scheduler = component.get("Scheduler")
-        task = scheduler.tasks.get(taskname, None)
+        task = self.scheduler.tasks.get(taskname, None)
         if not task:
             return
         status = { "status": self.STATUS_FINISHED }
@@ -131,7 +130,7 @@ class Plugin(PluginBase):
         status["exitcode"] = exitcode
         status["date"] = time.strftime(self.DATE_FORMAT)
 
-        taskinfo = scheduler.queue.find(taskname)
+        taskinfo = self.scheduler.queue.find(taskname)
         if taskinfo:
             status["schedule"] = time.strftime(self.DATE_FORMAT,
                                       time.localtime(taskinfo.time))
@@ -141,6 +140,10 @@ class Plugin(PluginBase):
         self.__set_task_status(taskname, status)
 
     def __set_task_status(self, taskname, status, overwrite = True):
+        task = self.scheduler.tasks.get(taskname)
+        if task.isinternal:
+            return
+
         try:
             fp = open(self.status_file, "r+" if os.path.exists(self.status_file) else "w+")
         except:

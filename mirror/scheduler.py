@@ -155,6 +155,10 @@ class Scheduler(Component):
 
         """
         task = self.tasks[taskinfo.name]
+        if task.isinternal:
+            self.run_system_task(taskinfo)
+            return
+
         if task.priority > self.get_runnable_priority(self.current_load, self.loadlimit):
             log.info("Task: %s not scheduled because system load %.2f is too high",
                      taskinfo.name, self.current_load)
@@ -341,6 +345,10 @@ class Scheduler(Component):
             self.tasks[mirror] = task_class(mirror, weakref.ref(self), **config[mirror])
         self.active_tasks = len(
                             [mirror for mirror, task in self.tasks.iteritems() if task.enabled])
+
+    def run_system_task(self, taskinfo):
+        event_manager = component.get("EventManager")
+        event_manager.emit(mirror.event.RunSystemTaskEvent(taskinfo))
 
     def run_task(self, taskinfo, stage = 1):
         if taskinfo.name not in self.tasks:

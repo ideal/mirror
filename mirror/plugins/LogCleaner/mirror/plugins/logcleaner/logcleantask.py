@@ -23,25 +23,20 @@
 import os
 import logging
 import mirror.component as component
-import logcleantask
-from mirror.pluginbase import PluginBase
+from mirror.task import SystemTask
 
-_plugin_name = "logcleaner"
+_name = "logcleaner"
 
-log = logging.getLogger(_plugin_name)
+log = logging.getLogger(_name)
 
-class LogCleaner(PluginBase):
+class LogCleanTask(SystemTask):
 
-    def enable(self):
-        event_manager  = component.get("EventManager")
-        event_manager.register_event_handler("RunSystemTaskEvent",
-                                             self.__run_log_cleaner)
-        self.task = logcleantask.LogCleanTask()
+    def __init__(self):
+        # Actually the `priority` here is meaningless
+        taskinfo = { "time": "0 1 * * *", "priority": 6 }
+        super(LogCleanTask, self).__init__(_name, None, **taskinfo)
 
-    def disable(self):
-        pass
+    def run(self):
+        scheduler = component.get("Scheduler")
+        logdir    = scheduler.logdir
 
-    def __run_log_cleaner(self, taskinfo):
-        log.info("Running task: %s", taskinfo.name)
-        self.task.run()
-        log.info("Finished task: %s", taskinfo.name)
