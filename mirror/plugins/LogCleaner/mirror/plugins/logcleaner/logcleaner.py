@@ -49,7 +49,7 @@ class LogCleaner(PluginBase):
         self.scheduler.active_tasks += 1
         # NOTE: However currently SystemTask is run in plugin thread,
         # and the Scheduler sleeps before SystemTask is appended into
-        # the queue, so SystemTask will only begin to task effect on
+        # the queue, so SystemTask will only begin to take effect on
         # next sleep loop.
         # However for most system tasks, this is acceptable.
         log.info("Task: %s added", _plugin_name)
@@ -62,3 +62,4 @@ class LogCleaner(PluginBase):
         log.info("Running task: %s", taskinfo.name)
         self.task.run()
         log.info("Finished task: %s", taskinfo.name)
+
