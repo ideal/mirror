@@ -136,6 +136,8 @@ class AbstractTask(object):
                 logdir = self.scheduler.logdir
             else:
                 logdir = mirror.common.DEFAULT_TASK_LOG_DIR
+            if not os.path.exists(logdir):
+                os.makedirs(logdir, 0755)
             fp = open(logdir + self.name + '.log.' + time.strftime('%Y-%m-%d'), 'a')
             # Redirect child process's stdout and stderr
             os.dup2(fp.fileno(), 1)
