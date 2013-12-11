@@ -1,6 +1,6 @@
 # Mirror
 
-Mirror is an open source python application for mirror site (e.g. [mirror.bjtu.edu.cn](http://mirror.bjtu.edu.cn)) to sync files from upstreams (it uses rsync internally), it actually works like a cron, but with some differences. 
+`Mirror` is an open source python application for mirror site (e.g. [mirror.bjtu.edu.cn](http://mirror.bjtu.edu.cn)) to sync files from upstreams (it uses rsync internally), it actually works like a cron, but has some differences. It has been served for mirror.bjtu.edu.cn with more than 40 rsync tasks.
 
 You are welcome to send comments, patches and any others to [github](https://github.com/ideal/mirror/issues) or to [@idealities](http://twitter.com/idealities).
 
@@ -40,11 +40,17 @@ mkdir ~/.config/mirror
 cp config/mirror.ini ~/.config/mirror/
 ```
 
-Now you can edit mirror.ini and run:
+Now you can edit mirror.ini to fit your needs and run:
 ```
 mirrord
 ```
 and that's done. Also you can use `man mirrord` to read documents.
+
+Also a command `mirror` is provided, if `mirrord` is running, you can run:
+```
+mirror -l
+```
+to show the current task queue.
 
 Contact/Support
 ===============
