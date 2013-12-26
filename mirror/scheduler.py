@@ -242,6 +242,7 @@ class Scheduler(Component):
             return
         taskinfo = TaskInfo(taskname, REGULAR_TASK,
                             task.get_schedule_time(since), task.priority)
+        # however this is hard to understand
         if taskinfo in self.queue:
             return
         self.queue.put(taskinfo)
@@ -351,6 +352,12 @@ class Scheduler(Component):
     def run_system_task(self, taskinfo):
         event_manager = component.get("EventManager")
         event_manager.emit(mirror.event.RunSystemTaskEvent(taskinfo))
+        # after we run the system task, we need to update the queue
+        # or else the sleeptime will be invalid
+        if taskinfo in self.queue:
+            self.queue.remove(taskinfo)
+        task = self.tasks[taskinfo.name]
+        self.append_task(taskinfo.name, task, time.time())
 
     def run_task(self, taskinfo, stage = 1):
         if taskinfo.name not in self.tasks:
