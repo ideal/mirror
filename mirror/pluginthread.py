@@ -59,9 +59,11 @@ class PluginThread(threading.Thread):
                     continue
             # Call any handlers for the event
             for handler in self.event_manager.handlers[event.name]:
-                log.debug("Running handler %s for event %s with args: %s", event.name, handler, event.args)
+                log.debug("Running handler %s for event %s with args: %s",
+                          event.name, handler, event.args)
                 try:
                     handler(*event.args)
                 except Exception, e:
-                    log.error("Event handler %s failed in %s with exception %s", event.name, handler, e)
+                    log.error("Event handler %s failed in %s with exception %s",
+                              event.name, handler, e)
 
