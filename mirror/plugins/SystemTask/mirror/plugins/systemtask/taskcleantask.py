@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2013 Shang Yuanchun <idealities@gmail.com>
+# Copyright (C) 2013-2014 Shang Yuanchun <idealities@gmail.com>
 #
 #
 # You may redistribute it and/or modify it under the terms of the

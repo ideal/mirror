@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2013 Shang Yuanchun <idealities@gmail.com>
+# Copyright (C) 2013-2014 Shang Yuanchun <idealities@gmail.com>
 #
 #
 # You may redistribute it and/or modify it under the terms of the
@@ -23,8 +23,9 @@
 import os
 import logging
 import mirror.component as component
-import logcleantask
 from mirror.pluginbase import PluginBase
+import logcleantask
+import taskcleantask
 
 _plugin_name = "systemtask"
 
@@ -40,26 +41,47 @@ class SystemTask(PluginBase):
                                              self.__run_log_cleaner)
         self.logclean_task = logcleantask.LogCleanTask()
 
+        event_manager.register_event_handler("RunSystemTaskEvent",
+                                             self.__run_task_cleaner)
+        self.taskclean_task = taskcleantask.TaskCleanTask()
+
     def disable(self):
         pass
 
     def __on_mirror_start(self):
+        """
+        NOTE: However currently SystemTask is run in plugin thread,
+        and the Scheduler sleeps before SystemTask is appended into
+        the queue, so SystemTask will only begin to take effect on
+        next sleep loop.
+        However for most system tasks, this is acceptable.
+
+        """
         self.scheduler = component.get("Scheduler")
-        self.scheduler.tasks[_plugin_name] = self.logclean_task
+
+        self.scheduler.tasks[logcleantask._name] = self.logclean_task
         self.scheduler.active_tasks += 1
-        # NOTE: However currently SystemTask is run in plugin thread,
-        # and the Scheduler sleeps before SystemTask is appended into
-        # the queue, so SystemTask will only begin to take effect on
-        # next sleep loop.
-        # However for most system tasks, this is acceptable.
-        log.info("Task: %s added", _plugin_name)
+        log.info("Task: %s added", logcleantask._name)
+
+        self.scheduler.tasks[taskcleantask._name] = self.taskclean_task
+        self.scheduler.active_tasks += 1
+        log.info("Task: %s added", taskcleantask._name)
 
     def __run_log_cleaner(self, taskinfo):
         # FIXME: need a better way
-        if taskinfo.name != _plugin_name:
+        if taskinfo.name != logcleantask._name:
             return
 
         log.info("Running task: %s", taskinfo.name)
         self.logclean_task.run()
+        log.info("Finished task: %s", taskinfo.name)
+
+    def __run_task_cleaner(self, taskinfo):
+        # FIXME: need a better way
+        if taskinfo.name != taskcleantask._name:
+            return
+
+        log.info("Running task: %s", taskinfo.name)
+        self.taskclean_task.run()
         log.info("Finished task: %s", taskinfo.name)
 
