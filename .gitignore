@@ -3,3 +3,4 @@ dist/
 *.pyc
 *.egg
 *.egg-info/
+test.py
