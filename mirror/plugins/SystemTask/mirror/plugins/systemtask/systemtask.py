@@ -26,11 +26,11 @@ import mirror.component as component
 import logcleantask
 from mirror.pluginbase import PluginBase
 
-_plugin_name = "logcleaner"
+_plugin_name = "systemtask"
 
 log = logging.getLogger(_plugin_name)
 
-class LogCleaner(PluginBase):
+class SystemTask(PluginBase):
 
     def enable(self):
         event_manager  = component.get("EventManager")
@@ -38,14 +38,14 @@ class LogCleaner(PluginBase):
                                              self.__on_mirror_start)
         event_manager.register_event_handler("RunSystemTaskEvent",
                                              self.__run_log_cleaner)
-        self.task = logcleantask.LogCleanTask()
+        self.logclean_task = logcleantask.LogCleanTask()
 
     def disable(self):
         pass
 
     def __on_mirror_start(self):
         self.scheduler = component.get("Scheduler")
-        self.scheduler.tasks[_plugin_name] = self.task
+        self.scheduler.tasks[_plugin_name] = self.logclean_task
         self.scheduler.active_tasks += 1
         # NOTE: However currently SystemTask is run in plugin thread,
         # and the Scheduler sleeps before SystemTask is appended into
@@ -60,6 +60,6 @@ class LogCleaner(PluginBase):
             return
 
         log.info("Running task: %s", taskinfo.name)
-        self.task.run()
+        self.logclean_task.run()
         log.info("Finished task: %s", taskinfo.name)
 
