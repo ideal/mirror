@@ -184,6 +184,7 @@ def start_daemon():
 
     import mirror.handler
     signal.signal(signal.SIGTERM, mirror.handler.shutdown_handler)
+    signal.signal(signal.SIGQUIT, mirror.handler.shutdown_handler)
     signal.signal(signal.SIGINT,  mirror.handler.shutdown_handler)
     signal.signal(signal.SIGCHLD, mirror.handler.sigchld_handler)
 
