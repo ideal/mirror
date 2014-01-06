@@ -54,7 +54,7 @@ class TaskCleanTask(SystemTask):
                     continue
                 # SIGCHLD will trigger in main thread
                 if curtime - task.start_time > self.TASK_TIMEOUT:
-                    os.kill(task.pid, os.SIGTERM)
+                    os.kill(task.pid, signal.SIGTERM)
             except Exception, e:
                 log.exception(e)
             else:
