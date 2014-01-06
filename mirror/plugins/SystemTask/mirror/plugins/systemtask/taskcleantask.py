@@ -50,6 +50,9 @@ class TaskCleanTask(SystemTask):
         curtime   = time.time()
         for taskname, task in scheduler.tasks:
             try:
+                # internal tasks have no `running`
+                if not hasattr(task, "running"):
+                    continue
                 if not task.running:
                     continue
                 # SIGCHLD will trigger in main thread
