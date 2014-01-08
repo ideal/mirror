@@ -63,11 +63,7 @@ def get_default_config_dir(filename=None):
                                    "mirror")
     if not filename:
         filename = ''
-    try:
-        return os.path.join(config_path, filename)
-    except OSError, e:
-        log.error("Unable to use default config directory, exiting... (%s)", e)
-        sys.exit(1)
+    return os.path.join(config_path, filename)
 
 def setup_translations():
     translations_path = resource_filename("mirror", "i18n")
@@ -86,9 +82,10 @@ def setup_translations():
         __builtin__.__dict__["_"] = lambda x: x
 
 def resource_filename(module, path):
-    return pkg_resources.require("mirror>=%s" % get_version())[0].get_resource_filename(
-        pkg_resources._manager, os.path.join(*(module.split('.')+[path]))
-    )
+    return pkg_resources.require(
+               "mirror>=%s" % get_version())[0].get_resource_filename(
+                pkg_resources._manager, os.path.join(*(module.split('.')+[path]))
+            )
 
 def check_mirrord_running(pidfile):
     pid = None
