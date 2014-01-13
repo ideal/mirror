@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Mirror : sync program for mirror site" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Mirror</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/ideal/mirror">View on GitHub</a>
+
+          <h1 id="project_title">Mirror</h1>
+          <h2 id="project_tagline">sync program for mirror site</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/ideal/mirror/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/ideal/mirror/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="mirror" class="anchor" href="#mirror"><span class="octicon octicon-link"></span></a>Mirror</h1>
+
+<p><code>Mirror</code> is an open source python application for mirror site (e.g. <a href="http://mirror.bjtu.edu.cn">mirror.bjtu.edu.cn</a>) to sync files from upstreams (it uses rsync internally), it actually works like a cron, but has some differences. It has been served for mirror.bjtu.edu.cn with more than 40 rsync tasks.</p>
+
+<p>You are welcome to send comments, patches and any others to <a href="https://github.com/ideal/mirror/issues">github</a> or to <a href="http://twitter.com/idealities">@idealities</a>.</p>
+
+<p>Homepage: <a href="http://mirror.bjtu.edu.cn">http://mirror.bjtu.edu.cn</a></p>
+
+<h1>
+<a name="authors" class="anchor" href="#authors"><span class="octicon octicon-link"></span></a>Authors</h1>
+
+<ul>
+<li>Shang Yuanchun</li>
+<li>Bob Gao</li>
+</ul><p>For contributors and past developers see: 
+    AUTHORS</p>
+
+<h1>
+<a name="installation-instructions" class="anchor" href="#installation-instructions"><span class="octicon octicon-link"></span></a>Installation Instructions</h1>
+
+<p>Build and install by running:</p>
+
+<pre><code>python setup.py build
+sudo python setup.py install
+</code></pre>
+
+<p>Or to a custom directory:</p>
+
+<pre><code>sudo python setup.py install --root=/tmp
+</code></pre>
+
+<p>After that, you are going to set up environment, you are encouraged to add a specific user to run <code>mirrord</code>, here we suppose the username is <code>mirror</code> and its home directory is <code>/home/mirror</code>.</p>
+
+<p>Make necessary directories:</p>
+
+<div class="highlight highlight-sh"><pre>sudo mkdir /var/log/mirrord /var/log/rsync
+sudo chown mirror:mirror /var/log/mirrord /var/log/rsync
+mkdir ~/.config/mirror
+cp config/mirror.ini ~/.config/mirror/
+</pre></div>
+
+<p>Now you can edit mirror.ini to fit your needs and run:</p>
+
+<pre><code>mirrord
+</code></pre>
+
+<p>and that's done. Also you can use <code>man mirrord</code> to read documents.</p>
+
+<p>Also a command <code>mirror</code> is provided, if <code>mirrord</code> is running, you can run:</p>
+
+<pre><code>mirror -l
+</code></pre>
+
+<p>to show the current task queue.</p>
+
+<h1>
+<a name="contactsupport" class="anchor" href="#contactsupport"><span class="octicon octicon-link"></span></a>Contact/Support</h1>
+
+<p>Email: <a href="mailto:idealities@gmail.com">idealities@gmail.com</a></p>
+
+<h1>
+<a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features</h1>
+
+<ul>
+<li>It's simple and easy to add a mirror</li>
+<li>You can set a priorty for each mirror, from 1 to 10, 1 is highest</li>
+<li>And scheduler will schedule a task depending on current conditions</li>
+<li>You can also set a timeout for each mirror</li>
+<li>Support for two stage syncing (for ubuntu, debian)</li>
+<li>You can also use it as another cron...</li>
+</ul>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Mirror maintained by <a href="https://github.com/ideal">ideal</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
