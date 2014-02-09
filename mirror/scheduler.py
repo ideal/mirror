@@ -242,7 +242,9 @@ class Scheduler(Component):
             return
         taskinfo = TaskInfo(taskname, REGULAR_TASK,
                             task.get_schedule_time(since), task.priority)
-        # however this is hard to understand
+
+        # however this is hard to understand,
+        # for system tasks and timeout tasks
         if taskinfo in self.queue:
             return
         self.queue.put(taskinfo)
@@ -363,6 +365,9 @@ class Scheduler(Component):
         if taskinfo.name not in self.tasks:
             return
         task = self.tasks[taskinfo.name]
+        # for tasks that is still running when next schedule time
+        # is reached (but has no timeout set), we just need to
+        # reappend it.
         if task.running and task.timeout <= 0:
             taskinfo.time  = task.get_schedule_time(since = time.time())
             self.reappend_task(task, taskinfo)
