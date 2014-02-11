@@ -62,12 +62,12 @@ class ComponentRegistry(object):
         name = obj._name
 
         if not isinstance(obj, Component):
-            logging.warn("Trying to register a object with type: %s",
+            log.warn("Trying to register a object with type: %s",
                          obj.__class__.__name__)
             return
 
         if name in self.components:
-            logging.warn(("Trying to register a object which is already"
+            log.warn(("Trying to register a object which is already"
                          " registered, name: %s"), 
                          name)
 
