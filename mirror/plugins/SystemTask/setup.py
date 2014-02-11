@@ -28,7 +28,7 @@ __author_email__ = "idealities@gmail.com"
 __version__      = "0.6"
 __url__          = "http://mirror.bjtu.edu.cn"
 __license__      = "GPLv3"
-__description__  = "Plugin for system internal teask, including LogCleaner and TaskCleaner."
+__description__  = "Plugin for system internal tasks, including LogCleaner and TaskCleaner."
 __long_description__ = """"""
 __pkg_data__     = { 'mirror.plugins.' + __plugin_name__.lower(): [ "data/*" ] }
 
