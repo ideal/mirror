@@ -143,9 +143,13 @@ class Plugin(PluginBase):
     def __set_task_status(self, taskname, status, overwrite = True):
         scheduler = component.get("Scheduler")
         task = scheduler.tasks.get(taskname)
+        # We do not export internal task's status
         if task.isinternal:
             return
 
+        # Add info about upstream
+        if task.__class__.__name__ == "Task":
+            status['upstream'] = task.upstream[0] + '::' + task.rsyncdir + '/'
         try:
             fp = open(self.status_file, "r+" if os.path.exists(self.status_file) else "w+")
         except:
