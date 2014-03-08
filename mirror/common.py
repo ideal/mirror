@@ -87,13 +87,17 @@ def resource_filename(module, path):
                 pkg_resources._manager, os.path.join(*(module.split('.')+[path]))
             )
 
-def check_mirrord_running(pidfile):
+def read_mirrord_pid(pidfile):
     pid = None
     if os.path.isfile(pidfile):
         try:
             pid = int(open(pidfile).read().strip())
         except:
             pass
+    return pid
+
+def check_mirrord_running(pidfile):
+    pid = read_mirrord_pid(pidfile)
 
     def is_process_running(pid):
         try:
@@ -214,7 +218,9 @@ def parse_cron_time(time):
                 result.append([d for d in xrange(start, end, every)])
             elif value.find(',') != -1:
                 result.append(
-                        sorted([int(d) for d in value.split(',') if (int(d) < extent[i] and int(d) >= (i >= 2))]))
+                        sorted([int(d) for d in value.split(',')
+                               if (int(d) < extent[i] and int(d) >= (i >= 2))])
+                       )
             else:
                 try:
                     d = int(value)
