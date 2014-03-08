@@ -63,7 +63,8 @@ def start_daemon():
                       help=_("Set the logfile location"),
                       action="store", type="str")
     parser.add_option("-L", "--loglevel", dest="loglevel",
-                      help=_("Set the log level: none, info, warning, error, critical, debug"),
+                      help=_("Set the log level: none, info, warning, error, "
+                             "critical, debug"),
                       action="store", type="str")
     parser.add_option("-q", "--quiet", dest="quiet",
                       help=_("Sets the log level to 'none', this is the same as `-L none`"),
@@ -77,13 +78,19 @@ def start_daemon():
     parser.add_option("-t", "--tasks", dest="list_tasks",
                       help=_("List current tasks in scheduler's queue"),
                       action="store_true", default=False)
-
+    parser.add_option("-s", "--signal", dest="signal",
+                      help=_("Send signal to mirrord: stop, reload"),
+                      action="store", type="str")
 
     # Get the options and args from the OptionParser
     (options, args) = parser.parse_args()
 
     if options.list_tasks:
         sys.exit(mirror.console.list_task_queue())
+
+    if (options.signal and
+        options.signal in ('stop', 'reload')):
+        sys.exit(mirror.console.signal_process(options.signal))
 
     if options.quiet:
         options.loglevel = "none"
