@@ -29,8 +29,8 @@ import mirror.color
 import mirror.task as task
 
 TASK_DESC = {
-            task.REGULAR_TASK: _("Normal task"),
-            task.TIMEOUT_TASK: _("Timeout check"),
+            task.REGULAR_TASK: "Normal task",
+            task.TIMEOUT_TASK: "Timeout check",
             }
 
 def list_queue():
