@@ -33,28 +33,6 @@ def version_callback(option, opt_str, value, parser):
     print(os.path.basename(sys.argv[0]) + ": " + mirror.common.get_version())
     sys.exit(0)
 
-def start():
-    """Entry point for mirror script"""
-    import mirror.common
-    mirror.common.setup_translations()
-
-    # Setup the argument parser
-    parser = OptionParser(usage="%prog [options]")
-    parser.add_option("-v", "--version", action="callback",
-                      callback=version_callback,
-                      help=_("Show program's version number and exit"))
-    parser.add_option("-l", "--list", dest="listqueue",
-                      help=_("List current tasks in scheduler's queue"), action="store_true", default=False)
-
-    # Get the options and args from the OptionParser
-    (options, args) = parser.parse_args()
-
-    if options.listqueue:
-        mirror.console.list_queue()
-        sys.exit(0)
-
-    parser.print_help()
-
 def start_daemon():
     """Entry point for daemon script"""
     import mirror.common
@@ -66,28 +44,46 @@ def start_daemon():
                       callback=version_callback,
                       help=_("Show program's version number and exit"))
     parser.add_option("-D", "--do-not-daemonize", dest="donot",
-                      help=_("Do not daemonize (default is daemonize)"), action="store_true", default=False)
+                      help=_("Do not daemonize (default is daemonize)"),
+                      action="store_true",
+                      default=False)
     parser.add_option("-c", "--config", dest="config",
-                      help=_("Set the config location directory"), action="store", type="str")
+                      help=_("Set the config location directory"),
+                      action="store", type="str")
     parser.add_option("-P", "--pidfile", dest="pidfile",
-                      help=_("Use pidfile to store process id"), action="store", type="str")
+                      help=_("Use pidfile to store process id"),
+                      action="store", type="str")
     parser.add_option("-u", "--user", dest="user",
-                      help=_("User to switch to. Need to start as root"), action="store", type="str")
+                      help=_("User to switch to. Need to start as root"),
+                      action="store", type="str")
     parser.add_option("-g", "--group", dest="group",
-                      help=_("Group to switch to. Need to start as root"), action="store", type="str")
+                      help=_("Group to switch to. Need to start as root"),
+                      action="store", type="str")
     parser.add_option("-l", "--logfile", dest="logfile",
-                      help=_("Set the logfile location"), action="store", type="str")
+                      help=_("Set the logfile location"),
+                      action="store", type="str")
     parser.add_option("-L", "--loglevel", dest="loglevel",
-                      help=_("Set the log level: none, info, warning, error, critical, debug"), action="store", type="str")
+                      help=_("Set the log level: none, info, warning, error, critical, debug"),
+                      action="store", type="str")
     parser.add_option("-q", "--quiet", dest="quiet",
-                      help=_("Sets the log level to 'none', this is the same as `-L none`"), action="store_true", default=False)
+                      help=_("Sets the log level to 'none', this is the same as `-L none`"),
+                      action="store_true", default=False)
     parser.add_option("-r", "--rotate-logs",
-                      help=_("Rotate logfiles."), action="store_true", default=False)
-    parser.add_option("--profile", dest="profile", action="store_true", default=False,
-                      help=_("Profiles the daemon"))
+                      help=_("Rotate logfiles."),
+                      action="store_true", default=False)
+    parser.add_option("--profile", dest="profile",
+                      help=_("Profiles the daemon"),
+                      action="store_true", default=False)
+    parser.add_option("-t", "--tasks", dest="list_tasks",
+                      help=_("List current tasks in scheduler's queue"),
+                      action="store_true", default=False)
+
 
     # Get the options and args from the OptionParser
     (options, args) = parser.parse_args()
+
+    if options.list_tasks:
+        sys.exit(mirror.console.list_queue())
 
     if options.quiet:
         options.loglevel = "none"

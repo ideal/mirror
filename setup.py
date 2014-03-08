@@ -142,7 +142,6 @@ _data_files = [
 
 entry_points = {
     "console_scripts": [
-        "mirror  = mirror.main:start",
         "mirrord = mirror.main:start_daemon"
     ],
 }

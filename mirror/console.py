@@ -26,8 +26,12 @@ import mmap
 import struct
 import cPickle as pickle
 import mirror.color
+import mirror.task as task
 
-TASK_DESC = { 1: "Normal task", 2: "Timeout check" }
+TASK_DESC = {
+            task.REGULAR_TASK: _("Normal task"),
+            task.TIMEOUT_TASK: _("Timeout check"),
+            }
 
 def list_queue():
     try:
@@ -35,7 +39,7 @@ def list_queue():
     except:
         print >> sys.stderr, _("Open /tmp/mirrord failed, "
                                "can't read task infomation")
-        return
+        return -1
 
     buffer = mmap.mmap(bufferfd, os.fstat(bufferfd).st_size,
                        mmap.MAP_SHARED, mmap.PROT_READ)
@@ -52,3 +56,4 @@ def list_queue():
 
     buffer.close()
     os.close(bufferfd)
+    return 0
