@@ -130,7 +130,7 @@ def lock_file(pidfile):
         except:
             raise MirrorError("Can't lock %s", pidfile)
         raise MirrorError("Can't lock %s, maybe another mirrord with pid %d is running",
-                              pidfile, pid)
+                          pidfile, pid)
 
     # See document at http://man7.org/linux/man-pages/man2/fcntl.2.html
     fcntl.fcntl(fp, fcntl.F_SETFD, 1)
