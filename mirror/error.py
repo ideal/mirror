@@ -18,6 +18,8 @@
 #
 #
 
+MIRROR_OK     = 0
+MIRROR_NOFILE = 1
 
 class MirrorError(Exception):
     def __new__(cls, *args, **kwargs):

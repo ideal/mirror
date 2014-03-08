@@ -83,7 +83,7 @@ def start_daemon():
     (options, args) = parser.parse_args()
 
     if options.list_tasks:
-        sys.exit(mirror.console.list_queue())
+        sys.exit(mirror.console.list_task_queue())
 
     if options.quiet:
         options.loglevel = "none"
