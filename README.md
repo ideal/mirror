@@ -46,9 +46,9 @@ mirrord
 ```
 and that's done. Also you can use `man mirrord` to read the documents.
 
-Also a command `mirror` is provided, if `mirrord` is running, you can run:
+If `mirrord` is running, you can run:
 ```
-mirror -l
+mirrord -t
 ```
 to show the current task queue.
 
