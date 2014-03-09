@@ -58,3 +58,10 @@ def list_task_queue():
     buffer.close()
     os.close(bufferfd)
     return error.MIRROR_OK
+
+def signal_process(signame):
+    if signame not in ('stop', 'reload'):
+        print >> sys.stderr, _("Invalid value for -s, "
+                               "available: stop, reload")
+        return error.MIRROR_ERRARG
+    return error.MIRROR_OK

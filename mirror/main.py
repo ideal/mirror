@@ -88,8 +88,7 @@ def start_daemon():
     if options.list_tasks:
         sys.exit(mirror.console.list_task_queue())
 
-    if (options.signal and
-        options.signal in ('stop', 'reload')):
+    if options.signal:
         sys.exit(mirror.console.signal_process(options.signal))
 
     if options.quiet:
