@@ -235,3 +235,8 @@ def parse_cron_time(time):
     else:
         return None
 
+def write_stderr(message, *params):
+    """
+    """
+    print >> sys.stderr, message % params
+

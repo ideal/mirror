@@ -19,7 +19,7 @@
 #
 
 MIRROR_OK     = 0
-MIRROR_NOFILE = 1
+MIRROR_ERROR  = 1
 MIRROR_ERRARG = 2
 
 class MirrorError(Exception):

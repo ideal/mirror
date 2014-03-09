@@ -24,10 +24,13 @@ import os, sys
 import time
 import mmap
 import struct
+import signal
 import cPickle as pickle
 import mirror.color
+import mirror.common
 import mirror.task  as task
 import mirror.error as error
+from mirror.common import write_stderr
 
 TASK_DESC = {
             task.REGULAR_TASK: "Normal task",
@@ -38,9 +41,9 @@ def list_task_queue():
     try:
         bufferfd = os.open("/tmp/mirrord", os.O_RDONLY)
     except:
-        print >> sys.stderr, _("Open /tmp/mirrord failed, "
-                               "can't read task infomation")
-        return error.MIRROR_NOFILE
+        write_stderr(_("Open /tmp/mirrord failed, "
+                       "can't read task infomation"))
+        return error.MIRROR_ERROR
 
     buffer = mmap.mmap(bufferfd, os.fstat(bufferfd).st_size,
                        mmap.MAP_SHARED, mmap.PROT_READ)
@@ -59,9 +62,28 @@ def list_task_queue():
     os.close(bufferfd)
     return error.MIRROR_OK
 
+signals = {
+          "stop"  : signal.SIGQUIT,
+          "reload": signal.SIGHUP,
+          }
+
 def signal_process(signame):
     if signame not in ('stop', 'reload'):
-        print >> sys.stderr, _("Invalid value for -s, "
-                               "available: stop, reload")
+        write_stderr(_("Invalid value for -s, "
+                       "available: stop, reload"))
         return error.MIRROR_ERRARG
+    import mirror.configmanager
+    pidfile = mirror.configmanager.get_config_dir("mirrord.pid")
+    pid = mirror.common.read_mirrord_pid(pidfile)
+    if not pid:
+        write_stderr(_("Can not read mirrord's pid"))
+        return error.MIRROR_ERROR
+    try:
+        os.kill(pid, signals.get(signame))
+    except Exception, e:
+        write_stderr(_("Kill mirrord (%d) failed: %s"),
+                     pid, e.message)
+        return error.MIRROR_ERROR
+
     return error.MIRROR_OK
+
