@@ -342,7 +342,19 @@ class Scheduler(Component):
             self.logdir += os.path.sep
 
     def reload_config(self):
-        pass
+        log.info("Stopping running tasks...")
+        signal.signal(signal.SIGCHLD, signal.SIG_DFL)
+        self.stop_all_tasks()
+        signal.signal(signal.SIGCHLD, mirror.handler.sigchld_handler)
+
+        log.info("Clearing old data...")
+        self.tasks.clear()
+        self.queue = Queue()
+
+        log.info("Reloading new configs...")
+        self.config = ConfigManager("mirror.ini", need_reload = True)
+        self.init_general(self.config)
+        self.init_tasks  (self.config)
 
     def init_tasks(self, config):
         for mirror in config:
