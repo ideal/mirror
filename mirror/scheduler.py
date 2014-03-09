@@ -348,7 +348,9 @@ class Scheduler(Component):
         signal.signal(signal.SIGCHLD, mirror.handler.sigchld_handler)
 
         log.info("Clearing old data...")
-        self.tasks.clear()
+        for taskname, task in self.tasks.iteritems():
+            if not task.isinternal:
+                del self.tasks[taskname]
         self.queue = Queue()
 
         log.info("Reloading new configs...")
