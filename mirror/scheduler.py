@@ -341,6 +341,9 @@ class Scheduler(Component):
         if self.logdir[-1] != os.path.sep:
             self.logdir += os.path.sep
 
+    def reload_config(self):
+        pass
+
     def init_tasks(self, config):
         for mirror in config:
             if mirror == 'general':

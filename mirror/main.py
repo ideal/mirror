@@ -192,6 +192,7 @@ def start_daemon():
     signal.signal(signal.SIGQUIT, mirror.handler.shutdown_handler)
     signal.signal(signal.SIGINT,  mirror.handler.shutdown_handler)
     signal.signal(signal.SIGCHLD, mirror.handler.sigchld_handler)
+    signal.signal(signal.SIGHUP,  mirror.handler.reload_handler)
 
     if options.profile:
         import hotshot

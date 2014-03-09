@@ -92,11 +92,12 @@ class _ConfigManager:
 
         return True
 
-    def get_config(self, config_file, defaults=None):
+    def get_config(self, config_file, need_reload=False, defaults=None):
         """Get a reference to the Config object for this filename"""
         log.debug("Getting config '%s'", config_file)
         # Create the config object if not already created
-        if config_file not in self.config_files:
+        if (need_reload or
+            config_file not in self.config_files):
             self.config_files[config_file] = Config(config_file, defaults, self.config_directory)
 
         return self.config_files[config_file]
@@ -105,8 +106,8 @@ class _ConfigManager:
 _configmanager = _ConfigManager()
 
 # The parameter "config" is the name of config file
-def ConfigManager(config, defaults=None):
-    return _configmanager.get_config(config, defaults)
+def ConfigManager(config, need_reload=False, defaults=None):
+    return _configmanager.get_config(config, need_reload, defaults)
 
 def set_config_dir(directory):
     """Sets the config directory, else just uses default"""

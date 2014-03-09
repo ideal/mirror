@@ -76,7 +76,8 @@ def signal_process(signame):
     pidfile = mirror.configmanager.get_config_dir("mirrord.pid")
     pid = mirror.common.read_mirrord_pid(pidfile)
     if not pid:
-        write_stderr(_("Can not read mirrord's pid"))
+        write_stderr(_("Can not read mirrord's pid, "
+                       "please make sure that mirrord is running"))
         return error.MIRROR_ERROR
     try:
         os.kill(pid, signals.get(signame))
