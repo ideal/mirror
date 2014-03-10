@@ -82,6 +82,6 @@ def sigchld_handler(signo, frame):
     scheduler.stop_task_with_pid(pid, status)
 
 def reload_handler(signo, frame):
-    log.info("Got signal %s, reload...", signals[signo])
+    log.info("Got signal %s, start reloading...", signals[signo])
     scheduler = component.get("Scheduler")
     scheduler.reload_config()
