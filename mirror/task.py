@@ -320,6 +320,9 @@ class SystemTask(AbstractTask):
     def run(self):
         pass
 
+    def stop(self):
+        pass
+
 # from name to Task
 TASK_TYPES = { "simple" : SimpleTask }
 
