@@ -444,6 +444,8 @@ class Scheduler(Component):
         """
         self.roused_by_child = True
         for taskname, task in self.tasks.iteritems():
+            if task.isinternal:
+                continue
             if task.pid == pid:
                 if not task.running:
                     return

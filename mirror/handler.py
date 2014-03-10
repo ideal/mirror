@@ -29,7 +29,8 @@ import mirror.component as component
 log = logging.getLogger(__name__)
 
 signals = { getattr(signal, sigtxt) : sigtxt
-            for sigtxt in dir(signal) if sigtxt.startswith("SIG") }
+            for sigtxt in dir(signal) if sigtxt.startswith("SIG") and
+            not sigtxt.startswith("SIG_") }
 
 def shutdown_handler(signo, frame):
     import mirror.configmanager
