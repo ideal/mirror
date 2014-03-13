@@ -9,7 +9,7 @@ license=('GPL')
 url="http://github.com/ideal/mirror/"
 depends=('python2' 'rsync')
 source=(https://github.com/ideal/mirror/archive/$pkgver.tar.gz)
-md5sums=('1cee5152dd52a125b3976e9635f5f7e3')
+md5sums=('afb1df8ee014954839cc400ece502cdf')
 
 build() {
     cd $srcdir/$pkgname-$pkgver
