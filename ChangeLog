@@ -1,3 +1,8 @@
+=== Mirror 0.6.4 ===
+	* some bug fixes
+	* merge mirror into mirrord
+	* add -s option
+
 === Mirror 0.6.2 ===
 	* support for plugins
 
