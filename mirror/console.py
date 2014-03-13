@@ -68,9 +68,10 @@ signals = {
           }
 
 def signal_process(signame):
-    if signame not in ('stop', 'reload'):
+    signames = signals.keys()
+    if signame not in signames:
         write_stderr(_("Invalid value for -s, "
-                       "available: stop, reload"))
+                       "available: ") + ", ".join(signames))
         return error.MIRROR_ERRARG
     import mirror.configmanager
     pidfile = mirror.configmanager.get_config_dir("mirrord.pid")
