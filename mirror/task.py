@@ -37,6 +37,8 @@ PRIORITY_MAX = 10 # low  priority
 
 REGULAR_TASK = 1  # regular task
 TIMEOUT_TASK = 2  # timeout checking task
+SYSTEM_TASK  = 3  # system internal task, run in thread, so this is different
+                  # with REGULAR_TASK
 
 class AbstractTask(object):
     def __init__(self, name, scheduler_ref=None, **taskinfo):

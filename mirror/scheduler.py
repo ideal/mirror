@@ -39,7 +39,7 @@ import mirror.component   as     component
 from mirror.configmanager import ConfigManager
 from mirror.task          import Task, SimpleTask, TASK_TYPES
 from mirror.task          import PRIORITY_MIN, PRIORITY_MAX
-from mirror.task          import REGULAR_TASK, TIMEOUT_TASK
+from mirror.task          import REGULAR_TASK, TIMEOUT_TASK, SYSTEM_TASK
 from mirror.sysinfo       import loadavg, tcpconn
 from mirror.queue         import TaskInfo, Queue
 from mirror.component     import Component
@@ -77,7 +77,10 @@ class Scheduler(Component):
                 log.info("I am waking up...")
             self.schedule()
 
-    TODO = { REGULAR_TASK : SCHEDULE_TASK, TIMEOUT_TASK : CHECK_TIMEOUT }
+    TODO = { REGULAR_TASK : SCHEDULE_TASK,
+             SYSTEM_TASK  : SCHEDULE_TASK,
+             TIMEOUT_TASK : CHECK_TIMEOUT,
+            }
 
     def sleep(self):
         self.append_tasks()
@@ -240,7 +243,7 @@ class Scheduler(Component):
             return
         if not task.enabled:
             return
-        taskinfo = TaskInfo(taskname, REGULAR_TASK,
+        taskinfo = TaskInfo(taskname, (SYSTEM_TASK if task.isinternal else REGULAR_TASK),
                             task.get_schedule_time(since), task.priority)
 
         # however this is hard to understand,

@@ -35,6 +35,7 @@ from mirror.common import write_stderr
 TASK_DESC = {
             task.REGULAR_TASK: "Normal task",
             task.TIMEOUT_TASK: "Timeout check",
+            task.SYSTEM_TASK : "System task",
             }
 
 def list_task_queue():
