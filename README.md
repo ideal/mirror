@@ -1,6 +1,6 @@
 # Mirror
 
-`Mirror` is an open source python application for mirror site (e.g. [mirror.bjtu.edu.cn](http://mirror.bjtu.edu.cn)) to sync files from upstreams (it uses rsync internally), it actually works like a cron, but has some differences. It has been served for mirror.bjtu.edu.cn with more than 40 rsync tasks.
+`Mirror` is an open source python application for mirror site (e.g. [mirror.bjtu.edu.cn](http://mirror.bjtu.edu.cn)) to sync files from upstreams (it uses rsync internally), it actually works like a [cron](http://en.wikipedia.org/wiki/Cron), but has some differences. It has been served for mirror.bjtu.edu.cn with more than 40 rsync [tasks](http://mirror.bjtu.edu.cn/cn/update.html).
 
 You are welcome to send comments, patches and any others to [github](https://github.com/ideal/mirror/issues) or to [@idealities](http://twitter.com/idealities).
 
@@ -44,7 +44,7 @@ Now you can edit mirror.ini to fit your needs and run:
 ```
 mirrord
 ```
-and that's done. Also you can use `man mirrord` to read the documents.
+and that's done. Also you can use `man mirrord` or `mirrord -h` to read the documents.
 
 If `mirrord` is running, you can run:
 ```
