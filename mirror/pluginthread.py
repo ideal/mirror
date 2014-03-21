@@ -64,6 +64,6 @@ class PluginThread(threading.Thread):
                 try:
                     handler(*event.args)
                 except Exception, e:
-                    log.error("Event handler %s failed in %s with exception %s",
+                    log.error("Event handler %s failed in %s with exception: %s",
                               event.name, handler, e)
 

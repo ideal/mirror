@@ -34,8 +34,8 @@ log = logging.getLogger(_name)
 class TaskCleanTask(SystemTask):
 
     # For those tasks which have no time out set,
-    # we will check it after 20 days.
-    TASK_TIMEOUT = 1728000
+    # we will check it after 10 days.
+    TASK_TIMEOUT = 864000
 
     def __init__(self):
         # Actually the `priority` here is meaningless
@@ -48,7 +48,7 @@ class TaskCleanTask(SystemTask):
         scheduler = component.get("Scheduler")
 
         curtime   = time.time()
-        for taskname, task in scheduler.tasks:
+        for taskname, task in scheduler.tasks.iteritems():
             try:
                 # internal tasks have no `running`
                 if not hasattr(task, "running"):
@@ -58,9 +58,8 @@ class TaskCleanTask(SystemTask):
                 # SIGCHLD will trigger in main thread
                 if curtime - task.start_time > self.TASK_TIMEOUT:
                     os.kill(task.pid, signal.SIGTERM)
+                    log.info("Killed task: %s, whose life exceeds %d days",
+                             taskname, self.timeout_days)
             except Exception, e:
                 log.exception(e)
-            else:
-                log.info("Killed task: %s, whose life exceeds %d days",
-                         taskname, self.timeout_days)
 
