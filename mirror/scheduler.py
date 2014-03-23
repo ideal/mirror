@@ -121,7 +121,7 @@ class Scheduler(Component):
             # next miniute
             end        = timestamp + 60
             for taskinfo in taskqueue:
-                if self.TODO.get(taskinfo.tasktype, 0) != SCHEDULE_TASK :
+                if self.TODO.get(taskinfo.tasktype, 0) != self.SCHEDULE_TASK:
                     continue
                 if taskinfo.time < timestamp:
                     log.info("Strange problem happened,"
@@ -136,7 +136,7 @@ class Scheduler(Component):
 
         if ( self.todo & self.CHECK_TIMEOUT ):
             for taskinfo in taskqueue:
-                if taskinfo.tasktype != TIMEOUT_TASK:
+                if self.TODO.get(taskinfo.tasktype, 0) != self.CHECK_TIMEOUT:
                     continue
                 if taskinfo.time <= curtime:
                     log.info("Task: %s timeouts",
