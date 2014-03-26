@@ -34,7 +34,7 @@
         <h1>
 <a name="mirror" class="anchor" href="#mirror"><span class="octicon octicon-link"></span></a>Mirror</h1>
 
-<p><code>Mirror</code> is an open source python application for mirror site (e.g. <a href="http://mirror.bjtu.edu.cn">mirror.bjtu.edu.cn</a>) to sync files from upstreams (it uses rsync internally), it actually works like a cron, but has some differences. It has been served for mirror.bjtu.edu.cn with more than 40 rsync tasks.</p>
+<p><code>Mirror</code> is an open source python application for mirror site (e.g. <a href="http://mirror.bjtu.edu.cn">mirror.bjtu.edu.cn</a>) to sync files from upstreams (it uses rsync internally), it actually works like a cron, but has some differences. It has been served for mirror.bjtu.edu.cn with more than 40 rsync <a href="http://mirror.bjtu.edu.cn/cn/update.html">tasks</a>.</p>
 
 <p>You are welcome to send comments, patches and any others to <a href="https://github.com/ideal/mirror/issues">github</a> or to <a href="http://twitter.com/idealities">@idealities</a>.</p>
 
@@ -78,11 +78,11 @@ cp config/mirror.ini ~/.config/mirror/
 <pre><code>mirrord
 </code></pre>
 
-<p>and that's done. Also you can use <code>man mirrord</code> to read documents.</p>
+<p>and that's done. Also you can use <code>man mirrord</code> or <code>mirrord -h</code> to read documents.</p>
 
-<p>Also a command <code>mirror</code> is provided, if <code>mirrord</code> is running, you can run:</p>
+<p>If <code>mirrord</code> is running, you can run:</p>
 
-<pre><code>mirror -l
+<pre><code>mirrord -t
 </code></pre>
 
 <p>to show the current task queue.</p>
