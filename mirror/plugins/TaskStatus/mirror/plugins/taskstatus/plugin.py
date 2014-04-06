@@ -69,7 +69,7 @@ class Plugin(PluginBase):
         config = plugin_manager.config
 
         try:
-            self.status_file = config(_plugin_name)["status_file"]
+            self.status_file = config[_plugin_name]["status_file"]
         except:
             self.status_file = Plugin.DEFAULT_STATUS_FILE
             log.info(("Didn't set `status_file` in plugin.ini in `%s` section"
