@@ -142,8 +142,8 @@ class AbstractTask(object):
                 os.makedirs(logdir, 0755)
             fp = open(logdir + self.name + '.log.' + time.strftime('%Y-%m-%d'), 'a')
             # Redirect child process's stdout and stderr
-            os.dup2(fp.fileno(), 1)
-            os.dup2(fp.fileno(), 2)
+            os.dup2(fp.fileno(), sys.stdout.fileno())
+            os.dup2(fp.fileno(), sys.stderr.fileno())
             fp.close()
             os.execv(self.command, self.get_args(stage))
 
