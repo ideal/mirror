@@ -133,7 +133,9 @@ def lock_file(pidfile):
                           pidfile, pid)
 
     # See document at http://man7.org/linux/man-pages/man2/fcntl.2.html
-    fcntl.fcntl(fp, fcntl.F_SETFD, 1)
+    flag = fcntl.fcntl(fp, fcntl.F_GETFD)
+    fcntl.fcntl(fp, fcntl.F_SETFD, flag | fcntl.FD_CLOEXEC)
+
     fp.seek(0)
     fp.write("%d\n" % os.getpid())
     fp.truncate()
