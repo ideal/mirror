@@ -25,6 +25,7 @@
 
 import os, sys
 import time
+import fcntl
 import signal
 import logging
 import weakref
@@ -277,7 +278,11 @@ class Scheduler(Component):
             if hasattr(self, "bufferfd"):
                 self.buffer.close()
                 os.close(self.bufferfd)
-            self.bufferfd = os.open("/tmp/mirrord", os.O_CREAT | os.O_TRUNC | os.O_RDWR, 0644)
+            self.bufferfd = os.open("/tmp/mirrord",
+                                    os.O_CREAT | os.O_TRUNC | os.O_RDWR,
+                                    0644)
+            flag = fcntl.fcntl(self.bufferfd, F_GETFD)
+            fcntl.fcntl(self.bufferfd, fcntl.F_SETFD, flag | fcntl.FD_CLOEXEC)
             os.write(self.bufferfd, '\x00' * self.buffersz)
             self.buffer   = mmap.mmap(self.bufferfd, self.buffersz, mmap.MAP_SHARED, mmap.PROT_WRITE)
             self.buffer.write("\x79\x71")
