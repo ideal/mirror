@@ -28,6 +28,7 @@ import logging
 import pkg_resources
 import gettext
 import locale
+import chardet
 
 from mirror.error import *
 
@@ -241,3 +242,42 @@ def write_stderr(message, *args):
     sys.stderr.write(message % args)
     sys.stderr.write("\n")
 
+def decode_string(s, encoding="utf8"):
+    """
+    Decodes a string and return unicode. If it cannot decode using
+    `:param:encoding` then it will try latin1, and if that fails,
+    try to detect the string encoding. If that fails, decode with
+    ignore.
+
+    """
+    if not s:
+        return u''
+    elif isinstance(s, unicode):
+        return s
+
+    encodings = [lambda: ("utf8", 'strict'),
+                 lambda: ("iso-8859-1", 'strict'),
+                 lambda: (chardet.detect(s)["encoding"], 'strict'),
+                 lambda: (encoding, 'ignore')]
+
+    if encoding != "utf8":
+        encodings.insert(0, lambda: (encoding, 'strict'))
+
+    for e in encodings:
+        try:
+            return s.decode(*e())
+        except UnicodeDecodeError:
+            pass
+    return u''
+
+def utf8_encoded(s, encoding="utf8"):
+    """
+    Return a utf8 encoded string of s
+
+    """
+    if isinstance(s, str):
+        s = decode_string(s, encoding).encode("utf8")
+    elif isinstance(s, unicode):
+        return s.encode('utf8')
+
+    return s
