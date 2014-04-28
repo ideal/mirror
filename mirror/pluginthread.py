@@ -41,7 +41,7 @@ class PluginThread(threading.Thread):
         self.event_queue.append(event)
 
     def run(self):
-        log.info("Plugin thread started")
+        log.debug("Plugin thread started")
         sleep_count = 0
         while (True):
             if self.stop_event.isSet() and len(self.event_queue) == 0:
@@ -53,7 +53,7 @@ class PluginThread(threading.Thread):
                 time.sleep(0.1)
                 sleep_count += 1
                 if sleep_count > 600:
-                    log.info("Plugin thread ended")
+                    log.debug("Plugin thread finished")
                     break
                 else:
                     continue
