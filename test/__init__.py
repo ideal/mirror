@@ -20,6 +20,7 @@
 #
 #
 
+import sys
 import unittest
 from os import listdir
 from os.path import dirname
@@ -40,5 +41,5 @@ def test_suite():
     return unittest.defaultTestLoader.loadTestsFromNames(modules)
 
 if __name__ == '__main__':
-    unittest.main(module=__name__, defaultTest='test_suite', argv=sys.argv[1:])
+    unittest.main(module=__name__, defaultTest='test_suite', argv=sys.argv[:1])
 
