@@ -196,6 +196,6 @@ setup(
                                "plugins/*.egg",
                                "i18n/*/LC_MESSAGES/*.mo",
                                ]},
-    packages = find_packages(exclude=["docs",]),
+    packages = find_packages(exclude=["docs","test"]),
     entry_points = entry_points
 )
