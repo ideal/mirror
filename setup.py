@@ -30,8 +30,10 @@ except ImportError:
 
 import os, sys
 import glob
+import shlex
 import msgfmt
 import platform
+import unittest
 
 from distutils import cmd
 from distutils.command.build import build as _build
@@ -43,8 +45,8 @@ class build_trans(cmd.Command):
     description = 'Compile .po files into .mo file'
 
     user_options = [
-            ('build-lib', None, "lib build folder"),
-            ('develop-mode', 'D', 'Compile translations in develop mode(into mirror/i18n')
+            ('build-lib=', None, "lib build folder"),
+            ('develop-mode', 'D', 'Compile translations in develop mode(into mirror/i18n)')
     ]
     boolean_options = ['develop_mode']
 
@@ -91,7 +93,6 @@ class build_trans(cmd.Command):
                     sys.stdout.write(' po files already up to date.  ')
         sys.stdout.write('\b\b \nFinished compiling translation files. \n')
 
-
 class build_plugins(cmd.Command):
     description = "Build plugins into .eggs"
 
@@ -127,10 +128,41 @@ class clean(_clean):
             self.run_command(cmd_name)
         _clean.run(self)
 
+class test(cmd.Command):
+    """Command for running unittests without install."""
+
+    user_options = [("args=", None, '''The command args string passed to
+                                       unittest framework, such as
+                                       --args="-v -f"''')]
+
+    def initialize_options(self):
+        self.args = ''
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        self.run_command('build')
+        bld = self.distribution.get_command_obj('build')
+        # Add build_lib in to sys.path so that unittest can found DLLs and libs
+        sys.path.insert(0, os.path.abspath(bld.build_lib))
+
+        test_argv0 = [sys.argv[0] + ' test --args=']
+        # For transfering args to unittest, we have to split args by ourself,
+        # so that command like:
+        #
+        #   python setup.py test --args="-v -f"
+        #
+        # can be executed, and the parameter '-v -f' can be transfering to
+        # unittest properly.
+        test_argv = test_argv0 + shlex.split(self.args)
+        unittest.main(None, defaultTest='test.test_suite', argv=test_argv)
+
 cmdclass = {
     'build': build,
     'build_trans': build_trans,
     'build_plugins': build_plugins,
+    'test': test,
     'clean': clean,
 }
 
