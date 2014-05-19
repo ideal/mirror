@@ -23,6 +23,7 @@
 import os
 import sys
 import time
+import shlex
 import bisect
 import signal
 import logging
@@ -273,12 +274,12 @@ class Task(AbstractTask):
 
     def get_args(self, stage = 1):
         args  = [os.path.basename(self.command)]
-        args += self.args.split(" ")
+        args += shlex.split(self.args)
         if self.twostage and stage == 2:
             args.remove("--delete")
             args.append("--delete-after")
         if self.exclude:
-            args += self.exclude.split(" ")
+            args += shlex.split(self.exclude)
         if self.twostage and stage == 1:
             args += [self.upstream[0] + '::' + self.rsyncdir + self.firststage + '/',\
                      self.localdir + '/' + self.firststage]
@@ -306,7 +307,7 @@ class SimpleTask(AbstractTask):
             args += self.firststage.split(" ")
             return args
         if self.args:
-            args += self.args.split(" ")
+            args += shlex.split(self.args)
         return args
 
 class SystemTask(AbstractTask):
