@@ -28,7 +28,10 @@ import logging
 import pkg_resources
 import gettext
 import locale
-import chardet
+try:
+    import chardet
+except:
+    pass
 
 from mirror.error import *
 
@@ -174,7 +177,7 @@ def parse_timeout(timeout):
     m = timeout.find('m')
     if h > 0 or m > 0:
         try:
-            return ((int(timeout[:h]) * 3600 if h > 0 else 0) 
+            return ((int(timeout[:h]) * 3600 if h > 0 else 0)
                    + (int(timeout[h+1:m]) * 60 if m > 0 else 0))
         except:
             return 0
@@ -259,7 +262,7 @@ def decode_string(s, encoding="utf8"):
 
     encodings = [lambda: ("utf8", 'strict'),
                  lambda: ("iso-8859-1", 'strict'),
-                 lambda: (chardet.detect(s)["encoding"], 'strict'),
+                 lambda: (chardet.detect(s)["encoding"], 'strict') if 'chardet' in sys.modules else (encoding, 'ignore'),
                  lambda: (encoding, 'ignore')]
 
     if encoding != "utf8":
