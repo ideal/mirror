@@ -262,7 +262,8 @@ def decode_string(s, encoding="utf8"):
 
     encodings = [lambda: ("utf8", 'strict'),
                  lambda: ("iso-8859-1", 'strict'),
-                 lambda: (chardet.detect(s)["encoding"], 'strict') if 'chardet' in sys.modules else (encoding, 'ignore'),
+                 lambda: (chardet.detect(s)["encoding"], 'strict') if
+                         'chardet' in sys.modules else (encoding, 'ignore'),
                  lambda: (encoding, 'ignore')]
 
     if encoding != "utf8":
