@@ -49,6 +49,11 @@ def list_task_queue():
     buffer = mmap.mmap(bufferfd, os.fstat(bufferfd).st_size,
                        mmap.MAP_SHARED, mmap.PROT_READ)
     os.close(bufferfd)
+    if buffer[:2] != '\x79\x71':
+        write_stderr(_("Wrong file /tmp/mirrord, "
+                       "any other writed it?"))
+        return error.MIRROR_ERROR
+
     buffer.seek(2)
     size = struct.unpack("I", buffer.read(4))[0]
 
