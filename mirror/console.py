@@ -48,6 +48,7 @@ def list_task_queue():
 
     buffer = mmap.mmap(bufferfd, os.fstat(bufferfd).st_size,
                        mmap.MAP_SHARED, mmap.PROT_READ)
+    os.close(bufferfd)
     buffer.seek(2)
     size = struct.unpack("I", buffer.read(4))[0]
 
@@ -60,7 +61,6 @@ def list_task_queue():
               time.asctime(time.localtime(taskinfo.time)))
 
     buffer.close()
-    os.close(bufferfd)
     return error.MIRROR_OK
 
 signals = {

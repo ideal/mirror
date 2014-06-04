@@ -275,9 +275,8 @@ class Scheduler(Component):
         size = len(data) + 2 + 4
         if not hasattr(self, "buffer") or self.buffersz < size:
             self.buffersz = max(self.DEFAULT_BUFFER_SIZE, size)
-            if hasattr(self, "bufferfd"):
+            if hasattr(self, "buffer"):
                 self.buffer.close()
-                os.close(self.bufferfd)
             self.bufferfd = os.open("/tmp/mirrord",
                                     os.O_CREAT | os.O_TRUNC | os.O_RDWR,
                                     0644)
@@ -285,6 +284,8 @@ class Scheduler(Component):
             fcntl.fcntl(self.bufferfd, fcntl.F_SETFD, flag | fcntl.FD_CLOEXEC)
             os.write(self.bufferfd, '\x00' * self.buffersz)
             self.buffer   = mmap.mmap(self.bufferfd, self.buffersz, mmap.MAP_SHARED, mmap.PROT_WRITE)
+            # close bufferfd
+            os.close(self.bufferfd)
             self.buffer.write("\x79\x71")
         self.buffer.seek(2)
         self.buffer.write(struct.pack("I", size))
@@ -295,7 +296,6 @@ class Scheduler(Component):
         if not hasattr(self, "buffer"):
             return
         self.buffer.close()
-        os.close(self.bufferfd)
         os.unlink("/tmp/mirrord")
 
     def append_timeout_task(self, taskname, task, time):
