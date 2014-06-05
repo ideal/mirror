@@ -1,6 +1,5 @@
 include README.md
 include LICENSE
 include msgfmt.py
-include mirror/i18n/*
 include config/*
 graft docs/*
