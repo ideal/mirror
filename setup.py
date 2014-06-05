@@ -200,8 +200,8 @@ setup(
     cmdclass = cmdclass,
     data_files = _data_files,
     package_data = {"mirror": [
-                               "mirror/plugins/*.egg",
-                               "mirror/i18n/*/LC_MESSAGES/*.mo",
+                               "plugins/*.egg",
+                               "i18n/*/LC_MESSAGES/*.mo",
                                ]},
     packages = find_packages(exclude=["docs", "test"]),
     entry_points = entry_points
