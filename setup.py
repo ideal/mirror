@@ -188,7 +188,7 @@ entry_points = {
 # Main setup
 setup(
     name = "mirror",
-    version = "0.6.4",
+    version = "0.6.6",
     fullname = "Mirror for open source mirror site",
     description = "Mirror for open source mirror site to sync files",
     author = "Shang Yuanchun",
@@ -200,9 +200,9 @@ setup(
     cmdclass = cmdclass,
     data_files = _data_files,
     package_data = {"mirror": [
-                               "plugins/*.egg",
-                               "i18n/*/LC_MESSAGES/*.mo",
+                               "mirror/plugins/*.egg",
+                               "mirror/i18n/*/LC_MESSAGES/*.mo",
                                ]},
-    packages = find_packages(exclude=["docs","test"]),
+    packages = find_packages(exclude=["docs", "test"]),
     entry_points = entry_points
 )
