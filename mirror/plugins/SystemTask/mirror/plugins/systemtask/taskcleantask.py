@@ -60,6 +60,6 @@ class TaskCleanTask(SystemTask):
                     os.kill(task.pid, signal.SIGTERM)
                     log.info("Killed task: %s, whose life exceeds %d days",
                              taskname, self.timeout_days)
-            except Exception, e:
+            except Exception as e:
                 log.exception(e)
 

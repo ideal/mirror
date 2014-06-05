@@ -173,7 +173,7 @@ class Plugin(PluginBase):
         fp.seek(0)
         try:
             fp.write(json.dumps(task_status))
-        except Exception, e:
+        except Exception as e:
             log.exception(e)
             fp.truncate(0)
         else:

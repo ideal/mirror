@@ -78,7 +78,7 @@ class PluginManager(Component):
                 if not cls.enabled:
                     continue
                 instance = cls(plugin_name.replace('-', '_'))
-            except Exception, e:
+            except Exception as e:
                 log.error("Unable to instantiate plugin %r from %r!",
                           name, egg.location)
                 log.exception(e)

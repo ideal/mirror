@@ -179,11 +179,11 @@ def start_daemon():
         # we also write pid into it
         fp = mirror.common.lock_file(
             mirror.configmanager.get_config_dir("mirrord.pid"))
-    except mirror.error.MirrordRunningError, e:
+    except mirror.error.MirrordRunningError as e:
         log.error(e)
         log.error("You cannot run multiple daemons with the same config directory set.")
         sys.exit(1)
-    except Exception, e:
+    except Exception as e:
         log.exception(e)
         sys.exit(1)
 
@@ -202,7 +202,7 @@ def start_daemon():
         log.info("Starting mirror daemon...")
         from mirror.daemon import MirrorDaemon
         daemon = MirrorDaemon(options, args)
-    except Exception, e:
+    except Exception as e:
         log.exception(e)
         sys.exit(1)
     finally:

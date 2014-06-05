@@ -83,7 +83,7 @@ def signal_process(signame):
         return error.MIRROR_ERROR
     try:
         os.kill(pid, signals.get(signame))
-    except Exception, e:
+    except Exception as e:
         write_stderr(_("Kill mirrord (%d) failed: %s"),
                      pid, e)
         return error.MIRROR_ERROR

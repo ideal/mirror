@@ -79,7 +79,7 @@ def setup_translations():
         if hasattr(locale, "textdomain"):
             locale.textdomain("mirror")
         gettext.install("mirror", translations_path, unicode=True)
-    except Exception, e:
+    except Exception as e:
         log.error("Unable to initialize gettext/locale")
         log.exception(e)
         import __builtin__
@@ -287,3 +287,8 @@ def utf8_encoded(s, encoding="utf8"):
         return s.encode('utf8')
 
     return s
+
+def is_python3():
+    """
+    """
+    return sys.version_info.major >= 3

@@ -240,7 +240,7 @@ class Config(object):
 
         try:
             data = open(filename, "rb").read()
-        except IOError, e:
+        except IOError as e:
             log.warning("Unable to open config file %s: %s", filename, e)
             return
 
@@ -284,7 +284,7 @@ class Config(object):
             f.flush()
             os.fsync(f.fileno())
             f.close()
-        except IOError, e:
+        except IOError as e:
             log.error("Error writing new config file: %s", e)
             return False
 
@@ -292,7 +292,7 @@ class Config(object):
         try:
             log.debug("Backing up old config file to %s~", filename)
             shutil.move(filename, filename + "~")
-        except Exception, e:
+        except Exception as e:
             log.warning("Unable to backup old config...")
 
         # The new config file has been written successfully, so let's move it over
@@ -300,7 +300,7 @@ class Config(object):
         try:
             log.debug("Moving new config file %s to %s..", filename + ".new", filename)
             shutil.move(filename + ".new", filename)
-        except Exception, e:
+        except Exception as e:
             log.error("Error moving new config file: %s", e)
             return False
         else:

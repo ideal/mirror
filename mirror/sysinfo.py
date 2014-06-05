@@ -63,7 +63,7 @@ def tcpconn(port = 80):
         # TODO: using AF_NETLINK to fetch tcp infomation instead from /proc
         sock = socket.socket(socket.AF_NETLINK, socket.SOCK_RAW)
         sock.close()
-    except Exception, e:
+    except Exception as e:
         pass
     connections = 0
     tcp   = re.compile(pattern)

@@ -29,6 +29,8 @@ import signal
 import logging
 import mirror.common
 
+from mirror.common import is_python3
+
 log = logging.getLogger(__name__)
 
 DEFAULT_ARGS = "--links --hard-links --times --verbose --delete --recursive"
@@ -104,7 +106,7 @@ class AbstractTask(object):
         try:
             self.twostage = taskinfo['twostage'] != "0" 
             self.timeout  = mirror.common.parse_timeout(taskinfo['timeout'])
-        except KeyError, e:
+        except KeyError as e:
             log.error("Error in config for task: %s, key: %s not found.", self.name, e)
             self.enabled  = False
 
@@ -118,7 +120,7 @@ class AbstractTask(object):
         try:
             self.stage = stage
             self.execute(stage)
-        except Exception, e:
+        except Exception as e:
             log.error("Error occured when run `%s`: %s.", self.name, e)
             # If fork succeed but error occured before execv, we need to exit child process
             if os.getpid() == self.pid:
@@ -140,7 +142,7 @@ class AbstractTask(object):
             else:
                 logdir = mirror.common.DEFAULT_TASK_LOG_DIR
             if not os.path.exists(logdir):
-                os.makedirs(logdir, 0755)
+                os.makedirs(logdir, 0o755)
             fp = open(logdir + self.name + '.log.' + time.strftime('%Y-%m-%d'), 'a')
             # Redirect child process's stdout and stderr
             os.dup2(fp.fileno(), sys.stdout.fileno())
@@ -262,10 +264,10 @@ class Task(AbstractTask):
             self.localdir = taskinfo['localdir']
             if not os.path.exists(self.localdir):
                 try:
-                    os.makedirs(self.localdir, 0755)
+                    os.makedirs(self.localdir, 0o755)
                 except:
                     log.error("Error when create directory: %s", self.localdir)
-        except KeyError, e:
+        except KeyError as e:
             log.error("Error in config for mirror: %s, key: %s not found.", self.name, e)
             self.enabled  = False
 

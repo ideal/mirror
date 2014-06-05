@@ -280,7 +280,7 @@ class Scheduler(Component):
                 os.close(self.bufferfd)
             self.bufferfd = os.open("/tmp/mirrord",
                                     os.O_CREAT | os.O_TRUNC | os.O_RDWR,
-                                    0644)
+                                    0o644)
             flag = fcntl.fcntl(self.bufferfd, fcntl.F_GETFD)
             fcntl.fcntl(self.bufferfd, fcntl.F_SETFD, flag | fcntl.FD_CLOEXEC)
             os.write(self.bufferfd, '\x00' * self.buffersz)

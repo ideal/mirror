@@ -73,7 +73,7 @@ def shutdown_handler(signo, frame):
 def sigchld_handler(signo, frame):
     try:
         pid, status = os.waitpid(-1, os.WNOHANG)
-    except OSError,e:
+    except OSError as e:
         log.error("Error occured when waitpid(), %s.", e)
         return
     scheduler = component.get("Scheduler")

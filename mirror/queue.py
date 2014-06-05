@@ -112,9 +112,9 @@ if __name__ == "__main__":
     task  = queue[0]
     print(task)
 
-    print task in queue
+    print(task in queue)
     task4 = TaskInfo("Send letter",  0, 1376704800, 4)
-    print task4 in queue
+    print(task4 in queue)
 
-    print queue.size("tasktype", 0)
+    print(queue.size("tasktype", 0))
 
