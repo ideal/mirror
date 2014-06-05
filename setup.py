@@ -21,6 +21,13 @@
 #   Boston, MA    02110-1301, USA.
 #
 
+"""
+Mirror is an open source python application for mirror site (e.g. mirror.bjtu.edu.cn)
+to sync files from upstreams (it uses rsync internally), it actually works like a 
+cron, but still has some differences. It has been served for mirror.bjtu.edu.cn with
+more than 40 rsync tasks.
+"""
+
 try:
     from setuptools import setup, find_packages, Extension
 except ImportError:
@@ -187,7 +194,7 @@ setup(
     author = "Shang Yuanchun",
     author_email = "idealities@gmail.com",
     keywords = "open source mirror",
-    long_description = """Mirror is for open source mirror site.""",
+    long_description = __doc__,
     url = "http://mirror.bjtu.edu.cn",
     license = "GPLv3",
     cmdclass = cmdclass,
