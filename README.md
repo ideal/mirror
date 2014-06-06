@@ -20,14 +20,21 @@ For contributors and past developers see:
 Installation Instructions
 =========================
 
-Build and install by running:
+You can install `mirror` by running pip:
+
+```
+pip install mirror
+```
+
+Or if you want to build and install from source:
 
 ```
 python setup.py build
 sudo python setup.py install
 ```
 
-Or to a custom directory:
+If from source, you can install it to a custom directory:
+
 ```
 sudo python setup.py install --root=/tmp
 ```
