@@ -51,7 +51,7 @@ def list_task_queue():
     os.close(bufferfd)
     if buffer[:2] != '\x79\x71':
         write_stderr(_("Wrong file /tmp/mirrord, "
-                       "any other writed it?"))
+                       "any other wrote it?"))
         return error.MIRROR_ERROR
 
     buffer.seek(2)
