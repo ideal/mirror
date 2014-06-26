@@ -1,0 +1,13 @@
+[Unit]
+Description=rsync files from upstreams automatically
+After=network.target
+
+[Service]
+Type=forking
+User=mirror
+Group=mirror
+PIDFile=/home/mirror/.config/mirror/mirrord.pid
+ExecStart=/usr/bin/mirrord
+
+[Install]
+WantedBy=multi-user.target
