@@ -41,5 +41,6 @@ def test_suite():
     return unittest.defaultTestLoader.loadTestsFromNames(modules)
 
 if __name__ == '__main__':
+    sys.path.insert(0, '')
     unittest.main(module=__name__, defaultTest='test_suite', argv=sys.argv[:1])
 
