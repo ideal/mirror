@@ -37,5 +37,8 @@ class MirrorDaemon(object):
         component.start()
 
         self.scheduler = Scheduler(options, args)
+
+    def start(self):
         log.info("Starting mirror scheduler...")
         self.scheduler.start()
+

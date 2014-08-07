@@ -1,4 +1,5 @@
 #
+# Copyright (C) 2013-2014 Shang Yuanchun <idealities@gmail.com>
 #
 # You may redistribute it and/or modify it under the terms of the
 # GNU General Public License, as published by the Free Software
@@ -202,6 +203,7 @@ def start_daemon():
         log.info("Starting mirror daemon...")
         from mirror.daemon import MirrorDaemon
         daemon = MirrorDaemon(options, args)
+        daemon.start()
     except Exception as e:
         log.exception(e)
         sys.exit(1)
