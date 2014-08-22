@@ -162,7 +162,8 @@ def start_daemon():
             options.user = pwd.getpwnam(options.user)[2]
         os.setuid(options.user)
 
-    # Close stdin, stdout, stderr ...
+    # Redirect stdin, stdout, stderr to /dev/null ...
+    # if mirrord is running as daemon
     if not options.donot:
         fp = open("/dev/null", 'r+')
         os.dup2(fp.fileno(), sys.stdin.fileno())
