@@ -162,23 +162,23 @@ def find_command(command):
             return filepath
     return None
 
-def parse_timeout(timeout):
+def parse_timestr(timestr):
     """
-    Parse timeout expression, e.g. 12h17m, 12h, 17m
+    Parse time interval expression, e.g. 12h17m, 12h, 17m
 
-    :returns: the seconds represented by timeout, or 0 if timeout is not valid
+    :returns: the seconds represented by time interval, or 0 if time interval is not valid
 
     """
     try:
-        return int(timeout)
+        return int(timestr)
     except:
         pass
-    h = timeout.find('h')
-    m = timeout.find('m')
+    h = timestr.find('h')
+    m = timestr.find('m')
     if h > 0 or m > 0:
         try:
-            return ((int(timeout[:h]) * 3600 if h > 0 else 0)
-                   + (int(timeout[h+1:m]) * 60 if m > 0 else 0))
+            return ((int(timestr[:h]) * 3600 if h > 0 else 0)
+                   + (int(timestr[h+1:m]) * 60 if m > 0 else 0))
         except:
             return 0
     else:

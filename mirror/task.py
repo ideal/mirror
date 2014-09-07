@@ -105,7 +105,7 @@ class AbstractTask(object):
         self.code      = 0
         try:
             self.twostage = taskinfo['twostage'] != "0" 
-            self.timeout  = mirror.common.parse_timeout(taskinfo['timeout'])
+            self.timeout  = mirror.common.parse_timestr(taskinfo['timeout'])
         except KeyError as e:
             log.error("Error in config for task: %s, key: %s not found.", self.name, e)
             self.enabled  = False
@@ -115,6 +115,11 @@ class AbstractTask(object):
             self.twostage = False
         if self.twostage:
             self.firststage = taskinfo['firststage']
+
+        # autoretry indicates whether a task is retried after an interval
+        # when it failed. if 0, it is disabled
+        self.autoretry = mirror.common.parse_timestr(
+                             taskinfo.get("autoretry", '0'))
 
     def run(self, stage = 1):
         try:
