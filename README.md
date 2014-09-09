@@ -61,6 +61,8 @@ mirrord -t
 ```
 to show the current task queue.
 
+<img src="http://ideal.github.io/mirror/images/tasks.png" alt="screenshot" />
+
 Contact/Support
 ===============
 
