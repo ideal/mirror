@@ -247,8 +247,9 @@ class Scheduler(Component):
         taskinfo = TaskInfo(taskname, (SYSTEM_TASK if task.isinternal else REGULAR_TASK),
                             task.get_schedule_time(since), task.priority)
 
-        # however this is hard to understand,
-        # for system tasks and timeout tasks
+        # for system tasks and tasks-without-timeout-set,
+        # we should check if it is already been added to the queue
+        # in run_*_task() method
         if taskinfo in self.queue:
             return
         self.queue.put(taskinfo)
@@ -447,6 +448,7 @@ class Scheduler(Component):
 
     def stop_task_with_pid(self, pid, status):
         """
+        This is called when we got a SIGCHLD signal.
         Change task's running and pid attr as it's stopped.
 
         """
