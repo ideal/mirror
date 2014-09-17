@@ -110,7 +110,7 @@ class AbstractTask(object):
             log.error("Error in config for task: %s, key: %s not found.", self.name, e)
             self.enabled  = False
 
-        if self.twostage and not taskinfo.has_key("firststage"):
+        if self.twostage and "firststage" not in taskinfo:
             log.error("Error in config for task: %s, `twostage` is set but no `firststage`.", self.name)
             self.twostage = False
         if self.twostage:
@@ -276,8 +276,8 @@ class Task(AbstractTask):
             log.error("Error in config for mirror: %s, key: %s not found.", self.name, e)
             self.enabled  = False
 
-        self.exclude  = taskinfo['exclude'] if taskinfo.has_key("exclude") else None
-        self.args     = taskinfo['args']    if taskinfo.has_key("args")    else DEFAULT_ARGS
+        self.exclude  = taskinfo['exclude'] if "exclude" in taskinfo else None
+        self.args     = taskinfo['args']    if "args" in taskinfo    else DEFAULT_ARGS
 
     def get_args(self, stage = 1):
         args  = [os.path.basename(self.command)]
@@ -306,7 +306,7 @@ class SimpleTask(AbstractTask):
         stage, firststage is interpreted as args for first stage.
 
         """
-        self.args = taskinfo['args'] if taskinfo.has_key("args") else None
+        self.args = taskinfo['args'] if "args" in taskinfo else None
 
     def get_args(self, stage = 1):
         args  = [os.path.basename(self.command)]

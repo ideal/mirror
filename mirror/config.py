@@ -86,7 +86,7 @@ class Config(object):
         """
         value = mirror.common.utf8_encoded(value)
 
-        if not self.__config.has_key(key):
+        if key not in self.__config:
             self.__config[key] = value
             log.debug("Setting '%s' to %s with type %s", key, value, type(value))
             return

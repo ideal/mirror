@@ -40,6 +40,10 @@ log = logging.getLogger(__name__)
 DEFAULT_MIRRORD_LOG_DIR = '/var/log/mirrord'
 DEFAULT_TASK_LOG_DIR    = '/var/log/rsync'
 
+if sys.version_info.major >= 3:
+    xrange  = range
+    unicode = str
+
 def get_version():
     """
     Returns the version of mirror from the python egg metadata
