@@ -2,6 +2,7 @@
 # -*- coding: iso-8859-1 -*-
 # Written by Martin v. Lwis <loewis@informatik.hu-berlin.de>
 # Plural forms support added by alexander smishlajev <alex@tycobka.lv>
+# Python 3 support by Shang Yuanchun <idealities@gmail.com>
 """
 Generate binary message catalog from textual translation description.
 
@@ -41,9 +42,11 @@ def usage (ecode, msg=''):
     """
     Print usage and msg and exit with given code.
     """
-    print >> sys.stderr, __doc__
+    sys.stderr.write(__doc__)
+    sys.stderr.write("\n")
     if msg:
-        print >> sys.stderr, msg
+        sys.stderr.write(msg)
+        sys.stderr.write('\n')
     sys.exit(ecode)
 
 
@@ -61,7 +64,7 @@ def generate ():
     Return the generated output.
     """
     global MESSAGES
-    keys = MESSAGES.keys()
+    keys = list(MESSAGES.keys())
     # the keys are sorted in the .mo file
     keys.sort()
     offsets = []
@@ -88,7 +91,7 @@ def generate ():
         voffsets += [l2, o2+valuestart]
     offsets = koffsets + voffsets
     output = struct.pack("Iiiiiii",
-                         0x950412deL,       # Magic
+                         0x950412de,        # Magic
                          0,                 # Version
                          len(keys),         # # of entries
                          7*4,               # start of key index
@@ -116,8 +119,11 @@ def make (filename, outfile):
 
     try:
         lines = open(infile).readlines()
-    except IOError, msg:
-        print >> sys.stderr, msg
+    except IOError as msg:
+        # if python 3
+        # print(msg, file=sys.stderr)
+        sys.stderr.write(msg)
+        sys.stderr.write('\n')
         sys.exit(1)
 
     section = None
@@ -172,9 +178,10 @@ def make (filename, outfile):
         elif section == STR:
             msgstr += l
         else:
-            print >> sys.stderr, 'Syntax error on %s:%d' % (infile, lno), \
-                  'before:'
-            print >> sys.stderr, l
+            sys.stderr.write('Syntax error on %s:%d' % (infile, lno), \
+                  'before:')
+            sys.stderr.write(l)
+            sys.stderr.write('\n')
             sys.exit(1)
     # Add last entry
     if section == STR:
@@ -185,16 +192,17 @@ def make (filename, outfile):
 
     try:
         open(outfile,"wb").write(output)
-    except IOError,msg:
-        print >> sys.stderr, msg
+    except IOError as msg:
+        sys.stderr.write(msg)
+        sys.stderr.write("\n")
 
 
 def main ():
     try:
         opts, args = getopt.getopt(sys.argv[1:], 'hVo:',
                                    ['help', 'version', 'output-file='])
-    except getopt.error, msg:
-        usage(1, msg)
+    except getopt.error as msg:
+        usage(1, str(msg))
 
     outfile = None
     # parse options
@@ -202,14 +210,14 @@ def main ():
         if opt in ('-h', '--help'):
             usage(0)
         elif opt in ('-V', '--version'):
-            print >> sys.stderr, "msgfmt.py", __version__
+            sys.stderr.write("msgfmt.py %s\n" % __version__)
             sys.exit(0)
         elif opt in ('-o', '--output-file'):
             outfile = arg
     # do it
     if not args:
-        print >> sys.stderr, 'No input file given'
-        print >> sys.stderr, "Try `msgfmt --help' for more information."
+        sys.stderr.write('No input file given\n')
+        sys.stderr.write("Try `msgfmt --help' for more information.\n")
         return
 
     for filename in args:
