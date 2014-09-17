@@ -84,8 +84,7 @@ class Config(object):
         {"upstream": "archlinux.org"}
 
         """
-        if isinstance(value, basestring):
-            value = mirror.common.utf8_encoded(value)
+        value = mirror.common.utf8_encoded(value)
 
         if not self.__config.has_key(key):
             self.__config[key] = value
