@@ -444,7 +444,7 @@ class Scheduler(Component):
         task.code    = code
         log.info("Killed task: %s %s %d, pid %d", task.name, endstr, code, pid)
         self.remove_timeout_task(task.name)
-        self.task_post_process(task)
+        self.task_finished(task)
 
     def stop_task_with_pid(self, pid, status):
         """
@@ -463,10 +463,10 @@ class Scheduler(Component):
                 task.code    = code
                 log.info("Task: %s %s %d, pid %d", taskname, endstr, code, pid)
                 self.remove_timeout_task(taskname)
-                self.task_post_process(task)
+                self.task_finished(task)
                 return
 
-    def task_post_process(self, task):
+    def task_finished(self, task):
         """
         Check whether a task needs post process, e.g. two stage tasks.
 
