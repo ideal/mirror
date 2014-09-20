@@ -474,6 +474,7 @@ class Scheduler(Component):
         event_manager = component.get("EventManager")
         if not task.twostage:
             event_manager.emit(mirror.event.TaskStopEvent(task.name, task.pid, task.code))
+            self.task_autoretry(task)
             task.set_stop_flag()
             return
         if task.stage == 1:
@@ -481,8 +482,20 @@ class Scheduler(Component):
             self.run_task(TaskInfo(task.name, REGULAR_TASK, 0, task.priority), stage = 2)
         else:
             event_manager.emit(mirror.event.TaskStopEvent(task.name, task.pid, task.code))
+            self.task_autoretry(task)
             task.set_stop_flag()
             task.stage = 1
+
+    def task_autoretry(self, task):
+        """
+        If a task has a valid `autoretry`, and its interval is before next normal schedule,
+        it will be used.
+
+        """
+        if task.autoretry <= 0:
+            return
+        if task.code == 0:
+            return
 
     def stop_all_tasks(self, signo = signal.SIGTERM):
         """
