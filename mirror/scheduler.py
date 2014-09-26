@@ -496,6 +496,12 @@ class Scheduler(Component):
             return
         if task.code == 0:
             return
+        curtime   = int(time.time())
+        next_time = task.get_schedule_time(since = curtime)
+        if curtime + task.autoretry < next_time:
+            taskinfo = self.queue[task.name]
+            taskinfo.time = next_time
+            self.reappend_task(task, taskinfo)
 
     def stop_all_tasks(self, signo = signal.SIGTERM):
         """
