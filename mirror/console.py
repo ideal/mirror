@@ -25,7 +25,11 @@ import time
 import mmap
 import struct
 import signal
-import cPickle as pickle
+try:
+    import cPickle as pickle
+except:
+    import pickle
+
 import mirror.color
 import mirror.common
 import mirror.task  as task
@@ -61,9 +65,9 @@ def list_task_queue():
     formatstr = ("Task:"+mirror.color.FOREGROUND_COLORS.GREEN
                 +"%-18s"+mirror.color.COLOR_END+"\ttype:%14s\ttime: %s")
     for taskinfo in taskqueue:
-        print formatstr % (
+        print(formatstr % (
               taskinfo.name, TASK_DESC[taskinfo.tasktype],
-              time.asctime(time.localtime(taskinfo.time)))
+              time.asctime(time.localtime(taskinfo.time))))
 
     buffer.close()
     return error.MIRROR_OK

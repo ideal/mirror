@@ -31,7 +31,11 @@ import logging
 import weakref
 import mmap
 import struct
-import cPickle as pickle
+try:
+    import cPickle as pickle
+except:
+    import pickle
+
 import mirror.common
 import mirror.error
 import mirror.handler
