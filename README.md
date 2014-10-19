@@ -36,7 +36,7 @@ sudo python setup.py install
 If from source, you can install it to a custom directory:
 
 ```
-sudo python setup.py install --root=/tmp
+python setup.py install --root=/tmp
 ```
 
 After that, you are going to set up environment, you are encouraged to add a specific user to run `mirrord`, here we suppose the username is `mirror` and its home directory is `/home/mirror`.
