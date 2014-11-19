@@ -167,7 +167,7 @@ class Config(object):
 
         >>> config = Config("mirror.ini", defaults={"test": 5})
         >>> def callback(key, value):
-        ...     print key, value
+        ...     print(key, value)
         ...
         >>> config.register_change_callback(callback)
 
@@ -182,7 +182,7 @@ class Config(object):
 
         >>> config = Config("mirror.ini", defaults={"test": 5})
         >>> def callback(key, value):
-        ...     print key, value
+        ...     print(key, value)
         ...
         >>> config.register_set_function("test", callback, apply_now=True)
         test 5
@@ -207,7 +207,7 @@ class Config(object):
 
         >>> config = Config("mirror.ini", defaults={"test": 5})
         >>> def callbck(key, value):
-        ...     print key, value
+        ...     print(key, value)
         ...
         >>> config.register_set_function("test", callback, apply_now=False)
         >>> config.apply_all()

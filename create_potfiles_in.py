@@ -28,4 +28,4 @@ for line in to_translate:
     fp.write(line + "\n")
 fp.close()
 
-print "Done"
+print("Done")
