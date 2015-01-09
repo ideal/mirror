@@ -31,7 +31,7 @@ class PluginBase(Component):
     def __init__(self, name):
         super(PluginBase, self).__init__(name)
         self.name = name
-        log.debug("Plugin initialized...")
+        log.debug("Plugin %s initialized...", self.name)
 
     def enable(self):
         raise NotImplementedError("Need to define an enable method!")
