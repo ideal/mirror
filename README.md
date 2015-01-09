@@ -2,7 +2,7 @@
 
 [![PyPi version]][PyPI] [![Build Status]][Travis CI]
 
-`Mirror` is an open source python application for mirror site (e.g. [mirror.bjtu.edu.cn](http://mirror.bjtu.edu.cn)) to sync files from upstreams (it uses [rsync](http://rsync.samba.org/) internally), it actually works like a [cron](http://en.wikipedia.org/wiki/Cron), but has some differences. It has been served for mirror.bjtu.edu.cn with more than 40 rsync [tasks](http://mirror.bjtu.edu.cn/cn/update.html).
+`Mirror` is an open source python application for mirror site (e.g. [mirror.bjtu.edu.cn](http://mirror.bjtu.edu.cn)) to sync files from upstreams (it uses [rsync](http://rsync.samba.org/) internally), it actually works like a [cron](http://en.wikipedia.org/wiki/Cron), but still has some differences. It has been served for mirror.bjtu.edu.cn with more than 40 rsync [tasks](http://mirror.bjtu.edu.cn/cn/update.html).
 
 You are welcome to send comments, patches and any others to [github](https://github.com/ideal/mirror/issues) or to [@idealities](http://twitter.com/idealities).
 
@@ -23,7 +23,7 @@ Installation Instructions
 You can install `mirror` by running pip:
 
 ```
-pip install mirror
+sudo pip install mirror
 ```
 
 Or if you want to build and install from source:
