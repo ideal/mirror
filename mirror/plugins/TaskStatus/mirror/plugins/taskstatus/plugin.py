@@ -150,6 +150,8 @@ class Plugin(PluginBase):
         # Add info about upstream
         if task.__class__.__name__ == "Task":
             status['upstream'] = task.upstream[0] + '::' + task.rsyncdir + '/'
+
+        # Read old status file content
         try:
             fp = open(self.status_file, "r+" if os.path.exists(self.status_file) else "w+")
         except:
@@ -157,9 +159,14 @@ class Plugin(PluginBase):
             return
         task_status = fp.read().rstrip("\r\n")
         if task_status:
-            task_status = json.loads(task_status)
+            try:
+                task_status = json.loads(task_status)
+            except Exception as e:
+                log.warning("Parse json file(%s) failed: %s", self.status_file, e)
+                task_status = {}
         else:
             task_status = {}
+
         if overwrite:
             task_status[taskname] = status
         else:
@@ -168,6 +175,7 @@ class Plugin(PluginBase):
             else:
                 status["status"] = self.STATUS_INITIAL
                 task_status[taskname] = status
+
         if len(task_status) > 1:
             task_status = odict(sorted(task_status.iteritems()))
         fp.seek(0)
