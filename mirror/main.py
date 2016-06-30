@@ -70,7 +70,7 @@ def start_daemon():
     parser.add_option("-q", "--quiet", dest="quiet",
                       help=_("Sets the log level to 'none', this is the same as `-L none`"),
                       action="store_true", default=False)
-    parser.add_option("-r", "--rotate-logs",
+    parser.add_option("-r", "--rotate-logs", dest="rotate_logs",
                       help=_("Rotate logfiles."),
                       action="store_true", default=False)
     parser.add_option("--profile", dest="profile",
