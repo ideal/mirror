@@ -102,6 +102,10 @@ class Scheduler(Component):
         # the duration we can sleep...
         if nexttask:
             sleeptime = nexttask.time - time.time()
+            # if system time is updated by ntpdate or other ways,
+            # we may get a sleeptime < 0 and thus an "Invalid argument" error,
+            # so we need to change it to a valid value
+            sleeptime = 0 if sleeptime < 0 else sleeptime
         else:
             sleeptime = 1800 # half an hour
         log.info("I am going to sleep, next waking up: %s",
@@ -152,7 +156,7 @@ class Scheduler(Component):
 
     def schedule_task(self, taskinfo):
         """
-        Schedule a task, but it is not guaranteed that it will really be run, it is 
+        Schedule a task, but it is not guaranteed that it will really be run, it is
         decided by some conditions, e.g. system load, current http connections.
 
         NOTE:
