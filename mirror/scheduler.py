@@ -135,9 +135,8 @@ class Scheduler(Component):
                 if taskinfo.time < timestamp:
                     log.info("Strange problem happened,"
                              "task: %s schedule time is in past,"
-                             "maybe I sleeped too long...", taskinfo.name)
-                    self.queue.remove(taskinfo)
-                    self.append_task(taskinfo.name, self.tasks[taskinfo.name], since = end)
+                             "maybe because of system time changed, but it's also scheduled...", taskinfo.name)
+                    self.schedule_task(taskinfo)
                 if taskinfo.time >= end:
                     break
                 if taskinfo.time >= timestamp and taskinfo.time < end:
