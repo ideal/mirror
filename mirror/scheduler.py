@@ -68,6 +68,7 @@ class Scheduler(Component):
         self.todo    = self.SCHEDULE_TASK
         # the number of tasks that enabled
         self.active_tasks    = -1
+        self.expect_time     = 0
         self.roused_by_child = False
 
         self.init_general(self.config)
@@ -110,6 +111,7 @@ class Scheduler(Component):
             sleeptime = 1800 # half an hour
         log.info("I am going to sleep, next waking up: %s",
                  time.ctime(time.time() + sleeptime))
+        self.expect_time     = int(time.time()) + sleeptime
         self.roused_by_child = False
         time.sleep(sleeptime)
 
@@ -120,9 +122,21 @@ class Scheduler(Component):
 
         self.init_sysinfo()
 
-        # we do not need microseconds
-        curtime    = int(time.time())
+        curtime    = time.time()
         taskqueue  = [ taskinfo for taskinfo in self.queue ]
+
+        # detect if time has been set back (e.g. by ntpdate) to the right value
+        if (not self.roused_by_child and
+                curtime < self.expect_time and self.todo & self.SCHEDULE_TASK):
+            time_gap = self.expect_time - curtime
+            for taskinfo in taskqueue:
+                if self.TODO.get(taskinfo.tasktype, 0) != self.SCHEDULE_TASK:
+                    continue
+                taskinfo.time -= time_gap
+
+        # we do not need microseconds
+        curtime    = int(curtime)
+
         if ( self.todo & self.SCHEDULE_TASK ):
             # to move to zero second
             timestamp  = curtime
