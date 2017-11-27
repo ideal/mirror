@@ -23,7 +23,7 @@
 
 """
 Mirror is an open source python application for mirror site (e.g. mirror.bjtu.edu.cn)
-to sync files from upstreams (it uses rsync internally), it actually works like a 
+to sync files from upstreams (it uses rsync internally), it actually works like a
 cron, but still has some differences. It has been served for mirror.bjtu.edu.cn with
 more than 40 rsync tasks.
 """
@@ -188,7 +188,7 @@ entry_points = {
 # Main setup
 setup(
     name = "mirror",
-    version = "0.6.6",
+    version = "0.7.0",
     fullname = "Mirror for open source mirror site",
     description = "Mirror for open source mirror site to sync files",
     author = "Shang Yuanchun, Bob Gao",
