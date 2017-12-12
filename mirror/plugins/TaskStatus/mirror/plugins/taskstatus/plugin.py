@@ -180,7 +180,7 @@ class Plugin(PluginBase):
             task_status = odict(sorted(task_status.iteritems()))
         fp.seek(0)
         try:
-            fp.write(json.dumps(task_status))
+            fp.write(json.dumps(task_status, indent = 2))
         except Exception as e:
             log.exception(e)
             fp.truncate(0)
