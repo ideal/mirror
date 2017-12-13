@@ -164,6 +164,11 @@ class Plugin(PluginBase):
             except Exception as e:
                 log.warning("Parse json file(%s) failed: %s", self.status_file, e)
                 task_status = {}
+            else:
+                # Remove tasks that already been removed from config file
+                for taskname in task_status.keys():
+                    if taskname not in scheduler.config:
+                        task_status.pop(taskname)
         else:
             task_status = {}
 
