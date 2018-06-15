@@ -63,7 +63,7 @@ def list_task_queue():
 
     taskqueue = pickle.loads(buffer.read(size))
     formatstr = ("Task:"+mirror.color.FOREGROUND_COLORS.GREEN
-                +"%-18s"+mirror.color.COLOR_END+"\ttype:%14s\ttime: %s")
+                +"%-18s"+mirror.color.COLOR_RESET+"\ttype:%14s\ttime: %s")
     for taskinfo in taskqueue:
         print(formatstr % (
               taskinfo.name, TASK_DESC[taskinfo.tasktype],

@@ -44,4 +44,4 @@ BACKGROUND_COLORS = enum(
                     WHITE  = '\033[47m',
                     )
 
-COLOR_END = '\033[0m'
+COLOR_RESET = '\033[0m'
