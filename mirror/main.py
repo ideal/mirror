@@ -29,6 +29,7 @@ from   optparse import OptionParser
 import mirror.log
 import mirror.error
 import mirror.console
+from mirror.common import write_stderr
 
 def version_callback(option, opt_str, value, parser):
     print(os.path.basename(sys.argv[0]) + ": " + mirror.common.get_version())
@@ -104,7 +105,7 @@ def start_daemon():
     import mirror.configmanager
     if options.config:
         if not mirror.configmanager.set_config_dir(options.config):
-            print("There was an error setting the config dir! Exiting..")
+            write_stderr("There was an error setting the config dir! Exiting.."),
             sys.exit(1)
 
     # Sets the options.logfile to point to the default location
@@ -117,10 +118,13 @@ def start_daemon():
 
     # Setup the logger
     try:
+        log_dir = os.path.abspath(os.path.dirname(options.logfile))
         # Try to make the logfile's directory if it doesn't exist
-        os.makedirs(os.path.abspath(os.path.dirname(options.logfile)))
+        os.makedirs(log_dir)
     except:
-        pass
+        write_stderr(_("There was an error creating log dir: %s, you can create it manually and start again."),
+                     log_dir)
+        sys.exit(1)
 
     # Setup the logger
     if os.path.isfile(options.logfile):
