@@ -120,7 +120,8 @@ def start_daemon():
     try:
         log_dir = os.path.abspath(os.path.dirname(options.logfile))
         # Try to make the logfile's directory if it doesn't exist
-        os.makedirs(log_dir)
+        if not os.path.isdir(log_dir):
+            os.makedirs(log_dir)
     except:
         write_stderr(_("There was an error creating log dir: %s, you can create it manually and start again."),
                      log_dir)
