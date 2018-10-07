@@ -108,6 +108,20 @@ def start_daemon():
             write_stderr("There was an error setting the config dir! Exiting.."),
             sys.exit(1)
 
+    # Check if config dir exists
+    config_dir = mirror.configmanager.get_config_dir()
+    if not os.path.isdir(config_dir):
+        write_stderr(_("Config dir does not exist: %s, please create and write your mirror.ini"),
+                     config_dir)
+        sys.exit(1)
+
+    # Check if main config file exists
+    config_file = mirror.configmanager.get_config_dir('mirror.ini')
+    if not os.path.isfile(config_file):
+        write_stderr(_("Config file does not exist: %s, please write one"),
+                     config_file)
+        sys.exit(1)
+
     # Sets the options.logfile to point to the default location
     def set_logfile():
         if not options.logfile:
