@@ -82,12 +82,19 @@ def setup_translations():
             locale.bindtextdomain("mirror", translations_path)
         if hasattr(locale, "textdomain"):
             locale.textdomain("mirror")
-        gettext.install("mirror", translations_path, unicode=True)
+        if is_python3():
+            gettext.install("mirror", translations_path)
+        else:
+            gettext.install("mirror", translations_path, unicode=True)
     except Exception as e:
         log.error("Unable to initialize gettext/locale")
         log.exception(e)
-        import __builtin__
-        __builtin__.__dict__["_"] = lambda x: x
+        if is_python3():
+            import builtins
+            builtins.__dict__["_"] = lambda x: x
+        else:
+            import __builtin__
+            __builtin__.__dict__["_"] = lambda x: x
 
 def resource_filename(module, path):
     return pkg_resources.require(
