@@ -292,6 +292,9 @@ def utf8_encoded(s, encoding="utf8"):
     Return a utf8 encoded string of s
 
     """
+    if is_python3():
+        return decode_string(s, encoding).encode("utf8") if isinstance(s, bytes) else s.encode("utf8")
+
     if isinstance(s, str):
         s = decode_string(s, encoding).encode("utf8")
     elif isinstance(s, unicode):
