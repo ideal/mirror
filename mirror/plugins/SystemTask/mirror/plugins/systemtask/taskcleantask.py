@@ -48,7 +48,7 @@ class TaskCleanTask(SystemTask):
         scheduler = component.get("Scheduler")
 
         curtime   = time.time()
-        for taskname, task in scheduler.tasks.iteritems():
+        for taskname, task in scheduler.tasks.items():
             try:
                 # internal tasks have no `running`
                 if not hasattr(task, "running"):

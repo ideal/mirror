@@ -182,7 +182,7 @@ class Plugin(PluginBase):
                 task_status[taskname] = status
 
         if len(task_status) > 1:
-            task_status = odict(sorted(task_status.iteritems()))
+            task_status = odict(sorted(task_status.items()))
         fp.seek(0)
         try:
             fp.write(json.dumps(task_status, indent = 2))
