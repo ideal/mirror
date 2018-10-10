@@ -32,6 +32,10 @@ class TaskInfo():
     def __eq__(self, other):
         return self.name == other.name
 
+    def __lt__(self, other):
+        return (self.time - other.time < 0) if self.time != other.time else (
+                                           self.priority - other.priority < 0)
+
     def __cmp__(self, other):
         return (self.time - other.time) if self.time != other.time else (
                                            self.priority - other.priority)
