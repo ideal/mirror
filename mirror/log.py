@@ -85,7 +85,7 @@ def setupLogger(level="error", filename=None, filemode="w"):
 
     formatter = logging.Formatter(
         DEFAULT_LOGGING_FORMAT % MAX_LOGGER_NAME_LENGTH,
-        datefmt="%m-%d %H:%M:%S"
+        datefmt="%Y-%m-%d %H:%M:%S"
     )
 
     handler.setFormatter(formatter)

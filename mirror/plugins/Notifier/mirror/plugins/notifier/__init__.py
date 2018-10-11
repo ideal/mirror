@@ -28,6 +28,6 @@ class MirrorPlugin(PluginInitBase):
 
     def __init__(self, plugin_name):
         # The real class is Notifier in notifier.py lived in the current directory
-        from notifier import Notifier as _plugin_class
+        from .notifier import Notifier as _plugin_class
         self._plugin_class = _plugin_class
         super(MirrorPlugin, self).__init__(plugin_name)

@@ -24,6 +24,8 @@ import os
 import time
 import signal
 import logging
+import mirror.common
+import mirror.error
 import mirror.component as component
 
 log = logging.getLogger(__name__)
@@ -80,6 +82,14 @@ def sigchld_handler(signo, frame):
     if scheduler is None:
         return
     scheduler.stop_task_with_pid(pid, status)
+
+    # In Python 3, execution of signal handler will not terminate the sleep() as Python 2
+    # But it will still be terminated if signal handler raises an exception
+    # For convenience, we raise en exception manually
+    # https://mozillazg.com/2017/07/python-time-sleep-terminate-by-signal.html
+
+    if mirror.common.is_python3():
+        raise mirror.error.MirrordTaskFinishedFakeError("Task finished, please stop sleep")
 
 def reload_handler(signo, frame):
     log.info("Got signal %s, start reloading...", signals[signo])

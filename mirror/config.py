@@ -53,7 +53,7 @@ class Config(object):
         self.__change_callbacks = []
 
         if defaults:
-            for key, value in defaults.iteritems():
+            for key, value in defaults.items():
                 self.set_item(key, value)
 
         # Load the config from file in the config_dir
@@ -215,7 +215,7 @@ class Config(object):
 
         """
         log.debug("Calling all set functions..")
-        for key, value in self.__set_functions.iteritems():
+        for key, value in self.__set_functions.items():
             for func in value:
                 func(key, self.__config[key])
 

@@ -166,7 +166,7 @@ class Plugin(PluginBase):
                 task_status = {}
             else:
                 # Remove tasks that already been removed from config file
-                for taskname in task_status.keys():
+                for taskname in list(task_status):
                     if taskname not in scheduler.config:
                         task_status.pop(taskname)
         else:
@@ -182,7 +182,7 @@ class Plugin(PluginBase):
                 task_status[taskname] = status
 
         if len(task_status) > 1:
-            task_status = odict(sorted(task_status.iteritems()))
+            task_status = odict(sorted(task_status.items()))
         fp.seek(0)
         try:
             fp.write(json.dumps(task_status, indent = 2))

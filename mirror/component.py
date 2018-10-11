@@ -102,7 +102,7 @@ class ComponentRegistry(object):
         """
         # Start all the components if names is empty
         if not names:
-            names = self.components.keys()
+            names = list(self.components)
         elif isinstance(names, str):
             names = [ names ]
 
@@ -123,7 +123,7 @@ class ComponentRegistry(object):
 
         """
         if not names:
-            names = self.components.keys()
+            names = list(self.components)
         elif isinstance(names, str):
             names = [ names ]
 

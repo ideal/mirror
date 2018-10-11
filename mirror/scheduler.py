@@ -113,7 +113,10 @@ class Scheduler(Component):
                  time.ctime(time.time() + sleeptime))
         self.expect_time     = int(time.time()) + sleeptime
         self.roused_by_child = False
-        time.sleep(sleeptime)
+        try:
+            time.sleep(sleeptime)
+        except mirror.error.MirrordTaskFinishedFakeError as e:
+            pass
 
     def schedule(self):
         if self.queue.empty():
@@ -235,7 +238,7 @@ class Scheduler(Component):
 
         """
         running = 0
-        for taskname, task in self.tasks.iteritems():
+        for taskname, task in self.tasks.items():
             if task.isinternal:
                 continue
             running += task.running
@@ -304,11 +307,11 @@ class Scheduler(Component):
                                     0o644)
             flag = fcntl.fcntl(self.bufferfd, fcntl.F_GETFD)
             fcntl.fcntl(self.bufferfd, fcntl.F_SETFD, flag | fcntl.FD_CLOEXEC)
-            os.write(self.bufferfd, '\x00' * self.buffersz)
+            os.write(self.bufferfd, b'\x00' * self.buffersz)
             self.buffer   = mmap.mmap(self.bufferfd, self.buffersz, mmap.MAP_SHARED, mmap.PROT_WRITE)
             # close bufferfd
             os.close(self.bufferfd)
-            self.buffer.write("\x79\x71")
+            self.buffer.write(b"\x79\x71")
         self.buffer.seek(2)
         self.buffer.write(struct.pack("I", size))
         self.buffer.write(data)
@@ -378,7 +381,7 @@ class Scheduler(Component):
         signal.signal(signal.SIGCHLD, mirror.handler.sigchld_handler)
 
         log.info("Clearing old data...")
-        for taskname, task in self.tasks.iteritems():
+        for taskname, task in self.tasks.items():
             if not task.isinternal:
                 del self.tasks[taskname]
         self.queue = Queue()
@@ -396,7 +399,7 @@ class Scheduler(Component):
             task_class = TASK_TYPES.get(config[mirror].get("type", None), Task)
             self.tasks[mirror] = task_class(mirror, weakref.ref(self), **config[mirror])
         self.active_tasks = len(
-                            [mirror for mirror, task in self.tasks.iteritems() if task.enabled])
+                            [mirror for mirror, task in self.tasks.items() if task.enabled])
 
     def run_system_task(self, taskinfo):
         event_manager = component.get("EventManager")
@@ -474,7 +477,7 @@ class Scheduler(Component):
 
         """
         self.roused_by_child = True
-        for taskname, task in self.tasks.iteritems():
+        for taskname, task in self.tasks.items():
             if task.isinternal:
                 continue
             if task.pid == pid:
@@ -533,7 +536,7 @@ class Scheduler(Component):
 
         """
         event_manager = component.get("EventManager")
-        for taskname, task in self.tasks.iteritems():
+        for taskname, task in self.tasks.items():
             if task.isinternal:
                 continue
             if not task.running:

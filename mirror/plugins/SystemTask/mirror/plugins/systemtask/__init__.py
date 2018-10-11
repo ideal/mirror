@@ -27,6 +27,6 @@ class MirrorPlugin(PluginInitBase):
     enabled = True
 
     def __init__(self, plugin_name):
-        from systemtask import SystemTask as _plugin_class
+        from .systemtask import SystemTask as _plugin_class
         self._plugin_class = _plugin_class
         super(MirrorPlugin, self).__init__(plugin_name)

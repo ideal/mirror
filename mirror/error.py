@@ -53,3 +53,6 @@ class MirrorError(Exception):
 class MirrordRunningError(MirrorError):
     pass
 
+class MirrordTaskFinishedFakeError(MirrorError):
+    pass
+

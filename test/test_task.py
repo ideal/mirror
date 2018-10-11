@@ -38,7 +38,7 @@ class TaskTestCase(unittest.TestCase):
                  'args': '--links --hard-links --times --verbose --delete --recursive',
                  'twostage': '0',
                  'timeout': '2h',
-                 'propority': '2',
+                 'priority': '2',
                  }
         task   = Task('archlinux', None, **config)
         since  = time.mktime((2013, 7, 20, 8, 0, 0, 0, 0, 0))
