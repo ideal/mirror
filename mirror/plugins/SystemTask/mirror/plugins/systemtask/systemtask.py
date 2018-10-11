@@ -24,8 +24,8 @@ import os
 import logging
 import mirror.component as component
 from mirror.pluginbase import PluginBase
-import logcleantask
-import taskcleantask
+from . import logcleantask
+from . import taskcleantask
 
 _plugin_name = "systemtask"
 
