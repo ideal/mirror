@@ -113,7 +113,10 @@ class Scheduler(Component):
                  time.ctime(time.time() + sleeptime))
         self.expect_time     = int(time.time()) + sleeptime
         self.roused_by_child = False
-        time.sleep(sleeptime)
+        try:
+            time.sleep(sleeptime)
+        except mirror.error.MirrordTaskFinishedFakeError as e:
+            pass
 
     def schedule(self):
         if self.queue.empty():
