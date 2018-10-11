@@ -93,7 +93,7 @@ class PluginManager(Component):
             log.info("Plugin %s enabled...", plugin_name)
 
     def disable_plugins(self):
-        plugin_names = self.plugins.keys()
+        plugin_names = list(self.plugins)
         for name in plugin_names:
             self.disable_plugin(name)
 
@@ -141,7 +141,7 @@ class PluginManager(Component):
         return self.available_plugins
 
     def get_enabled_plugins(self):
-        return self.plugins.keys()
+        return list(self.plugins)
 
     def get_plugin_info(self, name):
         info = dict.fromkeys(METADATA_KEYS)
