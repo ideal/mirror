@@ -1,6 +1,6 @@
 # Mirror
 
-[![Python version]][PyPI] [![PyPi version]][PyPI] [![Build Status]][Travis CI][![AUR version]][AUR]
+[![Python version]][PyPI] [![PyPi version]][PyPI] [![Build Status]][Travis CI] [![AUR version]][AUR]
 
 `Mirror` is an open source python application for mirror site (e.g. [mirror.bjtu.edu.cn](https://mirror.bjtu.edu.cn)) to sync files from upstreams (it uses [rsync](http://rsync.samba.org/) internally), it actually works like a [cron](http://en.wikipedia.org/wiki/Cron), but still has some differences. It has been served for mirror.bjtu.edu.cn with more than 40 rsync [tasks](https://mirror.bjtu.edu.cn).
 
