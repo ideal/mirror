@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2014 Mirror at BJTU
-# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) 2018 Mirror at BJTU
+# This file is distributed under the same license as the Mirror package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Mirror 0.6.4\n"
+"Project-Id-Version: Mirror 0.7.8\n"
 "Report-Msgid-Bugs-To: http://mirror.bjtu.edu.cn\n"
-"POT-Creation-Date: 2014-03-10 11:03+0800\n"
+"POT-Creation-Date: 2018-10-14 11:58+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,71 +17,92 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: mirror/main.py:45
+#: mirror/main.py:47
 msgid "Show program's version number and exit"
 msgstr ""
 
-#: mirror/main.py:47
+#: mirror/main.py:49
 msgid "Do not daemonize (default is daemonize)"
 msgstr ""
 
-#: mirror/main.py:51
+#: mirror/main.py:53
 msgid "Set the config location directory"
 msgstr ""
 
-#: mirror/main.py:54
+#: mirror/main.py:56
 msgid "Use pidfile to store process id"
 msgstr ""
 
-#: mirror/main.py:57
+#: mirror/main.py:59
 msgid "User to switch to. Need to start as root"
 msgstr ""
 
-#: mirror/main.py:60
+#: mirror/main.py:62
 msgid "Group to switch to. Need to start as root"
 msgstr ""
 
-#: mirror/main.py:63
+#: mirror/main.py:65
 msgid "Set the logfile location"
 msgstr ""
 
-#: mirror/main.py:66
+#: mirror/main.py:68
 msgid "Set the log level: none, info, warning, error, critical, debug"
 msgstr ""
 
-#: mirror/main.py:70
+#: mirror/main.py:72
 msgid "Sets the log level to 'none', this is the same as `-L none`"
 msgstr ""
 
-#: mirror/main.py:73
+#: mirror/main.py:75
 msgid "Rotate logfiles."
 msgstr ""
 
-#: mirror/main.py:76
+#: mirror/main.py:78
 msgid "Profiles the daemon"
 msgstr ""
 
-#: mirror/main.py:79
+#: mirror/main.py:81
 msgid "List current tasks in scheduler's queue"
 msgstr ""
 
-#: mirror/main.py:82
+#: mirror/main.py:84
 msgid "Send signal to mirrord: stop, reload"
 msgstr ""
 
-#: mirror/console.py:44
+#: mirror/main.py:114
+#, python-format
+msgid "Config dir does not exist: %s, please create and write your mirror.ini"
+msgstr ""
+
+#: mirror/main.py:121
+#, python-format
+msgid "Config file does not exist: %s, please write one"
+msgstr ""
+
+#: mirror/main.py:140
+#, python-format
+msgid ""
+"There was an error creating log dir: %s, you can create it manually and "
+"start again."
+msgstr ""
+
+#: mirror/console.py:49
 msgid "Open /tmp/mirrord failed, can't read task infomation"
 msgstr ""
 
-#: mirror/console.py:72
-msgid "Invalid value for -s, available: stop, reload"
+#: mirror/console.py:57
+msgid "Wrong file /tmp/mirrord, any other wrote it?"
 msgstr ""
 
-#: mirror/console.py:79
+#: mirror/console.py:83
+msgid "Invalid value for -s, available: "
+msgstr ""
+
+#: mirror/console.py:90
 msgid "Can not read mirrord's pid, please make sure that mirrord is running"
 msgstr ""
 
-#: mirror/console.py:85
+#: mirror/console.py:96
 #, python-format
 msgid "Kill mirrord (%d) failed: %s"
 msgstr ""
