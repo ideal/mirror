@@ -78,10 +78,10 @@ Features
  * Support for two stage syncing (for ubuntu, debian)
  * You can also use it as another cron...
 
-[Build Status]:    https://img.shields.io/travis/ideal/mirror/master.svg?logo=travisci
+[Build Status]:    https://img.shields.io/travis/ideal/mirror/master.svg?logo=travis-ci
 [Travis CI]:       https://travis-ci.org/ideal/mirror
 [Python version]:  https://img.shields.io/pypi/pyversions/mirror.svg?logo=python
 [PyPI version]:    https://img.shields.io/pypi/v/mirror.svg?logo=python
 [PyPI]:            https://pypi.python.org/pypi/mirror
-[AUR version]:     https://img.shields.io/aur/version/mirror.svg?logo=archlinux
+[AUR version]:     https://img.shields.io/aur/version/mirror.svg?logo=arch-linux
 [AUR]:             https://aur.archlinux.org/packages/mirror
