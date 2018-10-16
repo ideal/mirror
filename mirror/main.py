@@ -142,8 +142,8 @@ def start_daemon():
         sys.exit(1)
 
     if not os.access(log_dir, os.W_OK):
-        write_stderr(_("There was an error writing logs to log dir: %s,\
-                        you can change it manually (chown or chmod ) and start again."),
+        write_stderr(_("There was an error writing logs to log dir: %s, "
+                       "you can change it manually (chown or chmod ) and start again."),
                      log_dir)
         sys.exit(1)
 
@@ -154,8 +154,8 @@ def start_daemon():
         sys.exit(1)
 
     if not os.access(task_log_dir, os.W_OK):
-        write_stderr(_("There was an error writing logs to log dir: %s,\
-                        you can change it manually (chown or chmod) and start again."),
+        write_stderr(_("There was an error writing logs to log dir: %s, "
+                       "you can change it manually (chown or chmod) and start again."),
                      task_log_dir)
         sys.exit(1)
 
