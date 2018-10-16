@@ -141,6 +141,24 @@ def start_daemon():
                      log_dir)
         sys.exit(1)
 
+    if not os.access(log_dir, os.W_OK):
+        write_stderr(_("There was an error writing logs to log dir: %s,\
+                        you can change it manually (chown or chmod ) and start again."),
+                     log_dir)
+        sys.exit(1)
+
+    task_log_dir = mirror.common.DEFAULT_TASK_LOG_DIR
+    if not os.path.isdir(task_log_dir):
+        write_stderr(_("Default task log dir does not exists: %s, you can create it manually and start again."),
+                     log_dir)
+        sys.exit(1)
+
+    if not os.access(task_log_dir, os.W_OK):
+        write_stderr(_("There was an error writing logs to log dir: %s,\
+                        you can change it manually (chown or chmod) and start again."),
+                     task_log_dir)
+        sys.exit(1)
+
     # Setup the logger
     if os.path.isfile(options.logfile):
         logfile_mode = 'a'
