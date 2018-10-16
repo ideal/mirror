@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mirror 0.7.8\n"
 "Report-Msgid-Bugs-To: http://mirror.bjtu.edu.cn\n"
-"POT-Creation-Date: 2018-10-14 11:58+0800\n"
+"POT-Creation-Date: 2018-10-16 17:57+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -84,6 +84,27 @@ msgstr ""
 msgid ""
 "There was an error creating log dir: %s, you can create it manually and "
 "start again."
+msgstr ""
+
+#: mirror/main.py:145
+#, python-format
+msgid ""
+"There was an error writing logs to log dir: %s, you can change it manually "
+"(chown or chmod ) and start again."
+msgstr ""
+
+#: mirror/main.py:152
+#, python-format
+msgid ""
+"Default task log dir does not exists: %s, you can create it manually and "
+"start again."
+msgstr ""
+
+#: mirror/main.py:157
+#, python-format
+msgid ""
+"There was an error writing logs to log dir: %s, you can change it manually "
+"(chown or chmod) and start again."
 msgstr ""
 
 #: mirror/console.py:49
