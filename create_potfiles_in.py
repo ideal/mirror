@@ -25,7 +25,7 @@ for (dirpath, dirnames, filenames) in os.walk("mirror"):
 
 fp = open(POTFILE_IN, "wb")
 for line in to_translate:
-    fp.write(line + "\n")
+    fp.write(line.encode("utf-8") + b"\n")
 fp.close()
 
 print("Done")
