@@ -22,42 +22,36 @@ Installation Instructions
 
 You can install `mirror` by running pip:
 
-```
-sudo pip install mirror
+```bash
+$ sudo pip install mirror
 ```
 
 Or if you want to build and install from source:
 
-```
-python setup.py build
-sudo python setup.py install
-```
-
-If from source, you can install it to a custom directory:
-
-```
-python setup.py install --root=/tmp
+```bash
+$ python setup.py build
+$ sudo python setup.py install
 ```
 
 After that, you are going to set up environment, you are encouraged to add a specific user to run `mirrord`, here we suppose the username is `mirror` and its home directory is `/home/mirror`.
 
 Make necessary directories:
-```sh
-sudo mkdir /var/log/mirrord /var/log/rsync
-sudo chown mirror:mirror /var/log/mirrord /var/log/rsync
+
+```bash
+$ sudo chown mirror:mirror /var/log/mirrord /var/log/rsync
 mkdir ~/.config/mirror
 cp config/mirror.ini ~/.config/mirror/
 ```
 
 Now you can edit mirror.ini to fit your needs and run:
-```
-mirrord
+```bash
+$ mirrord
 ```
 and that's done. Also you can use `man mirrord` or `mirrord -h` to read the documents.
 
 If `mirrord` is running, you can run:
-```
-mirrord -t
+```bash
+$ mirrord -t
 ```
 to show the current task queue.
 
