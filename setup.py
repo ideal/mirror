@@ -176,7 +176,9 @@ cmdclass = {
 # Data files to be installed to the system
 _data_files = [
     ('share/man/man1',   ['docs/man/mirrord.1']),
-    ('share/mirror/etc', ['config/mirror.ini'])
+    ('share/mirror/etc', ['config/mirror.ini']),
+    ('/var/log/mirrord', []),
+    ('/var/log/rsync', []),
 ]
 
 entry_points = {
