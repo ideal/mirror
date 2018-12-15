@@ -47,7 +47,7 @@ def list_task_queue():
         bufferfd = os.open("/tmp/mirrord", os.O_RDONLY)
     except:
         write_stderr(_("Open /tmp/mirrord failed, "
-                       "can't read task infomation"))
+                       "can't read task information, please make sure that mirrord is running"))
         return error.MIRROR_ERROR
 
     buffer = mmap.mmap(bufferfd, os.fstat(bufferfd).st_size,

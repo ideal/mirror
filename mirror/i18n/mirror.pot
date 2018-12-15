@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mirror 0.7.8\n"
 "Report-Msgid-Bugs-To: http://mirror.bjtu.edu.cn\n"
-"POT-Creation-Date: 2018-10-16 17:57+0800\n"
+"POT-Creation-Date: 2018-12-15 16:26+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,29 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: mirror/console.py:49
+msgid ""
+"Open /tmp/mirrord failed, can't read task information, please make sure that "
+"mirrord is running"
+msgstr ""
+
+#: mirror/console.py:57
+msgid "Wrong file /tmp/mirrord, any other wrote it?"
+msgstr ""
+
+#: mirror/console.py:83
+msgid "Invalid value for -s, available: "
+msgstr ""
+
+#: mirror/console.py:90
+msgid "Can not read mirrord's pid, please make sure that mirrord is running"
+msgstr ""
+
+#: mirror/console.py:96
+#, python-format
+msgid "Kill mirrord (%d) failed: %s"
+msgstr ""
 
 #: mirror/main.py:47
 msgid "Show program's version number and exit"
@@ -105,25 +128,4 @@ msgstr ""
 msgid ""
 "There was an error writing logs to log dir: %s, you can change it manually "
 "(chown or chmod) and start again."
-msgstr ""
-
-#: mirror/console.py:49
-msgid "Open /tmp/mirrord failed, can't read task infomation"
-msgstr ""
-
-#: mirror/console.py:57
-msgid "Wrong file /tmp/mirrord, any other wrote it?"
-msgstr ""
-
-#: mirror/console.py:83
-msgid "Invalid value for -s, available: "
-msgstr ""
-
-#: mirror/console.py:90
-msgid "Can not read mirrord's pid, please make sure that mirrord is running"
-msgstr ""
-
-#: mirror/console.py:96
-#, python-format
-msgid "Kill mirrord (%d) failed: %s"
 msgstr ""
