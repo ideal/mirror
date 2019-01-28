@@ -1,0 +1,22 @@
+#compdef mirrord
+
+__mirrord() {
+    _arguments \
+        "(- 1 *)"{-h,--help}"[Show help message and exit]" \
+        "(- 1 *)"{-v,--version}"[Show version of mirrord]" \
+        {-D,--do-not-daemonize}"[Do not daemonize (default is daemonize)]" \
+        {-c,--config}"[Set the config location directory]:directory:_files -/" \
+        {-P,--pidfile}"[Use pidfile to store process id]:file:_files" \
+        {-u,--user}"[User to switch to. Need to start as root]" \
+        {-g,--group}"[Group to switch to. Need to start as root]" \
+        {-l,--logfile}"[Set the logfile location]:file:_files" \
+        {-L,--loglevel}"[Set the log level]:(log level):(none info warning error critical debug)" \
+        {-q,--quiet}"[Sets the log level to 'none']" \
+        {-r,--rotate-logs}"[Rotate logfiles]" \
+        --profile"[Profiles the daemon]" \
+        {-t,--tasks}"[List current tasks in scheduler's queue]" \
+        {-s,--signal}"[Send signal to mirrord]:signal:(stop reload)"\
+}
+
+__mirrord
+
