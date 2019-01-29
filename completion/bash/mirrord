@@ -1,0 +1,29 @@
+_mirrord()
+{
+    cur=${COMP_WORDS[COMP_CWORD]}
+    prev=${COMP_WORDS[COMP_CWORD-1]}
+
+    case "$prev" in
+        -h|--help|-v|--version)
+            return
+            ;;
+
+        -L|--loglevel)
+            COMPREPLY=( $(compgen -W 'none info warning error critical debug' -- "$cur") )
+            return
+            ;;
+
+        -s|--signal)
+            COMPREPLY=( $( compgen -W 'stop reload' -- "$cur" ) )
+            return
+            ;;
+    esac
+
+    case "$cur" in
+        -*)
+            COMPREPLY=( $( compgen -W '$( _parse_help "$1" )' -- "$cur" ) )
+            ;;
+    esac
+} &&
+
+complete -F _mirrord mirrord
