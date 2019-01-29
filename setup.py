@@ -177,6 +177,7 @@ cmdclass = {
 _data_files = [
     ('share/man/man1',   ['docs/man/mirrord.1']),
     ('share/mirror/etc', ['config/mirror.ini']),
+    ('share/zsh/site-functions', ['completion/zsh/_mirrord']),
     ('/var/log/mirrord', []),
     ('/var/log/rsync', []),
 ]
