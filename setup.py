@@ -207,7 +207,7 @@ setup(
                                "plugins/*.egg",
                                "i18n/*/LC_MESSAGES/*.mo",
                                ]},
-    packages = find_packages(exclude=["docs", "test"]),
+    packages = find_packages(exclude=["completion", "docs", "test"]),
     python_requires = '>=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*',
     classifiers=[
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
