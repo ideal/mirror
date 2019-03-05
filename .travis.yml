@@ -23,13 +23,10 @@ before_install:
       brew update
       brew install openssl readline
       brew outdated pyenv || brew upgrade pyenv
-      brew install pyenv-virtualenv
       pyenv install $PYTHON
 
       export PYENV_VERSION=$PYTHON
       export PATH="${HOME}/.pyenv/shims:${PATH}"
-      pyenv-virtualenv venv
-      source venv/bin/activate
 
       python --version
     fi
