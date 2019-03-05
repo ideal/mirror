@@ -1,10 +1,6 @@
 language: python
 
-matrix:
-    include:
-        - os: linux
-          dist: xenial
-        - os: osx
+dist: xenial
 
 python:
   - "2.7"
@@ -12,7 +8,12 @@ python:
   - "3.6"
   - "3.7"
 
+matrix:
+    include:
+        - os: osx
+
 install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; brew install python; fi
   - pip install chardet
 
 script:
