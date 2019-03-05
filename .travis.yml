@@ -11,9 +11,35 @@ python:
 matrix:
     include:
         - os: osx
+          language: generic
+          env: PYTHON=2.7.15
+        - os: osx
+          language: generic
+          env: PYTHON=3.7.2
+
+before_install:
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      brew update
+      brew install openssl readline
+      brew outdated pyenv || brew upgrade pyenv
+      brew install pyenv-virtualenv
+      pyenv install $PYTHON
+
+      export PYENV_VERSION=$PYTHON
+      export PATH="${HOME}/.pyenv/shims:${PATH}"
+      pyenv-virtualenv venv
+      source venv/bin/activate
+
+      python --version
+    fi
 
 install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; brew install python; fi
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      python -m pip install -U pip
+      python -m easy_install -U setuptools
+    fi
   - pip install chardet
 
 script:
