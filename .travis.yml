@@ -1,5 +1,10 @@
 language: python
-dist: xenial
+
+matrix:
+    include:
+        - os: linux
+          dist: xenial
+        - os: osx
 
 python:
   - "2.7"
