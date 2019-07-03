@@ -1,0 +1,13 @@
+[[source]]
+name = "bjtu"
+url = "https://mirror.bjtu.edu.cn/pypi/web/simple/"
+verify_ssl = true
+
+[packages]
+chardet = "*"
+
+[requires]
+python_version = "3.7"
+
+[pipenv]
+allow_prereleases = true
