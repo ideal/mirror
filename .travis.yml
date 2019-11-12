@@ -7,15 +7,16 @@ python:
   - "3.5"
   - "3.6"
   - "3.7"
+  - "3.8"
 
 matrix:
     include:
         - os: osx
           language: generic
-          env: PYTHON=2.7.16
+          env: PYTHON=2.7.17
         - os: osx
           language: generic
-          env: PYTHON=3.7.2
+          env: PYTHON=3.7.4
 
 before_install:
   - |
