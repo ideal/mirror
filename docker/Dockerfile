@@ -1,12 +1,27 @@
 # mirrord's Dockerfile
 
-FROM debian
+FROM archlinux:latest
+
 MAINTAINER ideal <idealities@gmail.com>
 
-RUN apt-get update
-RUN apt-get install -y rsync python-pip
+COPY mirrorlist /etc/pacman.d/mirrorlist
 
-RUN pip install mirror
+RUN echo -e '[archlinuxcn]\n\
+Server = https://repo.archlinuxcn.org/$arch\n\
+' >> /etc/pacman.conf
+
+RUN pacman -Syyu --noconfirm && \
+    pacman -S --noconfirm gettext grep wget awk && \
+    rm -rf /var/cache/pacman/pkg/* /tmp/*
+
+RUN pacman-key --init && \
+    pacman-key -r F9F9FA97A403F63E && \
+    pacman-key -f F9F9FA97A403F63E && \
+    pacman-key --lsign-key F9F9FA97A403F63E && \
+    pacman -S --noconfirm unzip rsync mirror && \
+    pacman -Scc --noconfirm && \
+    rm -rf /etc/pacman.d/gnupg/{openpgp-revocs.d/,private-keys-v1.d/,pubring.gpg~}* && \
+    rm -rf /var/cache/pacman/pkg/* /tmp/*
 
 RUN mkdir /var/log/mirrord /var/log/rsync
 
