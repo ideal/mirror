@@ -39,6 +39,7 @@ log = logging.getLogger(__name__)
 
 DEFAULT_MIRRORD_LOG_DIR = '/var/log/mirrord'
 DEFAULT_TASK_LOG_DIR    = '/var/log/rsync'
+DEFAULT_CONFIG_PATH     = '/etc/mirror'
 
 if sys.version_info.major >= 3:
     xrange  = range
@@ -71,6 +72,10 @@ def get_default_config_dir(filename=None):
                                    "mirror")
     if not filename:
         filename = ''
+
+    if not os.access(config_path, os.F_OK):
+        return DEFAULT_CONFIG_PATH
+
     return os.path.join(config_path, filename)
 
 def setup_translations():

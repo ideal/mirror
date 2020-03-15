@@ -45,8 +45,8 @@ Make necessary directories:
 
 ```bash
 $ sudo chown mirror:mirror /var/log/mirrord /var/log/rsync
-$ mkdir ~/.config/mirror
-$ cp config/mirror.ini ~/.config/mirror/
+$ sudo mkdir /etc/mirror
+$ sudo cp config/mirror.ini /etc/mirror/
 ```
 
 Now you can edit mirror.ini to fit your needs and run:
