@@ -179,6 +179,7 @@ _data_files = [
     ('share/mirror/etc', ['config/mirror.ini']),
     ('share/zsh/site-functions', ['completion/zsh/_mirrord']),
     ('share/bash-completion/completions', ['completion/bash/mirrord']),
+    ('lib/systemd/system', ['util/systemd/system/mirrord@.service']),
     ('/var/log/mirrord', []),
     ('/var/log/rsync', []),
 ]
