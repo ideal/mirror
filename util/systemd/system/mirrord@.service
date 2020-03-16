@@ -7,6 +7,7 @@ Type=simple
 User=%i
 Group=%i
 ExecStart=/usr/bin/mirrord -D
+ExecStop=/usr/bin/mirrord -s stop
 
 [Install]
 WantedBy=multi-user.target
