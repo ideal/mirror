@@ -40,6 +40,11 @@ def start_daemon():
     import mirror.common
     mirror.common.setup_translations()
 
+    # Fix ?? problem if redirect `mirrord -h` to file or pipe to other command
+    if not sys.stdout.isatty() and not mirror.common.is_python3():
+        reload(sys)
+        sys.setdefaultencoding('utf-8')
+
     # Setup the argument parser
     parser = OptionParser(usage="%prog [options]")
     parser.add_option("-v", "--version", action="callback",
