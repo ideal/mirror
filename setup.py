@@ -190,16 +190,20 @@ entry_points = {
     ],
 }
 
+with open('README.md') as f:
+    long_description = f.read()
+
 # Main setup
 setup(
     name = "mirror",
-    version = "0.8.0",
+    version = "0.8.1",
     fullname = "Mirror for open source mirror site",
     description = "Mirror for open source mirror site to sync files",
     author = "Shang Yuanchun, Bob Gao",
     author_email = "Shang Yuanchun <idealities@gmail.com>, Bob Gao <gaobo@bjtu.edu.cn>",
     keywords = "open source mirror",
-    long_description = __doc__,
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     url = "http://mirror.bjtu.edu.cn",
     license = "GPLv3",
     cmdclass = cmdclass,
