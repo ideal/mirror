@@ -34,7 +34,7 @@ class TaskTestCase(unittest.TestCase):
                  'exclude': '',
                  'time':  '* */2 * * *',
                  'rsyncdir': 'archlinux/',
-                 'localdir': '/home/mirror/archlinux',
+                 'localdir': '/tmp/mirror/archlinux',
                  'args': '--links --hard-links --times --verbose --delete --recursive',
                  'twostage': '0',
                  'timeout': '2h',
