@@ -75,6 +75,8 @@ def list_task_queue():
 signals = {
           "stop"  : signal.SIGQUIT,
           "reload": signal.SIGHUP,
+          } if mirror.common.is_os_windows else {
+          "stop"  : signal.SIGINT,
           }
 
 def signal_process(signame):

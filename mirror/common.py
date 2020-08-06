@@ -316,3 +316,8 @@ def is_python3():
     """
     """
     return sys.version_info.major >= 3
+
+def is_os_windows():
+    """
+    """
+    return os.name == 'nt'
