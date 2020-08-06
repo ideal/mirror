@@ -23,6 +23,4 @@ RUN pacman-key --init && \
     rm -rf /etc/pacman.d/gnupg/{openpgp-revocs.d/,private-keys-v1.d/,pubring.gpg~}* && \
     rm -rf /var/cache/pacman/pkg/* /tmp/*
 
-RUN mkdir /var/log/mirrord /var/log/rsync
-
 CMD ["mirrord"]
