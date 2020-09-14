@@ -64,6 +64,9 @@ def get_default_config_dir(filename=None):
 
     """
 
+    if os.access(DEFAULT_CONFIG_PATH, os.F_OK):
+        return DEFAULT_CONFIG_PATH
+
     try:
         from xdg.BaseDirectory import save_config_path
         config_path = save_config_path("mirror")
@@ -72,9 +75,6 @@ def get_default_config_dir(filename=None):
                                    "mirror")
     if not filename:
         filename = ''
-
-    if not os.access(config_path, os.F_OK):
-        return DEFAULT_CONFIG_PATH
 
     return os.path.join(config_path, filename)
 
