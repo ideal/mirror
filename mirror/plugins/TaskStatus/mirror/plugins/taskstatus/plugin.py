@@ -166,9 +166,8 @@ class Plugin(PluginBase):
                 task_status = {}
             else:
                 # Remove tasks that already been removed from config file
-                for taskname in list(task_status):
-                    if taskname not in scheduler.config:
-                        task_status.pop(taskname)
+                list(map(lambda taskname: task_status.pop(taskname),
+                    filter(lambda taskname: taskname not in scheduler.config, list(task_status))))
         else:
             task_status = {}
 
