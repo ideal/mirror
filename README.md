@@ -78,12 +78,13 @@ Features
  * Support for two stage syncing (for ubuntu, debian)
  * You can also use it as another cron...
 
-[Build Status]:    https://img.shields.io/travis/ideal/mirror/master.svg?logo=travis-ci
-[Github Actions]:  https://img.shields.io/github/workflow/status/ideal/mirror/Mirror%20test
-[Travis CI]:       https://travis-ci.org/ideal/mirror
-[Release version]: https://img.shields.io/github/release/ideal/mirror.svg?logo=github
-[Release url]:     https://github.com/ideal/mirror/releases/latest
-[Python version]:  https://img.shields.io/pypi/pyversions/mirror.svg?logo=python
+[Build Status Old]: https://img.shields.io/travis/ideal/mirror/master.svg?logo=github
+[Build Status]:     https://img.shields.io/github/workflow/status/ideal/mirror/Mirror%20test
+[Github Actions]:   https://github.com/ideal/mirror/actions
+[Travis CI]:        https://travis-ci.org/ideal/mirror
+[Release version]:  https://img.shields.io/github/release/ideal/mirror.svg?logo=github
+[Release url]:      https://github.com/ideal/mirror/releases/latest
+[Python version]:   https://img.shields.io/pypi/pyversions/mirror.svg?logo=python
 [PyPI version]:    https://img.shields.io/pypi/v/mirror.svg?logo=python
 [PyPI]:            https://pypi.python.org/pypi/mirror
 [AUR version]:     https://img.shields.io/aur/version/mirror.svg?logo=arch-linux
