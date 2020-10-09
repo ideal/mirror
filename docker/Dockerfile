@@ -15,7 +15,7 @@ RUN pacman -Syyu --noconfirm && \
     rm -rf /var/cache/pacman/pkg/* /tmp/*
 
 RUN pacman-key --init && \
-    pacman-key -r F9F9FA97A403F63E && \
+    pacman-key -r F9F9FA97A403F63E --keyserver keyserver.ubuntu.com && \
     pacman-key -f F9F9FA97A403F63E && \
     pacman-key --lsign-key F9F9FA97A403F63E && \
     pacman -S --noconfirm unzip rsync mirror && \
