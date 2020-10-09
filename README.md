@@ -1,6 +1,6 @@
 # Mirror
 
-[![Build Status]][Travis CI] [![Python version]][PyPI] [![Release version]][Release url] [![PyPi version]][PyPI] [![AUR version]][AUR]
+[![Build Status]][Github Actions] [![Python version]][PyPI] [![Release version]][Release url] [![PyPi version]][PyPI] [![AUR version]][AUR]
 
 `Mirror` is an open source python application for mirror site (e.g. [mirror.bjtu.edu.cn](https://mirror.bjtu.edu.cn)) to sync files from upstreams (it uses [rsync](http://rsync.samba.org/) internally), it actually works like a [cron](http://en.wikipedia.org/wiki/Cron), but still has some differences. It has been served for mirror.bjtu.edu.cn with more than 40 rsync [tasks](https://mirror.bjtu.edu.cn).
 
@@ -79,6 +79,7 @@ Features
  * You can also use it as another cron...
 
 [Build Status]:    https://img.shields.io/travis/ideal/mirror/master.svg?logo=travis-ci
+[Github Actions]:  https://img.shields.io/github/workflow/status/ideal/mirror/Mirror%20test
 [Travis CI]:       https://travis-ci.org/ideal/mirror
 [Release version]: https://img.shields.io/github/release/ideal/mirror.svg?logo=github
 [Release url]:     https://github.com/ideal/mirror/releases/latest
