@@ -157,7 +157,10 @@ class AbstractTask(object):
 
     def stop(self, signo = signal.SIGTERM):
         if self.pid > 0:
-            os.kill(self.pid, signo)
+            try:
+                os.kill(self.pid, signo)
+            except:
+                log.exception('Error killing task: %s', self.name)
         if not self.twostage:
             self.set_stop_flag()
 

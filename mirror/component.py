@@ -30,10 +30,6 @@ class Component(object):
         self._depend = depend
         _component_registry.register(self)
 
-    def __del__(self):
-        if _component_registry:
-            _component_registry.deregister(self)
-
     def start(self):
         pass
 
