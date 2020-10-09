@@ -78,8 +78,8 @@ Features
  * Support for two stage syncing (for ubuntu, debian)
  * You can also use it as another cron...
 
-[Build Status Old]: https://img.shields.io/travis/ideal/mirror/master.svg?logo=github
-[Build Status]:     https://img.shields.io/github/workflow/status/ideal/mirror/Mirror%20test
+[Build Status Old]: https://img.shields.io/travis/ideal/mirror/master.svg?logo=travis-ci
+[Build Status]:     https://img.shields.io/github/workflow/status/ideal/mirror/Mirror%20test?logo=github
 [Github Actions]:   https://github.com/ideal/mirror/actions
 [Travis CI]:        https://travis-ci.org/ideal/mirror
 [Release version]:  https://img.shields.io/github/release/ideal/mirror.svg?logo=github
