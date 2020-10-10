@@ -198,7 +198,7 @@ with open(os.path.join(this_directory, 'README.md')) as f:
 # Main setup
 setup(
     name = "mirror",
-    version = "0.8.1",
+    version = "0.8.2",
     fullname = "Mirror for open source mirror site",
     description = "Mirror for open source mirror site to sync files",
     author = "Shang Yuanchun, Bob Gao",
