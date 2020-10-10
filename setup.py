@@ -199,8 +199,8 @@ with open(os.path.join(this_directory, 'README.md')) as f:
 setup(
     name = "mirror",
     version = "0.8.2",
-    fullname = "Mirror for open source mirror site",
-    description = "Mirror for open source mirror site to sync files",
+    fullname = "mirror",
+    description = "Task scheduler for open source mirror site (initially for https://mirror.bjtu.edu.cn)",
     author = "Shang Yuanchun, Bob Gao",
     author_email = "Shang Yuanchun <idealities@gmail.com>, Bob Gao <gaobo@bjtu.edu.cn>",
     keywords = "open source mirror",
