@@ -91,6 +91,7 @@ class Scheduler(Component):
     def sleep(self):
         # SIGCHLD may be coming before into sleep()
         # better need something like pselect() + sig_atomic_t
+        # refer: http://www.linuxprogrammingblog.com/all-about-linux-signals?page=6
         try:
             self.append_tasks()
             self.write_mmap()
