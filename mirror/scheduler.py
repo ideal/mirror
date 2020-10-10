@@ -89,31 +89,34 @@ class Scheduler(Component):
             }
 
     def sleep(self):
-        self.append_tasks()
-        self.write_mmap()
-
-        nexttask  = self.queue[0]
-        self.todo = 0
-        if nexttask:
-            for taskinfo in self.queue:
-                if taskinfo.time > nexttask.time:
-                    break
-                self.todo |= self.TODO.get(taskinfo.tasktype, 0)
-        # nexttask.time - time.time() is
-        # the duration we can sleep...
-        if nexttask:
-            sleeptime = nexttask.time - time.time()
-            # if system time is updated by ntpdate or other ways,
-            # we may get a sleeptime < 0 and thus an "Invalid argument" error,
-            # so we need to change it to a valid value
-            sleeptime = 0 if sleeptime < 0 else sleeptime
-        else:
-            sleeptime = 1800 # half an hour
-        log.info("I am going to sleep, next waking up: %s",
-                 time.ctime(time.time() + sleeptime))
-        self.expect_time     = int(time.time()) + sleeptime
-        self.roused_by_child = False
+        # SIGCHLD may be coming before into sleep()
+        # better need something like pselect() + sig_atomic_t
         try:
+            self.append_tasks()
+            self.write_mmap()
+
+            nexttask  = self.queue[0]
+            self.todo = 0
+            if nexttask:
+                for taskinfo in self.queue:
+                    if taskinfo.time > nexttask.time:
+                        break
+                    self.todo |= self.TODO.get(taskinfo.tasktype, 0)
+            # nexttask.time - time.time() is
+            # the duration we can sleep...
+            if nexttask:
+                sleeptime = nexttask.time - time.time()
+                # if system time is updated by ntpdate or other ways,
+                # we may get a sleeptime < 0 and thus an "Invalid argument" error,
+                # so we need to change it to a valid value
+                sleeptime = 0 if sleeptime < 0 else sleeptime
+            else:
+                sleeptime = 1800 # half an hour
+            log.info("I am going to sleep, next waking up: %s",
+                     time.ctime(time.time() + sleeptime))
+            self.expect_time     = int(time.time()) + sleeptime
+            self.roused_by_child = False
+
             time.sleep(sleeptime)
         except mirror.error.MirrordTaskFinishedFakeError as e:
             pass
