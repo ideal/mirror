@@ -13,6 +13,7 @@ Authors
 
 * Shang Yuanchun
 * Bob Gao
+* Chestnut
 
 For contributors and past developers see: 
     AUTHORS
