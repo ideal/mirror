@@ -67,12 +67,18 @@ def get_default_config_dir(filename=None):
     if os.access(DEFAULT_CONFIG_PATH, os.F_OK):
         return DEFAULT_CONFIG_PATH
 
+    user_config_path = os.path.join(os.path.expanduser("~/.config"),
+                                   "mirror")
+
+    if not os.access(user_config_path, os.F_OK):
+        return DEFAULT_CONFIG_PATH
+
     try:
         from xdg.BaseDirectory import save_config_path
         config_path = save_config_path("mirror")
     except:
-        config_path = os.path.join(os.path.expanduser("~/.config"),
-                                   "mirror")
+        config_path = user_config_path
+
     if not filename:
         filename = ''
 
