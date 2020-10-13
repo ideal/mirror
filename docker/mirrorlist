@@ -3,3 +3,4 @@
 ##
 
 Server = https://mirrors.ustc.edu.cn/archlinux/$repo/os/$arch
+Server = https://mirror.bjtu.edu.cn/archlinux/$repo/os/$arch
