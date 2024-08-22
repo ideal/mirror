@@ -198,7 +198,7 @@ with open(os.path.join(this_directory, 'README.md')) as f:
 # Main setup
 setup(
     name = "mirror",
-    version = "0.8.2",
+    version = "0.8.4",
     fullname = "mirror",
     description = "Task scheduler for open source mirror site (initially for https://mirror.bjtu.edu.cn)",
     author = "Shang Yuanchun, Bob Gao",
@@ -216,6 +216,7 @@ setup(
                                ]},
     packages = find_packages(exclude=["completion", "docs", "test"]),
     python_requires = '>=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*',
+    install_requires = ['setuptools', 'chardet'],
     classifiers=[
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Operating System :: OS Independent',
