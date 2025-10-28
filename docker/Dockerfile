@@ -27,8 +27,9 @@ RUN pacman-key --init && \
     pacman-key --lsign-key F9F9FA97A403F63E && \
     pacman -S --noconfirm unzip rsync python python-pip && \
     pacman -Scc --noconfirm && \
-    pip install mirror --break-system-packages && \
     rm -rf /etc/pacman.d/gnupg/{openpgp-revocs.d/,private-keys-v1.d/,pubring.gpg~}* && \
-    rm -rf /var/cache/pacman/pkg/* /tmp/*
+    rm -rf /var/cache/pacman/pkg/* /tmp/* && \
+    python setup.py install && \
+    pip show mirror
 
 CMD ["mirrord"]
