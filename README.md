@@ -80,7 +80,7 @@ Features
  * You can also use it as another cron...
 
 [Build Status Old]: https://img.shields.io/travis/ideal/mirror/master.svg?logo=travis-ci
-[Build Status]:     https://img.shields.io/github/workflow/status/ideal/mirror/Mirror%20test?logo=github
+[Build Status]:     https://img.shields.io/github/actions/workflow/status/ideal/mirror/mirror-test.yml
 [Github Actions]:   https://github.com/ideal/mirror/actions
 [Travis CI]:        https://travis-ci.org/ideal/mirror
 [Release version]:  https://img.shields.io/github/release/ideal/mirror.svg?logo=github
