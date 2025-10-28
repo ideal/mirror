@@ -13,6 +13,8 @@ MAINTAINER ideal <idealities@gmail.com>
 
 COPY docker/mirrorlist /etc/pacman.d/mirrorlist
 
+COPY . .
+
 RUN echo -e '[archlinuxcn]\n\
 Server = https://repo.archlinuxcn.org/$arch\n\
 ' >> /etc/pacman.conf
