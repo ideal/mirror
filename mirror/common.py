@@ -25,9 +25,9 @@ import os, sys
 import re
 import time
 import logging
-import pkg_resources
 import gettext
 import locale
+import importlib.metadata
 try:
     import chardet
 except:
@@ -52,7 +52,7 @@ def get_version():
     :returns: the version of mirror
 
     """
-    return pkg_resources.require("mirror")[0].version
+    return importlib.metadata.version("mirror")
 
 def get_default_config_dir(filename=None):
     """
@@ -108,10 +108,7 @@ def setup_translations():
             __builtin__.__dict__["_"] = lambda x: x
 
 def resource_filename(module, path):
-    return pkg_resources.require(
-               "mirror>=%s" % get_version())[0].get_resource_filename(
-                pkg_resources._manager, os.path.join(*(module.split('.')+[path]))
-            )
+    return importlib.resources.files(module).joinpath(path)
 
 def read_mirrord_pid(pidfile):
     pid = None
