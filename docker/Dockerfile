@@ -27,7 +27,7 @@ RUN pacman-key --init && \
     pacman-key -r F9F9FA97A403F63E --keyserver keyserver.ubuntu.com && \
     pacman-key -f F9F9FA97A403F63E && \
     pacman-key --lsign-key F9F9FA97A403F63E && \
-    pacman -S --noconfirm unzip rsync python python-pip && \
+    pacman -S --noconfirm unzip rsync python python-pip python-setuptools && \
     pacman -Scc --noconfirm && \
     rm -rf /etc/pacman.d/gnupg/{openpgp-revocs.d/,private-keys-v1.d/,pubring.gpg~}* && \
     rm -rf /var/cache/pacman/pkg/* /tmp/* && \
