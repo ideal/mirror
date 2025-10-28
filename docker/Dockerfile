@@ -13,7 +13,7 @@ MAINTAINER ideal <idealities@gmail.com>
 
 COPY docker/mirrorlist /etc/pacman.d/mirrorlist
 
-COPY . .
+COPY . mirror
 
 RUN echo -e '[archlinuxcn]\n\
 Server = https://repo.archlinuxcn.org/$arch\n\
@@ -31,7 +31,7 @@ RUN pacman-key --init && \
     pacman -Scc --noconfirm && \
     rm -rf /etc/pacman.d/gnupg/{openpgp-revocs.d/,private-keys-v1.d/,pubring.gpg~}* && \
     rm -rf /var/cache/pacman/pkg/* /tmp/* && \
-    python setup.py install && \
+    cd mirror && python setup.py install && cd - && rm -rf mirror && \
     pip show mirror
 
 CMD ["mirrord"]
