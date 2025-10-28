@@ -18,4 +18,4 @@ jobs:
     # Build the Docker image
     - name: Build with Docker
       run: |
-        docker build -t ideal/mirror docker
+        docker build -t ideal/mirror -f docker/Dockerfile .

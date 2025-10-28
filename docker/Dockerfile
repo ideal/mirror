@@ -11,7 +11,7 @@ FROM archlinux:latest
 
 MAINTAINER ideal <idealities@gmail.com>
 
-COPY mirrorlist /etc/pacman.d/mirrorlist
+COPY docker/mirrorlist /etc/pacman.d/mirrorlist
 
 RUN echo -e '[archlinuxcn]\n\
 Server = https://repo.archlinuxcn.org/$arch\n\
