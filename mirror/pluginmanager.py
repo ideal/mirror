@@ -20,14 +20,13 @@
 #
 #
 
-
 import os
 import logging
-import pkg_resources
+import importlib.metadata
 import mirror.common
 import mirror.configmanager
 import mirror.component as component
-from   mirror.component import Component
+from mirror.component import Component
 
 log = logging.getLogger("pluginmanager")
 
@@ -43,20 +42,19 @@ METADATA_KEYS = (
     "Description",
 )
 
-class PluginManager(Component):
 
+class PluginManager(Component):
     def __init__(self, config_file, entry_name):
         super(PluginManager, self).__init__(PluginManager.__name__)
-        self.config     = mirror.configmanager.ConfigManager(config_file)
+        self.config = mirror.configmanager.ConfigManager(config_file)
         self.entry_name = entry_name
 
-        # available plugins
         self.available_plugins = []
 
-        # enabled plugins
-        self.plugins    = {}
-        self.hooks      = {}
+        self.plugins = {}
+        self.hooks = {}
 
+        self.plugin_distributions = {}
         self.scan_plugins()
 
     def enable_plugins(self):
@@ -68,29 +66,40 @@ class PluginManager(Component):
             log.warn("Cannot enable an already enabled plugin %s", plugin_name)
             return
 
-        plugin_name = plugin_name.replace(' ', '-')
-        egg         = self.pkg_env[plugin_name][0]
-        egg.activate()
-        for name in egg.get_entry_map(self.entry_name):
-            entry_point = egg.get_entry_info(self.entry_name, name)
+        plugin_name_key = plugin_name.replace(" ", "-")
+
+        if plugin_name_key not in self.plugin_distributions:
+            log.error("Plugin %s not found in scanned plugins", plugin_name)
+            return
+
+        dist = self.plugin_distributions[plugin_name_key]
+
+        entry_points_list = [
+            ep for ep in dist.entry_points if ep.group == self.entry_name
+        ]
+
+        for entry_point in entry_points_list:
             try:
-                cls      = entry_point.load()
+                cls = entry_point.load()
                 if not cls.enabled:
                     continue
-                instance = cls(plugin_name.replace('-', '_'))
+                instance = cls(plugin_name_key.replace("-", "_"))
             except Exception as e:
-                log.error("Unable to instantiate plugin %r from %r!",
-                          name, egg.location)
+                log.error(
+                    "Unable to instantiate plugin %r from %r!",
+                    entry_point.name,
+                    dist.locate_file(""),
+                )
                 log.exception(e)
                 continue
             instance.enable()
             if not instance.__module__.startswith("mirror.plugins."):
-                log.warn("Wrong module for plugin: %s", name)
+                log.warn("Wrong module for plugin: %s", entry_point.name)
 
             component.start([instance.plugin.name])
-            plugin_name = plugin_name.replace('-', ' ')
-            self.plugins[plugin_name] = instance
-            log.info("Plugin %s enabled...", plugin_name)
+            plugin_name_display = plugin_name_key.replace("-", " ")
+            self.plugins[plugin_name_display] = instance
+            log.info("Plugin %s enabled...", plugin_name_display)
 
     def disable_plugins(self):
         plugin_names = list(self.plugins)
@@ -109,30 +118,29 @@ class PluginManager(Component):
 
     def scan_plugins(self):
         """
-        Scans for available plugins
-
+        Scans for available plugins using importlib.metadata
         """
-        base_plugin_dir = mirror.common.resource_filename("mirror", "plugins")
-        pkg_resources.working_set.add_entry(base_plugin_dir)
-        user_plugin_dir = os.path.join(mirror.configmanager.get_config_dir(), "plugins")
+        for dist in importlib.metadata.distributions():
+            entry_points_list = [
+                ep for ep in dist.entry_points if ep.group == self.entry_name
+            ]
 
-        plugins_dirs    = [ base_plugin_dir ]
-        for dirname in os.listdir(base_plugin_dir):
-            plugin_dir  = os.path.join(base_plugin_dir, dirname)
-            pkg_resources.working_set.add_entry(plugin_dir)
-            plugins_dirs.append(plugin_dir)
+            if not entry_points_list:
+                continue
 
-        pkg_resources.working_set.add_entry(user_plugin_dir)
-        plugins_dirs.append(user_plugin_dir)
+            plugin_name = dist.metadata.get("Name", "")
+            if not plugin_name:
+                continue
 
-        self.pkg_env    = pkg_resources.Environment(plugins_dirs)
+            self.plugin_distributions[plugin_name] = dist
 
-        for name in self.pkg_env:
-            log.debug("Found plugin: %s %s at %s",
-                       self.pkg_env[name][0].project_name,
-                       self.pkg_env[name][0].version,
-                       self.pkg_env[name][0].location)
-            self.available_plugins.append(self.pkg_env[name][0].project_name)
+            log.debug(
+                "Found plugin: %s %s at %s",
+                plugin_name,
+                dist.version,
+                dist.locate_file("") if dist.locate_file else "unknown",
+            )
+            self.available_plugins.append(plugin_name)
 
     def __getitem__(self, key):
         return self.plugins[key]
@@ -145,22 +153,30 @@ class PluginManager(Component):
 
     def get_plugin_info(self, name):
         info = dict.fromkeys(METADATA_KEYS)
-        last_header = ""
-        cont_lines  = []
-        for line in self.pkg_env[name][0].get_metadata("PKG-INFO").splitlines():
-            if not line:
-                continue
-            if line[0] in ' \t' and (
-                len(line.split(":", 1)) == 1 or line.split(":", 1)[0] not in info):
-                # This is a continuation
-                cont_lines.append(line.strip())
-            else:
-                if cont_lines:
-                    info[last_header] = "\n".join(cont_lines).strip()
-                    cont_lines = []
-                if line.split(":", 1)[0] in info:
-                    last_header = line.split(":", 1)[0]
-                    info[last_header] = line.split(":", 1)[1].strip()
+
+        name_key = name.replace(" ", "-")
+        if name_key not in self.plugin_distributions:
+            return info
+
+        dist = self.plugin_distributions[name_key]
+        metadata = dist.metadata
+
+        key_mapping = {
+            "Name": "Name",
+            "License": "License",
+            "Author": "Author",
+            "Home-page": "Home-page",
+            "Summary": "Summary",
+            "Platform": "Platform",
+            "Version": "Version",
+            "Author-email": "Author-email",
+            "Description": "Description",
+        }
+
+        for key in METADATA_KEYS:
+            if metadata:
+                value = metadata.get(key, "")
+                info[key] = value if value else ""
 
         return info
 
@@ -169,4 +185,3 @@ class PluginManager(Component):
 
     def stop(self):
         self.disable_plugins()
-

@@ -22,15 +22,15 @@
 
 from setuptools import setup, find_packages
 
-__plugin_name__  = "TaskStatus"
-__author__       = "Shang Yuanchun"
+__plugin_name__ = "TaskStatus"
+__author__ = "Shang Yuanchun"
 __author_email__ = "idealities@gmail.com"
-__version__      = "0.6"
-__url__          = "http://mirror.bjtu.edu.cn"
-__license__      = "GPLv3"
-__description__  = "Export task status to somewhere."
+__version__ = "0.6"
+__url__ = "http://mirror.bjtu.edu.cn"
+__license__ = "GPLv3"
+__description__ = "Export task status to somewhere."
 __long_description__ = """"""
-__pkg_data__     = { 'mirror.plugins.' + __plugin_name__.lower(): [ "data/*" ] }
+__pkg_data__ = {"mirror.plugins." + __plugin_name__.lower(): ["data/*"]}
 
 setup(
     name=__plugin_name__,
@@ -42,11 +42,10 @@ setup(
     license=__license__,
     long_description=__long_description__ if __long_description__ else __description__,
     packages=find_packages(),
-    namespace_packages = ["mirror", "mirror.plugins"],
-    package_data = __pkg_data__,
-
+    package_data=__pkg_data__,
     entry_points="""
     [mirror.plugin.mirrorplugin]
     %s = mirror.plugins.%s:MirrorPlugin
-    """ % (__plugin_name__, __plugin_name__.lower())
+    """
+    % (__plugin_name__, __plugin_name__.lower()),
 )
