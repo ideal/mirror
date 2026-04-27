@@ -28,6 +28,7 @@ import logging
 import gettext
 import locale
 import importlib.metadata
+import importlib.resources
 try:
     import chardet
 except:

@@ -239,9 +239,9 @@ def start_daemon():
     signal.signal(signal.SIGHUP,  mirror.handler.reload_handler)
 
     if options.profile:
-        import hotshot
-        hsp = hotshot.Profile(mirror.configmanager.get_config_dir("mirrord.profile"))
-        hsp.start()
+        import cProfile, pstats
+        prof = cProfile.Profile()
+        prof.enable()
     try:
         log.info("Starting mirror daemon...")
         from mirror.daemon import MirrorDaemon
@@ -252,10 +252,9 @@ def start_daemon():
         sys.exit(1)
     finally:
         if options.profile:
-            hsp.stop()
-            hsp.close()
-            import hotshot.stats
-            stats = hotshot.stats.load(mirror.configmanager.get_config_dir("mirrord.profile"))
+            prof.disable()
+            prof.dump_stats(mirror.configmanager.get_config_dir("mirrord.profile"))
+            stats = pstats.Stats(mirror.configmanager.get_config_dir("mirrord.profile"))
             stats.strip_dirs()
             stats.sort_stats("time", "calls")
             stats.print_stats(400)

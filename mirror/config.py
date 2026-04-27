@@ -136,7 +136,7 @@ class Config(object):
         {"upstream": "archlinux.org"}
 
         """
-        if isinstance(self.__config[key], str):
+        if isinstance(self.__config[key], bytes):
             try:
                 return self.__config[key].decode("utf8")
             except UnicodeDecodeError:

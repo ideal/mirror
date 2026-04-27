@@ -30,13 +30,11 @@ class MirrorEventMetaClass(type):
         if name != "MirrorEvent":
             events[name] = cls
 
-class MirrorEvent(object):
+class MirrorEvent(object, metaclass=MirrorEventMetaClass):
     """
     The base class for all events.
 
     """
-    # MirrorEventMetaClass is used to generate this class
-    __metaclass__ = MirrorEventMetaClass
 
     def _get_name(self):
         return self.__class__.__name__
