@@ -56,12 +56,12 @@ class AbstractTask(object):
             self.enabled = False
         crontime = mirror.common.parse_cron_time(self.time)
         if crontime:
-            self.time_miniute = crontime[0]
+            self.time_minute = crontime[0]
             self.time_hour    = crontime[1]
             self.time_dom     = crontime[2]
             self.time_month   = crontime[3]
             self.time_dow     = crontime[4]
-            for attr in ('time_miniute', 'time_hour', 'time_dom', 'time_month', 'time_dow'):
+            for attr in ('time_minute', 'time_hour', 'time_dom', 'time_month', 'time_dow'):
                 if len(getattr(self, attr)) == 0:
                     log.error("Error in config for task: %s, time: %s not valid.",
                               self.name, attr)
@@ -126,8 +126,8 @@ class AbstractTask(object):
             self.stage = stage
             self.execute(stage)
         except Exception as e:
-            log.error("Error occured when run `%s`: %s.", self.name, e)
-            # If fork succeed but error occured before execv, we need to exit child process
+            log.error("Error occurred when run `%s`: %s.", self.name, e)
+            # If fork succeed but error occurred before execv, we need to exit child process
             if os.getpid() == self.pid:
                 sys.exit(1)
             # If we are in parent process, e.g. scheduler
@@ -177,13 +177,13 @@ class AbstractTask(object):
 
         """
 
-        if not hasattr(self, "time_miniute"):
+        if not hasattr(self, "time_minute"):
             return None
         if not self.enabled:
             return None
         since_struct  = time.localtime(since)
 
-        miniute = since_struct.tm_min
+        minute = since_struct.tm_min
         hour    = since_struct.tm_hour
         day     = since_struct.tm_mday
         month   = since_struct.tm_mon
@@ -193,20 +193,20 @@ class AbstractTask(object):
         month_increase = False
         year_increase  = False
         if since_struct.tm_mon in self.time_month and since_struct.tm_mday in self.time_dom:
-            miniute_idx = bisect.bisect(self.time_miniute, since_struct.tm_min)
-            if since_struct.tm_hour in self.time_hour and miniute_idx < len(self.time_miniute):
-                miniute = self.time_miniute[miniute_idx]
+            minute_idx = bisect.bisect(self.time_minute, since_struct.tm_min)
+            if since_struct.tm_hour in self.time_hour and minute_idx < len(self.time_minute):
+                minute = self.time_minute[minute_idx]
                 hour    = since_struct.tm_hour
             else:
-                miniute  = self.time_miniute[0]
+                minute  = self.time_minute[0]
                 hour_idx = bisect.bisect(self.time_hour, since_struct.tm_hour)
                 if hour_idx < len(self.time_hour):
                     hour = self.time_hour[hour_idx]
                 else:
                     hour = self.time_hour[0]
                     day_increase = True
-            if len(self.time_miniute) == 60 and len(self.time_hour) != 24:
-                miniute  = self.time_miniute[0]
+            if len(self.time_minute) == 60 and len(self.time_hour) != 24:
+                minute  = self.time_minute[0]
                 hour_idx = bisect.bisect(self.time_hour, since_struct.tm_hour)
                 if hour_idx < len(self.time_hour):
                     hour = self.time_hour[hour_idx]
@@ -217,7 +217,7 @@ class AbstractTask(object):
                 day   = since_struct.tm_mday
                 month = since_struct.tm_mon
         if since_struct.tm_mday not in self.time_dom or day_increase:
-            miniute = self.time_miniute[0]
+            minute = self.time_minute[0]
             hour    = self.time_hour[0]
             day_idx = bisect.bisect(self.time_dom, since_struct.tm_mday)
             if day_idx < len(self.time_dom):
@@ -228,7 +228,7 @@ class AbstractTask(object):
             if not month_increase:
                 month = since_struct.tm_mon
         if since_struct.tm_mon not in self.time_month or month_increase:
-            miniute = self.time_miniute[0]
+            minute = self.time_minute[0]
             hour    = self.time_hour[0]
             day     = self.time_dom[0]
             month_idx = bisect.bisect(self.time_month, since_struct.tm_mon)
@@ -240,7 +240,7 @@ class AbstractTask(object):
         if year_increase:
             year += 1
 
-        next_time   = time.mktime((year, month, day, hour, miniute, 0, 0, 0, 0))
+        next_time   = time.mktime((year, month, day, hour, minute, 0, 0, 0, 0))
         next_struct = time.localtime(next_time)
         if (next_struct.tm_wday + 1) not in self.time_dow:
             from datetime import datetime, timedelta

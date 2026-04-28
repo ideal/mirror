@@ -117,7 +117,7 @@ msgstr ""
 #: mirror/main.py:152
 #, python-format
 msgid ""
-"Default task log dir does not exists: %s, you can create it manually and "
+"Default task log dir does not exist: %s, you can create it manually and "
 "start again."
 msgstr ""
 

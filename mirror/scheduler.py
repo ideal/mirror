@@ -148,7 +148,7 @@ class Scheduler(Component):
             # to move to zero second
             timestamp  = curtime
             timestamp -= curtime   % 60
-            # next miniute
+            # next minute
             end        = timestamp + 60
             for taskinfo in taskqueue:
                 if self.TODO.get(taskinfo.tasktype, 0) != self.SCHEDULE_TASK:
